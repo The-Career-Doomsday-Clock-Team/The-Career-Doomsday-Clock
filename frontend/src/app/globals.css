@@ -1,0 +1,539 @@
+@import "tailwindcss";
+
+/* ── Design Tokens ── */
+:root {
+  --color-cyan: #00f0ff;
+  --color-magenta: #ff00ff;
+  --color-yellow: #ffff00;
+  --color-bg: #0a0a0a;
+  --color-bg-secondary: #111111;
+  --color-text: #e0e0e0;
+  --color-text-muted: #888888;
+
+  --font-heading: var(--font-orbitron), sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
+}
+
+/* ── Base Reset ── */
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  min-height: 100vh;
+}
+
+/* ── Neon Glow Utilities ── */
+.neon-glow-cyan {
+  box-shadow:
+    0 0 5px var(--color-cyan),
+    0 0 10px var(--color-cyan),
+    0 0 20px var(--color-cyan),
+    0 0 40px var(--color-cyan);
+}
+
+.neon-glow-magenta {
+  box-shadow:
+    0 0 5px var(--color-magenta),
+    0 0 10px var(--color-magenta),
+    0 0 20px var(--color-magenta),
+    0 0 40px var(--color-magenta);
+}
+
+.neon-glow-yellow {
+  box-shadow:
+    0 0 5px var(--color-yellow),
+    0 0 10px var(--color-yellow),
+    0 0 20px var(--color-yellow),
+    0 0 40px var(--color-yellow);
+}
+
+.neon-text-cyan {
+  color: var(--color-cyan);
+  text-shadow:
+    0 0 5px var(--color-cyan),
+    0 0 10px var(--color-cyan),
+    0 0 20px var(--color-cyan);
+}
+
+.neon-text-magenta {
+  color: var(--color-magenta);
+  text-shadow:
+    0 0 5px var(--color-magenta),
+    0 0 10px var(--color-magenta),
+    0 0 20px var(--color-magenta);
+}
+
+.neon-text-yellow {
+  color: var(--color-yellow);
+  text-shadow:
+    0 0 5px var(--color-yellow),
+    0 0 10px var(--color-yellow),
+    0 0 20px var(--color-yellow);
+}
+
+/* ── Neon Border Utilities ── */
+.neon-border-cyan {
+  border: 1px solid var(--color-cyan);
+  box-shadow:
+    0 0 5px var(--color-cyan),
+    0 0 10px var(--color-cyan),
+    inset 0 0 5px rgba(0, 240, 255, 0.1);
+}
+
+.neon-border-magenta {
+  border: 1px solid var(--color-magenta);
+  box-shadow:
+    0 0 5px var(--color-magenta),
+    0 0 10px var(--color-magenta),
+    inset 0 0 5px rgba(255, 0, 255, 0.1);
+}
+
+.neon-border-yellow {
+  border: 1px solid var(--color-yellow);
+  box-shadow:
+    0 0 5px var(--color-yellow),
+    0 0 10px var(--color-yellow),
+    inset 0 0 5px rgba(255, 255, 0, 0.1);
+}
+
+/* ── Hover Glow Intensify ── */
+.neon-border-cyan:hover {
+  box-shadow:
+    0 0 10px var(--color-cyan),
+    0 0 20px var(--color-cyan),
+    0 0 40px var(--color-cyan),
+    inset 0 0 10px rgba(0, 240, 255, 0.2);
+}
+
+.neon-border-magenta:hover {
+  box-shadow:
+    0 0 10px var(--color-magenta),
+    0 0 20px var(--color-magenta),
+    0 0 40px var(--color-magenta),
+    inset 0 0 10px rgba(255, 0, 255, 0.2);
+}
+
+.neon-border-yellow:hover {
+  box-shadow:
+    0 0 10px var(--color-yellow),
+    0 0 20px var(--color-yellow),
+    0 0 40px var(--color-yellow),
+    inset 0 0 10px rgba(255, 255, 0, 0.2);
+}
+
+/* ── Neon Button ── */
+.neon-button {
+  font-family: var(--font-heading);
+  border: 1px solid var(--color-cyan);
+  color: var(--color-cyan);
+  background: transparent;
+  padding: 0.75rem 2rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: all 0.3s ease;
+  box-shadow:
+    0 0 5px var(--color-cyan),
+    0 0 10px var(--color-cyan);
+}
+
+.neon-button:hover {
+  background: rgba(0, 240, 255, 0.1);
+  box-shadow:
+    0 0 10px var(--color-cyan),
+    0 0 20px var(--color-cyan),
+    0 0 40px var(--color-cyan);
+}
+
+/* ── Neon Pulse Animation ── */
+@keyframes neon-pulse {
+  0%, 100% {
+    opacity: 1;
+    text-shadow:
+      0 0 5px var(--color-cyan),
+      0 0 10px var(--color-cyan),
+      0 0 20px var(--color-cyan);
+  }
+  50% {
+    opacity: 0.8;
+    text-shadow:
+      0 0 10px var(--color-cyan),
+      0 0 20px var(--color-cyan),
+      0 0 40px var(--color-cyan),
+      0 0 80px var(--color-cyan);
+  }
+}
+
+.neon-pulse {
+  animation: neon-pulse 2s ease-in-out infinite;
+}
+
+/* ── Landing Page: 폐허 도시 배경 ── */
+.landing-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    /* 상단 안개 */
+    linear-gradient(
+      180deg,
+      rgba(0, 240, 255, 0.03) 0%,
+      transparent 30%
+    ),
+    /* 하단 네온 반사 */
+    linear-gradient(
+      0deg,
+      rgba(0, 240, 255, 0.06) 0%,
+      rgba(255, 0, 255, 0.03) 15%,
+      transparent 40%
+    ),
+    /* 기본 배경 */
+    var(--color-bg);
+}
+
+/* 폐허 건물 실루엣 */
+.landing-buildings {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 45%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.building {
+  position: absolute;
+  bottom: 0;
+  background: linear-gradient(
+    180deg,
+    #0d0d0d 0%,
+    #080808 100%
+  );
+  border-top: 1px solid rgba(0, 240, 255, 0.08);
+}
+
+/* 각 건물 배치 */
+.building-1 {
+  left: 5%;
+  width: 8%;
+  height: 55%;
+  clip-path: polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.05);
+}
+
+.building-2 {
+  left: 18%;
+  width: 12%;
+  height: 70%;
+  clip-path: polygon(5% 0%, 95% 0%, 100% 100%, 0% 100%);
+  box-shadow: 0 0 20px rgba(255, 0, 255, 0.04);
+}
+
+.building-3 {
+  left: 42%;
+  width: 16%;
+  height: 80%;
+  clip-path: polygon(8% 0%, 92% 0%, 100% 100%, 0% 100%);
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.06);
+}
+
+.building-4 {
+  right: 18%;
+  width: 10%;
+  height: 60%;
+  clip-path: polygon(12% 0%, 88% 0%, 100% 100%, 0% 100%);
+  box-shadow: 0 0 15px rgba(255, 255, 0, 0.03);
+}
+
+.building-5 {
+  right: 3%;
+  width: 14%;
+  height: 75%;
+  clip-path: polygon(6% 0%, 94% 0%, 100% 100%, 0% 100%);
+  box-shadow: 0 0 20px rgba(255, 0, 255, 0.05);
+}
+
+/* 건물 네온 창문 효과 */
+.building::after {
+  content: "";
+  position: absolute;
+  inset: 15% 20% 10% 20%;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 18px,
+      rgba(0, 240, 255, 0.04) 18px,
+      rgba(0, 240, 255, 0.04) 20px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 22px,
+      rgba(0, 240, 255, 0.03) 22px,
+      rgba(0, 240, 255, 0.03) 24px
+    );
+}
+
+/* ── Survey Form ── */
+.survey-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 0, 255, 0.03) 0%,
+      transparent 40%
+    ),
+    linear-gradient(
+      0deg,
+      rgba(0, 240, 255, 0.04) 0%,
+      transparent 30%
+    ),
+    var(--color-bg);
+}
+
+.survey-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  color: var(--color-text);
+  padding: 0.75rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.survey-input::placeholder {
+  color: var(--color-text-muted);
+  opacity: 0.6;
+}
+
+.survey-input:focus {
+  border-color: var(--color-cyan);
+  box-shadow:
+    0 0 5px rgba(0, 240, 255, 0.3),
+    0 0 10px rgba(0, 240, 255, 0.1);
+}
+
+.survey-input-error {
+  border-color: var(--color-magenta) !important;
+  box-shadow:
+    0 0 5px rgba(255, 0, 255, 0.3),
+    0 0 10px rgba(255, 0, 255, 0.1);
+}
+
+.survey-error-text {
+  color: var(--color-magenta);
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  text-shadow: 0 0 5px rgba(255, 0, 255, 0.3);
+}
+
+/* ── Loading Screen ── */
+.loading-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(
+      ellipse at 50% 50%,
+      rgba(0, 240, 255, 0.05) 0%,
+      transparent 60%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(0, 240, 255, 0.02) 0%,
+      transparent 40%
+    ),
+    var(--color-bg);
+}
+
+.loading-clock {
+  animation: neon-pulse 2s ease-in-out infinite;
+}
+
+.loading-message {
+  min-height: 2rem;
+  transition: opacity 0.5s ease;
+}
+
+.loading-bar-track {
+  width: 200px;
+  height: 2px;
+  background: rgba(0, 240, 255, 0.15);
+  overflow: hidden;
+  border-radius: 1px;
+}
+
+.loading-bar-fill {
+  height: 100%;
+  width: 40%;
+  background: var(--color-cyan);
+  box-shadow: 0 0 8px var(--color-cyan);
+  animation: loading-slide 1.5s ease-in-out infinite;
+}
+
+@keyframes loading-slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(350%); }
+}
+
+/* ── Fade In Animation ── */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+}
+
+/* ── Result Page ── */
+.result-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(
+      ellipse at 50% 30%,
+      rgba(255, 0, 255, 0.04) 0%,
+      transparent 50%
+    ),
+    linear-gradient(
+      0deg,
+      rgba(0, 240, 255, 0.03) 0%,
+      transparent 30%
+    ),
+    var(--color-bg);
+}
+
+/* D-Day 카운터 */
+.doomsday-counter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.doomsday-value {
+  padding: 1rem 2rem;
+}
+
+/* 스킬 위험도 카드 */
+.skill-risk-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 0, 255, 0.2);
+  padding: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.skill-risk-card:hover {
+  border-color: var(--color-magenta);
+  box-shadow:
+    0 0 8px rgba(255, 0, 255, 0.2),
+    0 0 16px rgba(255, 0, 255, 0.1);
+}
+
+/* 구분선 슬라이드인 */
+.result-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-cyan) 50%,
+    transparent 100%
+  );
+  box-shadow: 0 0 10px var(--color-cyan);
+  animation: divider-slide-in 0.8s ease-out forwards;
+  transform: scaleX(0);
+}
+
+@keyframes divider-slide-in {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* 커리어 카드 */
+.career-card {
+  background: rgba(255, 255, 255, 0.02);
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  opacity: 0;
+  animation: fade-in 0.6s ease-out forwards;
+}
+
+/* 스태거 딜레이 (Req 6.2) */
+.career-card:nth-child(1) { animation-delay: 0ms; }
+.career-card:nth-child(2) { animation-delay: 200ms; }
+.career-card:nth-child(3) { animation-delay: 400ms; }
+
+/* 로드맵 스텝 */
+.roadmap-step {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.roadmap-step:last-child {
+  border-bottom: none;
+}
+
+/* ── Guestbook Page ── */
+.guestbook-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(
+      ellipse at 50% 20%,
+      rgba(0, 240, 255, 0.04) 0%,
+      transparent 50%
+    ),
+    linear-gradient(
+      0deg,
+      rgba(255, 0, 255, 0.03) 0%,
+      transparent 25%
+    ),
+    var(--color-bg);
+}
+
+.guestbook-form {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  padding: 1.5rem;
+}
+
+.guestbook-entry {
+  background: rgba(255, 255, 255, 0.02);
+  padding: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.guestbook-reaction-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+}
+
+.guestbook-reaction-btn:hover {
+  background: rgba(0, 240, 255, 0.08);
+  border-color: rgba(0, 240, 255, 0.3);
+  box-shadow: 0 0 6px rgba(0, 240, 255, 0.2);
+}
+
+.guestbook-reaction-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

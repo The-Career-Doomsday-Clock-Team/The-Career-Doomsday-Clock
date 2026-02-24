@@ -1,0 +1,9 @@
+node_modules/
+.next/
+cdk.out/
+__pycache__/
+.pytest_cache/
+*.pyc
+.env
+*.js.map
+tsconfig.tsbuildinfo
