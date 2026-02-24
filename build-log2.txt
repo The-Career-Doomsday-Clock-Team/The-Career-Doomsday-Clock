@@ -1,0 +1,103 @@
+2026-02-24T11:24:01.329Z [INFO]: # Build environment configured with Standard build compute type: 8GiB Memory, 4vCPUs, 128GB Disk Space
+2026-02-24T11:24:01.593Z [INFO]: # Retrieving Git provider SSH public keys
+2026-02-24T11:24:04.489Z [INFO]: # Successfully retrieved Git provider SSH public keys
+2026-02-24T11:24:04.585Z [INFO]: # Cloning repository: git@github.com:The-Career-Doomsday-Clock-Team/The-Career-Doomsday-Clock.git
+2026-02-24T11:24:06.804Z [INFO]: Agent pid 459
+2026-02-24T11:24:06.805Z [INFO]: Identity added: /root/.ssh/git_rsa (/root/.ssh/git_rsa)
+                                 Cloning into 'The-Career-Doomsday-Clock'...
+2026-02-24T11:24:06.805Z [INFO]: # Switching to commit: bc374f9dd1484bf12733e6f698d4de9c41444dae
+2026-02-24T11:24:06.838Z [INFO]: Agent pid 470
+2026-02-24T11:24:06.838Z [INFO]: Identity added: /root/.ssh/git_rsa (/root/.ssh/git_rsa)
+                                 Note: switching to 'bc374f9dd1484bf12733e6f698d4de9c41444dae'.
+                                 You are in 'detached HEAD' state. You can look around, make experimental
+                                 changes and commit them, and you can discard any commits you make in this
+                                 state without impacting any branches by switching back to a branch.
+                                 If you want to create a new branch to retain commits you create, you may
+                                 do so (now or later) by using -c with the switch command. Example:
+                                 git switch -c <new-branch-name>
+                                 Or undo this operation with:
+                                 git switch -
+                                 Turn off this advice by setting config variable advice.detachedHead to false
+                                 HEAD is now at bc374f9 fix: Amplify Next.js standalone 출력 모드 및 프레임워크 설정
+2026-02-24T11:24:06.857Z [INFO]: Successfully cleaned up Git credentials
+2026-02-24T11:24:06.857Z [INFO]: # Checking for Git submodules at: /codebuild/output/src2883666160/src/The-Career-Doomsday-Clock/.gitmodules
+2026-02-24T11:24:06.862Z [INFO]: # Retrieving environment cache...
+2026-02-24T11:24:06.908Z [WARNING]: ! Unable to write cache: {"code":"ERR_BAD_REQUEST","message":"Request failed with status code 404"})}
+2026-02-24T11:24:06.908Z [INFO]: ---- Setting Up SSM Secrets ----
+2026-02-24T11:24:06.908Z [INFO]: SSM params {"Path":"/amplify/d1m52iw4jf6lnc/main/","WithDecryption":true}
+2026-02-24T11:24:06.951Z [WARNING]: !Failed to set up process.env.secrets
+2026-02-24T11:24:07.373Z [INFO]: # No package override configuration found.
+2026-02-24T11:24:07.377Z [INFO]: # Retrieving cache...
+2026-02-24T11:24:07.492Z [INFO]: # Extracting cache...
+2026-02-24T11:24:07.494Z [INFO]: # Extraction completed
+2026-02-24T11:24:07.494Z [INFO]: # Retrieved cache
+2026-02-24T11:24:12.649Z [INFO]: ## Starting Backend Build
+                                 ## Checking for associated backend environment...
+                                 ## No backend environment association found, continuing...
+                                 ## Completed Backend Build
+2026-02-24T11:24:12.656Z [INFO]: ## Starting Frontend Build
+                                 # Starting phase: preBuild
+                                 # Executing command: npm ci
+2026-02-24T11:24:34.327Z [WARNING]: npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+2026-02-24T11:24:34.652Z [WARNING]: npm warn deprecated abab@2.0.6: Use your platform's native atob() and btoa() methods instead
+2026-02-24T11:24:34.665Z [WARNING]: npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+2026-02-24T11:24:34.742Z [WARNING]: npm warn deprecated whatwg-encoding@2.0.0: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+2026-02-24T11:24:34.761Z [WARNING]: npm warn deprecated domexception@4.0.0: Use your platform's native DOMException instead
+2026-02-24T11:24:46.407Z [INFO]: added 662 packages, and audited 663 packages in 29s
+2026-02-24T11:24:46.413Z [INFO]: 166 packages are looking for funding
+                                 run `npm fund` for details
+2026-02-24T11:24:46.482Z [INFO]: 27 high severity vulnerabilities
+                                 To address issues that do not require attention, run:
+                                 npm audit fix
+                                 To address all issues (including breaking changes), run:
+                                 npm audit fix --force
+                                 Run `npm audit` for details.
+2026-02-24T11:24:46.503Z [INFO]: # Completed phase: preBuild
+                                 # Starting phase: build
+                                 # Executing command: npm run build
+2026-02-24T11:24:46.616Z [INFO]: > career-doomsday-clock@0.1.0 build
+                                 > next build
+2026-02-24T11:24:47.539Z [INFO]: ⚠ No build cache found. Please configure build caching for faster rebuilds. Read more: https://nextjs.org/docs/messages/no-cache
+2026-02-24T11:24:47.551Z [INFO]: Attention: Next.js now collects completely anonymous telemetry regarding usage.
+2026-02-24T11:24:47.551Z [INFO]: This information is used to shape Next.js' roadmap and prioritize features.
+                                 You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+                                 https://nextjs.org/telemetry
+2026-02-24T11:24:47.645Z [INFO]: ▲ Next.js 15.5.12
+2026-02-24T11:24:47.646Z [INFO]: 
+2026-02-24T11:24:47.726Z [INFO]: Creating an optimized production build ...
+2026-02-24T11:24:56.301Z [INFO]: ✓ Compiled successfully in 6.1s
+2026-02-24T11:24:56.307Z [INFO]: Linting and checking validity of types ...
+2026-02-24T11:24:59.229Z [INFO]: Collecting page data ...
+2026-02-24T11:25:00.593Z [INFO]: Generating static pages (0/8) ...
+2026-02-24T11:25:01.173Z [INFO]: Generating static pages (2/8)
+                                 Generating static pages (4/8)
+2026-02-24T11:25:01.174Z [INFO]: Generating static pages (6/8)
+                                 ✓ Generating static pages (8/8)
+2026-02-24T11:25:02.023Z [INFO]: Finalizing page optimization ...
+2026-02-24T11:25:02.023Z [INFO]: Collecting build traces ...
+2026-02-24T11:25:20.420Z [INFO]: 
+2026-02-24T11:25:20.425Z [INFO]: Route (app)                                 Size  First Load JS
+                                 ┌ ○ /                                      923 B         103 kB
+                                 ├ ○ /_not-found                            993 B         103 kB
+                                 ├ ○ /guestbook                           3.31 kB         105 kB
+                                 ├ ○ /loading-screen                      2.05 kB         104 kB
+                                 ├ ○ /result                              2.39 kB         105 kB
+                                 └ ○ /survey                              2.57 kB         105 kB
+                                 + First Load JS shared by all             102 kB
+                                 ├ chunks/255-ebd51be49873d76c.js         46 kB
+                                 ├ chunks/4bd1b696-c023c6e3521b1417.js  54.2 kB
+                                 └ other shared chunks (total)          1.92 kB
+                                 ○  (Static)  prerendered as static content
+2026-02-24T11:25:20.455Z [INFO]: # Completed phase: build
+                                 ## Completed Frontend Build
+2026-02-24T11:25:20.514Z [INFO]: ## Build completed successfully
+2026-02-24T11:25:20.515Z [INFO]: # Starting caching...
+2026-02-24T11:25:20.519Z [INFO]: # Creating cache artifact...
+2026-02-24T11:25:20.522Z [INFO]: # Created cache artifact
+2026-02-24T11:25:20.523Z [INFO]: # Uploading cache artifact...
+2026-02-24T11:25:20.623Z [INFO]: # Uploaded cache artifact
+2026-02-24T11:25:20.623Z [INFO]: # Caching completed
+2026-02-24T11:25:20.627Z [ERROR]: !!! CustomerError: Failed to find the deploy-manifest.json file in the build output. Please verify that it exists within the "baseDirectory" specified in your buildSpec. If it's not there, we will also check the .amplify-hosting directory as a fallback. When using a framework adapter for hosting on Amplify, double-check that the adapter settings are correct.
+2026-02-24T11:25:20.627Z [INFO]: # Starting environment caching...
+2026-02-24T11:25:20.627Z [INFO]: # Environment caching completed
+

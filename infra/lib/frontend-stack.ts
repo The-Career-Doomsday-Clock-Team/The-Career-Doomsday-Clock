@@ -24,19 +24,18 @@ export class FrontendStack extends cdk.Stack {
       "          commands:",
       "            - npm run build",
       "      artifacts:",
-      "        baseDirectory: .next",
+      "        baseDirectory: out",
       "        files:",
       "          - '**/*'",
       "      cache:",
       "        paths:",
       "          - node_modules/**/*",
-      "          - .next/cache/**/*",
     ].join("\n");
 
-    // ── Amplify App ──
+    // ── Amplify App (정적 호스팅) ──
     const amplifyApp = new amplify.CfnApp(this, "CareerDoomsdayFrontend", {
       name: "career-doomsday-clock",
-      platform: "WEB_COMPUTE",
+      platform: "WEB",
       environmentVariables: [
         {
           name: "NEXT_PUBLIC_API_URL",
@@ -56,7 +55,6 @@ export class FrontendStack extends cdk.Stack {
       branchName: "main",
       enableAutoBuild: true,
       stage: "PRODUCTION",
-      framework: "Next.js - SSR",
     });
 
     // ── 출력 ──
