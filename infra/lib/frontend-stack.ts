@@ -42,6 +42,10 @@ export class FrontendStack extends cdk.Stack {
           name: "NEXT_PUBLIC_API_URL",
           value: props.apiUrl,
         },
+        {
+          name: "AMPLIFY_MONOREPO_APP_ROOT",
+          value: "frontend",
+        },
       ],
       buildSpec: buildSpecYaml,
     });
@@ -52,6 +56,7 @@ export class FrontendStack extends cdk.Stack {
       branchName: "main",
       enableAutoBuild: true,
       stage: "PRODUCTION",
+      framework: "Next.js - SSR",
     });
 
     // ── 출력 ──
