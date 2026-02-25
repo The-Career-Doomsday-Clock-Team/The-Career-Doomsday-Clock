@@ -10,8 +10,8 @@ import type {
   ReactionResponse,
 } from "@/types/guestbook";
 
-// 환경 변수 기반 API 엔드포인트 설정
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
+// 환경 변수 기반 API 엔드포인트 설정 (끝 슬래시 제거)
+const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/+$/, "");
 
 // 최대 재시도 횟수
 const MAX_RETRIES = 2;
