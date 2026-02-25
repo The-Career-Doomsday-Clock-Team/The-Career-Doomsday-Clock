@@ -12,6 +12,8 @@ export interface ApiStackProps extends cdk.StackProps {
   careerCardsTable: dynamodb.Table;
   guestbookTable: dynamodb.Table;
   kbBucket: s3.Bucket;
+  bedrockAgentId: string;
+  bedrockAgentAliasId: string;
 }
 
 export class ApiStack extends cdk.Stack {
@@ -60,8 +62,8 @@ export class ApiStack extends cdk.Stack {
         SURVEY_TABLE_NAME: props.surveyTable.tableName,
         SKILL_GRAPH_TABLE_NAME: props.skillGraphTable.tableName,
         CAREER_CARDS_TABLE_NAME: props.careerCardsTable.tableName,
-        BEDROCK_AGENT_ID: "", // Bedrock Agent 수동 생성 후 설정
-        BEDROCK_AGENT_ALIAS_ID: "", // Bedrock Agent Alias 수동 생성 후 설정
+        BEDROCK_AGENT_ID: props.bedrockAgentId,
+        BEDROCK_AGENT_ALIAS_ID: props.bedrockAgentAliasId,
       },
     });
 
@@ -69,7 +71,9 @@ export class ApiStack extends cdk.Stack {
     analyzeHandler.addToRolePolicy(
       new cdk.aws_iam.PolicyStatement({
         actions: ["bedrock:InvokeAgent"],
-        resources: ["*"], // 배포 후 특정 Agent ARN으로 제한 권장
+        resources: [
+          `arn:aws:bedrock:${this.region}:${this.account}:agent-alias/*`,
+        ],
       })
     );
 
