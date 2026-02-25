@@ -10,10 +10,10 @@ import { submitSurvey, ApiError } from "@/lib/api";
  */
 
 const FIELDS = [
-  { key: "name" as const, label: "IDENT_NAME", placeholder: "성명을 입력하라" },
-  { key: "job_title" as const, label: "OCCUPATION_CODE", placeholder: "멸망 전 직업명" },
-  { key: "strengths" as const, label: "SURVIVAL_SKILLS", placeholder: "생존 기술을 기록하라" },
-  { key: "hobbies" as const, label: "ACTIVITY_LOG", placeholder: "폐허에서의 활동을 입력하라" },
+  { key: "name" as const, label: "IDENT_NAME // 이름", placeholder: "성명을 입력하라" },
+  { key: "job_title" as const, label: "OCCUPATION // 직업", placeholder: "멸망 전 직업명" },
+  { key: "strengths" as const, label: "STRENGTH // 장점", placeholder: "당신의 장점을 기록하라" },
+  { key: "hobbies" as const, label: "HOBBY // 취미", placeholder: "당신의 취미를 입력하라" },
 ] as const;
 
 type FieldKey = (typeof FIELDS)[number]["key"];
