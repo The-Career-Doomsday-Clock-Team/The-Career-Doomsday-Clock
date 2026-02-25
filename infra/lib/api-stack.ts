@@ -24,7 +24,36 @@ export class ApiStack extends cdk.Stack {
 
     // ── 공통 Lambda 설정 ──
     const commonRuntime = lambda.Runtime.PYTHON_3_12;
-    const commonCode = lambda.Code.fromAsset("../lambda");
+    const commonCode = lambda.Code.fromAsset("../lambda", {
+      bundling: {
+        image: commonRuntime.bundlingImage,
+        local: {
+          tryBundle(outputDir: string) {
+            const { execSync } = require("child_process");
+            try {
+              execSync(
+                `pip install -r requirements.txt -t "${outputDir}" --platform manylinux2014_x86_64 --only-binary=:all: --python-version 3.12`,
+                { cwd: "../lambda", stdio: "inherit" }
+              );
+              execSync(
+                process.platform === "win32"
+                  ? `xcopy /E /I /Y . "${outputDir}"`
+                  : `cp -au . "${outputDir}"`,
+                { cwd: "../lambda", stdio: "inherit" }
+              );
+              return true;
+            } catch {
+              return false;
+            }
+          },
+        },
+        command: [
+          "bash",
+          "-c",
+          "pip install -r requirements.txt -t /asset-output && cp -au . /asset-output",
+        ],
+      },
+    });
     const commonMemory = 256;
     const commonTimeout = cdk.Duration.seconds(30);
 
