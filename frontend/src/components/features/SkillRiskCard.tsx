@@ -3,7 +3,7 @@
 import type { SkillRisk } from "@/types/result";
 
 /**
- * 스킬별 위험도 카드 — 확률%, 시간, 근거
+ * 스킬 위험도 카드 — DISTRICT Ω 위협 분석
  * Requirements: 5.2
  */
 interface SkillRiskCardProps {
@@ -19,29 +19,32 @@ export function SkillRiskCard({ risk, index }: SkillRiskCardProps) {
       role="article"
       aria-label={`${risk.skill_name} 위험도`}
     >
-      {/* 스킬명 */}
-      <h3 className="font-[family-name:var(--font-heading)] text-sm tracking-wider text-[var(--color-cyan)] uppercase mb-3">
+      <h3 className="dystopia-label mb-3" style={{ fontSize: "0.7rem" }}>
         {risk.skill_name}
       </h3>
 
-      {/* 확률 + 시간 */}
       <div className="flex items-baseline gap-4 mb-3">
         <div>
-          <span className="neon-text-magenta font-[family-name:var(--font-heading)] text-3xl">
+          <span
+            className="font-[family-name:var(--font-heading)] text-3xl"
+            style={{ color: "var(--neon-red)", textShadow: "0 0 8px var(--neon-red)" }}
+          >
             {risk.replacement_prob}%
           </span>
-          <span className="text-[var(--color-text-muted)] text-xs ml-1">대체 확률</span>
+          <span className="text-xs ml-1" style={{ color: "rgba(100,160,200,0.5)" }}>대체 확률</span>
         </div>
         <div>
-          <span className="neon-text-yellow font-[family-name:var(--font-heading)] text-xl">
+          <span
+            className="font-[family-name:var(--font-heading)] text-xl"
+            style={{ color: "var(--neon-yellow)", textShadow: "0 0 6px var(--neon-yellow)" }}
+          >
             {risk.time_horizon}년
           </span>
-          <span className="text-[var(--color-text-muted)] text-xs ml-1">이내</span>
+          <span className="text-xs ml-1" style={{ color: "rgba(100,160,200,0.5)" }}>이내</span>
         </div>
       </div>
 
-      {/* 근거 텍스트 */}
-      <p className="font-[family-name:var(--font-mono)] text-xs text-[var(--color-text-muted)] leading-relaxed">
+      <p className="font-[family-name:var(--font-mono)] text-xs leading-relaxed" style={{ color: "rgba(100,160,200,0.6)" }}>
         {risk.justification}
       </p>
     </div>

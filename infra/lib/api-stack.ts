@@ -60,8 +60,8 @@ export class ApiStack extends cdk.Stack {
         SURVEY_TABLE_NAME: props.surveyTable.tableName,
         SKILL_GRAPH_TABLE_NAME: props.skillGraphTable.tableName,
         CAREER_CARDS_TABLE_NAME: props.careerCardsTable.tableName,
-        BEDROCK_AGENT_ID: "", // 배포 후 실제 Agent ID로 교체
-        BEDROCK_AGENT_ALIAS_ID: "", // 배포 후 실제 Alias ID로 교체
+        BEDROCK_AGENT_ID: "", // Bedrock Agent 수동 생성 후 설정
+        BEDROCK_AGENT_ALIAS_ID: "", // Bedrock Agent Alias 수동 생성 후 설정
       },
     });
 

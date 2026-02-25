@@ -5,32 +5,15 @@ import { useRouter } from "next/navigation";
 import { submitSurvey, ApiError } from "@/lib/api";
 
 /**
- * 설문 페이지 — 디스토피아 어조 설문 폼
+ * 설문 페이지 — DISTRICT Ω 등록 시스템 스타일
  * Requirements: 2.1, 2.2, 2.3, 3.1
  */
 
-// 설문 필드 정의
 const FIELDS = [
-  {
-    key: "name" as const,
-    label: "당신의 정체를 밝혀라",
-    placeholder: "이름을 입력하라",
-  },
-  {
-    key: "job_title" as const,
-    label: "멸망 전 당신의 직업은 무엇이었나",
-    placeholder: "직업명을 입력하라",
-  },
-  {
-    key: "strengths" as const,
-    label: "생존 기술을 입력하라",
-    placeholder: "당신의 장점을 기록하라",
-  },
-  {
-    key: "hobbies" as const,
-    label: "폐허에서 당신은 무엇을 하며 버텼나",
-    placeholder: "취미를 입력하라",
-  },
+  { key: "name" as const, label: "IDENT_NAME", placeholder: "성명을 입력하라" },
+  { key: "job_title" as const, label: "OCCUPATION_CODE", placeholder: "멸망 전 직업명" },
+  { key: "strengths" as const, label: "SURVIVAL_SKILLS", placeholder: "생존 기술을 기록하라" },
+  { key: "hobbies" as const, label: "ACTIVITY_LOG", placeholder: "폐허에서의 활동을 입력하라" },
 ] as const;
 
 type FieldKey = (typeof FIELDS)[number]["key"];
@@ -42,12 +25,7 @@ interface FormData {
   hobbies: string;
 }
 
-const INITIAL_FORM: FormData = {
-  name: "",
-  job_title: "",
-  strengths: "",
-  hobbies: "",
-};
+const INITIAL_FORM: FormData = { name: "", job_title: "", strengths: "", hobbies: "" };
 
 export default function SurveyPage() {
   const router = useRouter();
@@ -56,10 +34,8 @@ export default function SurveyPage() {
   const [submitting, setSubmitting] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
 
-  // 필드 변경 핸들러
   const handleChange = useCallback((key: FieldKey, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
-    // 입력 시 해당 필드 에러 제거
     setErrors((prev) => {
       if (!prev[key]) return prev;
       const next = { ...prev };
@@ -68,32 +44,27 @@ export default function SurveyPage() {
     });
   }, []);
 
-  // 클라이언트 측 유효성 검증 (Req 2.2, 2.3)
+  // 유효성 검증 (Req 2.2, 2.3)
   const validate = useCallback((): boolean => {
     const newErrors: Partial<Record<FieldKey, string>> = {};
     for (const field of FIELDS) {
       if (!form[field.key].trim()) {
-        newErrors[field.key] = "이 항목은 필수입니다. 입력하십시오.";
+        newErrors[field.key] = `> ${field.label} required`;
       }
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }, [form]);
 
-  // 제출 핸들러 (Req 3.1)
+  // 제출 (Req 3.1)
   const handleSubmit = useCallback(
     async (e: FormEvent) => {
       e.preventDefault();
       setApiError(null);
-
       if (!validate()) return;
 
       const sessionId = sessionStorage.getItem("session_id");
-      if (!sessionId) {
-        // 세션 ID 없으면 랜딩으로 리다이렉트
-        router.push("/");
-        return;
-      }
+      if (!sessionId) { router.push("/"); return; }
 
       setSubmitting(true);
       try {
@@ -103,15 +74,10 @@ export default function SurveyPage() {
           strengths: form.strengths,
           hobbies: form.hobbies,
         });
-
-        // 분석 로딩 화면으로 이동
         router.push("/loading-screen");
       } catch (err) {
-        if (err instanceof ApiError) {
-          setApiError(err.message);
-        } else {
-          setApiError("통신 장애가 발생했습니다. 다시 시도하십시오.");
-        }
+        if (err instanceof ApiError) setApiError(err.message);
+        else setApiError("통신 장애가 발생했습니다. 다시 시도하십시오.");
       } finally {
         setSubmitting(false);
       }
@@ -121,72 +87,84 @@ export default function SurveyPage() {
 
   return (
     <main className="relative flex min-h-screen items-center justify-center px-4 py-12">
-      {/* 배경 */}
       <div className="survey-bg" aria-hidden="true" />
 
-      <form
-        onSubmit={handleSubmit}
-        noValidate
-        className="relative z-10 flex w-full max-w-lg flex-col gap-8"
-      >
-        {/* 제목 */}
-        <div className="text-center">
-          <h1 className="neon-text-magenta font-[family-name:var(--font-heading)] text-2xl tracking-wider sm:text-3xl">
-            생존자 심문 기록
-          </h1>
-          <p className="mt-2 font-[family-name:var(--font-mono)] text-xs tracking-wide text-[var(--color-text-muted)] sm:text-sm">
-            모든 항목에 성실히 응답하라. 거짓은 허용되지 않는다.
-          </p>
+      <div className="dystopia-panel relative z-10 w-full max-w-xl p-9 sm:p-10 animate-fade-in" style={{ animation: "fade-in-scale 0.4s ease" }}>
+        <div className="panel-scanlines" />
+
+        {/* 헤더 */}
+        <div className="flex items-start justify-between mb-7">
+          <div>
+            <div className="panel-tag">// DISTRICT-Ω REGISTRY SYSTEM v2.4.1</div>
+            <div className="panel-title mt-1">SURVIVOR_INTAKE</div>
+          </div>
+          <button
+            type="button"
+            onClick={() => router.push("/")}
+            className="text-xs tracking-widest border border-red-500/50 text-red-400 px-3 py-1 hover:bg-red-500/15 transition-all"
+            style={{ fontFamily: "var(--font-mono)", textShadow: "0 0 6px var(--neon-red)" }}
+            aria-label="뒤로가기"
+          >
+            [ ESC ]
+          </button>
         </div>
+        <div className="panel-divider mb-7" />
 
-        {/* 입력 필드 (Req 2.1) */}
-        {FIELDS.map((field) => (
-          <fieldset key={field.key} className="flex flex-col gap-1">
-            <label
-              htmlFor={field.key}
-              className="font-[family-name:var(--font-heading)] text-xs tracking-widest text-[var(--color-cyan)] uppercase"
+        {/* 폼 (Req 2.1) */}
+        <form onSubmit={handleSubmit} noValidate autoComplete="off">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-4">
+            {FIELDS.map((field) => (
+              <div key={field.key} className="flex flex-col gap-1.5">
+                <label htmlFor={field.key} className="dystopia-label">
+                  {field.label}
+                </label>
+                <input
+                  id={field.key}
+                  type="text"
+                  value={form[field.key]}
+                  onChange={(e) => handleChange(field.key, e.target.value)}
+                  placeholder={field.placeholder}
+                  className={`dystopia-input ${errors[field.key] ? "dystopia-input-error" : ""}`}
+                  aria-invalid={!!errors[field.key]}
+                  aria-describedby={errors[field.key] ? `${field.key}-error` : undefined}
+                  disabled={submitting}
+                />
+                {errors[field.key] && (
+                  <p id={`${field.key}-error`} className="dystopia-error" role="alert">
+                    {errors[field.key]}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {apiError && (
+            <p className="dystopia-error text-center mt-4" role="alert">⚠ {apiError}</p>
+          )}
+
+          <div className="flex justify-end gap-3 mt-7">
+            <button
+              type="button"
+              onClick={() => router.push("/")}
+              className="text-xs tracking-widest border border-gray-600/30 text-gray-500 px-5 py-3 hover:border-red-500/50 hover:text-red-400 transition-all"
+              style={{ fontFamily: "var(--font-mono)" }}
             >
-              {field.label}
-            </label>
-            <input
-              id={field.key}
-              type="text"
-              value={form[field.key]}
-              onChange={(e) => handleChange(field.key, e.target.value)}
-              placeholder={field.placeholder}
-              className={`survey-input ${errors[field.key] ? "survey-input-error" : ""}`}
-              aria-invalid={!!errors[field.key]}
-              aria-describedby={
-                errors[field.key] ? `${field.key}-error` : undefined
-              }
+              ABORT
+            </button>
+            <button
+              type="submit"
               disabled={submitting}
-              autoComplete="off"
-            />
-            {errors[field.key] && (
-              <p id={`${field.key}-error`} className="survey-error-text" role="alert">
-                {errors[field.key]}
-              </p>
-            )}
-          </fieldset>
-        ))}
+              className="neon-button disabled:opacity-40 disabled:cursor-not-allowed"
+              aria-label="설문 제출"
+            >
+              {submitting ? "PROCESSING…" : "SUBMIT ▶"}
+            </button>
+          </div>
+        </form>
 
-        {/* API 에러 메시지 */}
-        {apiError && (
-          <p className="survey-error-text text-center" role="alert">
-            ⚠ {apiError}
-          </p>
-        )}
-
-        {/* 제출 버튼 */}
-        <button
-          type="submit"
-          disabled={submitting}
-          className="neon-button mx-auto mt-2 disabled:opacity-40 disabled:cursor-not-allowed"
-          aria-label="설문 제출"
-        >
-          {submitting ? "전송 중..." : "운명을 확인하라"}
-        </button>
-      </form>
+        {/* 하단 프로그레스 바 */}
+        <div className="progress-bar" style={{ width: "100%" }} />
+      </div>
     </main>
   );
 }

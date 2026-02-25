@@ -21,6 +21,6 @@ const apiStack = new ApiStack(app, "CareerDoomsdayApiStack", {
 });
 
 new FrontendStack(app, "CareerDoomsdayFrontendStack", {
-  description: "Career Doomsday Clock — Amplify 프론트엔드 호스팅",
+  description: "Career Doomsday Clock — Amplify frontend hosting",
   apiUrl: apiStack.api.url,
 });
