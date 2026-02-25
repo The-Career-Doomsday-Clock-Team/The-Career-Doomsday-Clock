@@ -1,0 +1,20 @@
+{
+  "version": "50.0.0",
+  "files": {
+    "e386cb8c9896eab196c3dac3b728e69dfaca351aa1564d574846d275e6a3669e": {
+      "displayName": "CareerDoomsdayBedrockStack Template",
+      "source": {
+        "path": "CareerDoomsdayBedrockStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "current_account-current_region-69bb11c8": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
+          "objectKey": "e386cb8c9896eab196c3dac3b728e69dfaca351aa1564d574846d275e6a3669e.json",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

@@ -1,0 +1,20 @@
+{
+  "version": "50.0.0",
+  "files": {
+    "53a407c5dee1cf971dd526f72beefee76ab78ebd0b179adf496fcf4b2bf51ba3": {
+      "displayName": "CareerDoomsdayFrontendStack Template",
+      "source": {
+        "path": "CareerDoomsdayFrontendStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "current_account-current_region-da24e6e3": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
+          "objectKey": "53a407c5dee1cf971dd526f72beefee76ab78ebd0b179adf496fcf4b2bf51ba3.json",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

@@ -1,0 +1,34 @@
+{
+  "version": "50.0.0",
+  "files": {
+    "dae889b94144b8aeff189fce6cdfc956087344dc499b750f52dc48ca638eb3ae": {
+      "displayName": "SurveyHandler/Code",
+      "source": {
+        "path": "asset.dae889b94144b8aeff189fce6cdfc956087344dc499b750f52dc48ca638eb3ae",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "current_account-current_region-b47f141d": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
+          "objectKey": "dae889b94144b8aeff189fce6cdfc956087344dc499b750f52dc48ca638eb3ae.zip",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
+        }
+      }
+    },
+    "52b906a97a9f18f01e89b35a8640449e5769ea8b17ab4c3297e978d79b8d9487": {
+      "displayName": "CareerDoomsdayApiStack Template",
+      "source": {
+        "path": "CareerDoomsdayApiStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "current_account-current_region-db532b47": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
+          "objectKey": "52b906a97a9f18f01e89b35a8640449e5769ea8b17ab4c3297e978d79b8d9487.json",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

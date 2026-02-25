@@ -1,0 +1,2559 @@
+{
+ "Description": "Career Doomsday Clock — API Gateway and Lambda functions",
+ "Resources": {
+  "SurveyHandlerLogs62078563": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "RetentionInDays": 7
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/SurveyHandlerLogs/Resource"
+   }
+  },
+  "SurveyHandlerServiceRoleE08900F9": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/SurveyHandler/ServiceRole/Resource"
+   }
+  },
+  "SurveyHandlerServiceRoleDefaultPolicy87784D83": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputFnGetAttSurveyTableEEBBC850ArnBEBCD3BC"
+       }
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputFnGetAttSurveyTableEEBBC850ArnBEBCD3BC"
+       }
+      },
+      {
+       "Action": "lambda:InvokeFunction",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "AnalyzeHandler1626B872",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "AnalyzeHandler1626B872",
+             "Arn"
+            ]
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "SurveyHandlerServiceRoleDefaultPolicy87784D83",
+    "Roles": [
+     {
+      "Ref": "SurveyHandlerServiceRoleE08900F9"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/SurveyHandler/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "SurveyHandler210E96A3": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+     },
+     "S3Key": "dae889b94144b8aeff189fce6cdfc956087344dc499b750f52dc48ca638eb3ae.zip"
+    },
+    "Description": "설문 저장 및 분석 트리거",
+    "Environment": {
+     "Variables": {
+      "SURVEY_TABLE_NAME": {
+       "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputRefSurveyTableEEBBC85079CFCD9C"
+      },
+      "ANALYZE_FUNCTION_NAME": {
+       "Ref": "AnalyzeHandler1626B872"
+      }
+     }
+    },
+    "Handler": "handlers.survey_handler.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "SurveyHandlerLogs62078563"
+     }
+    },
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "SurveyHandlerServiceRoleE08900F9",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.12",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "SurveyHandlerServiceRoleDefaultPolicy87784D83",
+    "SurveyHandlerServiceRoleE08900F9"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/SurveyHandler/Resource",
+    "aws:asset:path": "asset.dae889b94144b8aeff189fce6cdfc956087344dc499b750f52dc48ca638eb3ae",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "AnalyzeHandlerLogs40541D18": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "RetentionInDays": 7
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/AnalyzeHandlerLogs/Resource"
+   }
+  },
+  "AnalyzeHandlerServiceRole71816464": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/AnalyzeHandler/ServiceRole/Resource"
+   }
+  },
+  "AnalyzeHandlerServiceRoleDefaultPolicy364B195F": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "bedrock:InvokeAgent",
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputFnGetAttSurveyTableEEBBC850ArnBEBCD3BC"
+       }
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputFnGetAttSurveyTableEEBBC850ArnBEBCD3BC"
+       }
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputFnGetAttSkillGraphTable44B2018FArn4C1322D6"
+       }
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputFnGetAttSkillGraphTable44B2018FArn4C1322D6"
+       }
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputFnGetAttCareerCardsTable38654993Arn534D866D"
+       }
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputFnGetAttCareerCardsTable38654993Arn534D866D"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "AnalyzeHandlerServiceRoleDefaultPolicy364B195F",
+    "Roles": [
+     {
+      "Ref": "AnalyzeHandlerServiceRole71816464"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/AnalyzeHandler/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "AnalyzeHandler1626B872": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+     },
+     "S3Key": "dae889b94144b8aeff189fce6cdfc956087344dc499b750f52dc48ca638eb3ae.zip"
+    },
+    "Description": "Bedrock Agent 호출 및 분석 결과 저장",
+    "Environment": {
+     "Variables": {
+      "SURVEY_TABLE_NAME": {
+       "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputRefSurveyTableEEBBC85079CFCD9C"
+      },
+      "SKILL_GRAPH_TABLE_NAME": {
+       "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputRefSkillGraphTable44B2018F529377A0"
+      },
+      "CAREER_CARDS_TABLE_NAME": {
+       "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputRefCareerCardsTable386549931B425E48"
+      },
+      "BEDROCK_AGENT_ID": "",
+      "BEDROCK_AGENT_ALIAS_ID": ""
+     }
+    },
+    "Handler": "handlers.analyze_handler.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "AnalyzeHandlerLogs40541D18"
+     }
+    },
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "AnalyzeHandlerServiceRole71816464",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.12",
+    "Timeout": 120
+   },
+   "DependsOn": [
+    "AnalyzeHandlerServiceRoleDefaultPolicy364B195F",
+    "AnalyzeHandlerServiceRole71816464"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/AnalyzeHandler/Resource",
+    "aws:asset:path": "asset.dae889b94144b8aeff189fce6cdfc956087344dc499b750f52dc48ca638eb3ae",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "ResultHandlerLogs8F615B7F": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "RetentionInDays": 7
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/ResultHandlerLogs/Resource"
+   }
+  },
+  "ResultHandlerServiceRole7279E036": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/ResultHandler/ServiceRole/Resource"
+   }
+  },
+  "ResultHandlerServiceRoleDefaultPolicy8BB39781": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputFnGetAttSurveyTableEEBBC850ArnBEBCD3BC"
+       }
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputFnGetAttSurveyTableEEBBC850ArnBEBCD3BC"
+       }
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputFnGetAttSkillGraphTable44B2018FArn4C1322D6"
+       }
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputFnGetAttSkillGraphTable44B2018FArn4C1322D6"
+       }
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputFnGetAttCareerCardsTable38654993Arn534D866D"
+       }
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputFnGetAttCareerCardsTable38654993Arn534D866D"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ResultHandlerServiceRoleDefaultPolicy8BB39781",
+    "Roles": [
+     {
+      "Ref": "ResultHandlerServiceRole7279E036"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/ResultHandler/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "ResultHandler8CE72AD4": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+     },
+     "S3Key": "dae889b94144b8aeff189fce6cdfc956087344dc499b750f52dc48ca638eb3ae.zip"
+    },
+    "Description": "세션별 분석 결과 조회",
+    "Environment": {
+     "Variables": {
+      "SURVEY_TABLE_NAME": {
+       "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputRefSurveyTableEEBBC85079CFCD9C"
+      },
+      "SKILL_GRAPH_TABLE_NAME": {
+       "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputRefSkillGraphTable44B2018F529377A0"
+      },
+      "CAREER_CARDS_TABLE_NAME": {
+       "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputRefCareerCardsTable386549931B425E48"
+      }
+     }
+    },
+    "Handler": "handlers.result_handler.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "ResultHandlerLogs8F615B7F"
+     }
+    },
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "ResultHandlerServiceRole7279E036",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.12",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "ResultHandlerServiceRoleDefaultPolicy8BB39781",
+    "ResultHandlerServiceRole7279E036"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/ResultHandler/Resource",
+    "aws:asset:path": "asset.dae889b94144b8aeff189fce6cdfc956087344dc499b750f52dc48ca638eb3ae",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "GuestbookPostHandlerLogsABC18700": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "RetentionInDays": 7
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/GuestbookPostHandlerLogs/Resource"
+   }
+  },
+  "GuestbookPostHandlerServiceRoleC707D2D3": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/GuestbookPostHandler/ServiceRole/Resource"
+   }
+  },
+  "GuestbookPostHandlerServiceRoleDefaultPolicy4F5D902B": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputFnGetAttGuestbookTable9E0AB405ArnA3562FA4"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputFnGetAttGuestbookTable9E0AB405ArnA3562FA4"
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "GuestbookPostHandlerServiceRoleDefaultPolicy4F5D902B",
+    "Roles": [
+     {
+      "Ref": "GuestbookPostHandlerServiceRoleC707D2D3"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/GuestbookPostHandler/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "GuestbookPostHandlerB3A82B05": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+     },
+     "S3Key": "dae889b94144b8aeff189fce6cdfc956087344dc499b750f52dc48ca638eb3ae.zip"
+    },
+    "Description": "방명록 등록",
+    "Environment": {
+     "Variables": {
+      "GUESTBOOK_TABLE_NAME": {
+       "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputRefGuestbookTable9E0AB405159B9C76"
+      }
+     }
+    },
+    "Handler": "handlers.guestbook_post_handler.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "GuestbookPostHandlerLogsABC18700"
+     }
+    },
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "GuestbookPostHandlerServiceRoleC707D2D3",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.12",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "GuestbookPostHandlerServiceRoleDefaultPolicy4F5D902B",
+    "GuestbookPostHandlerServiceRoleC707D2D3"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/GuestbookPostHandler/Resource",
+    "aws:asset:path": "asset.dae889b94144b8aeff189fce6cdfc956087344dc499b750f52dc48ca638eb3ae",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "GuestbookGetHandlerLogs1E354735": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "RetentionInDays": 7
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/GuestbookGetHandlerLogs/Resource"
+   }
+  },
+  "GuestbookGetHandlerServiceRoleC3B52905": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/GuestbookGetHandler/ServiceRole/Resource"
+   }
+  },
+  "GuestbookGetHandlerServiceRoleDefaultPolicy8C0CF956": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputFnGetAttGuestbookTable9E0AB405ArnA3562FA4"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputFnGetAttGuestbookTable9E0AB405ArnA3562FA4"
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputFnGetAttGuestbookTable9E0AB405ArnA3562FA4"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputFnGetAttGuestbookTable9E0AB405ArnA3562FA4"
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "GuestbookGetHandlerServiceRoleDefaultPolicy8C0CF956",
+    "Roles": [
+     {
+      "Ref": "GuestbookGetHandlerServiceRoleC3B52905"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/GuestbookGetHandler/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "GuestbookGetHandler06FF7EF3": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+     },
+     "S3Key": "dae889b94144b8aeff189fce6cdfc956087344dc499b750f52dc48ca638eb3ae.zip"
+    },
+    "Description": "방명록 목록 조회 (페이지네이션)",
+    "Environment": {
+     "Variables": {
+      "GUESTBOOK_TABLE_NAME": {
+       "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputRefGuestbookTable9E0AB405159B9C76"
+      }
+     }
+    },
+    "Handler": "handlers.guestbook_get_handler.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "GuestbookGetHandlerLogs1E354735"
+     }
+    },
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "GuestbookGetHandlerServiceRoleC3B52905",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.12",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "GuestbookGetHandlerServiceRoleDefaultPolicy8C0CF956",
+    "GuestbookGetHandlerServiceRoleC3B52905"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/GuestbookGetHandler/Resource",
+    "aws:asset:path": "asset.dae889b94144b8aeff189fce6cdfc956087344dc499b750f52dc48ca638eb3ae",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "ReactionHandlerLogs4CBF5395": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "RetentionInDays": 7
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/ReactionHandlerLogs/Resource"
+   }
+  },
+  "ReactionHandlerServiceRoleFB5FAA49": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/ReactionHandler/ServiceRole/Resource"
+   }
+  },
+  "ReactionHandlerServiceRoleDefaultPolicyD08386B1": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputFnGetAttGuestbookTable9E0AB405ArnA3562FA4"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputFnGetAttGuestbookTable9E0AB405ArnA3562FA4"
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputFnGetAttGuestbookTable9E0AB405ArnA3562FA4"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputFnGetAttGuestbookTable9E0AB405ArnA3562FA4"
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ReactionHandlerServiceRoleDefaultPolicyD08386B1",
+    "Roles": [
+     {
+      "Ref": "ReactionHandlerServiceRoleFB5FAA49"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/ReactionHandler/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "ReactionHandlerA7E36661": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+     },
+     "S3Key": "dae889b94144b8aeff189fce6cdfc956087344dc499b750f52dc48ca638eb3ae.zip"
+    },
+    "Description": "이모지 반응 추가 (DynamoDB ADD)",
+    "Environment": {
+     "Variables": {
+      "GUESTBOOK_TABLE_NAME": {
+       "Fn::ImportValue": "CareerDoomsdayStorageStack:ExportsOutputRefGuestbookTable9E0AB405159B9C76"
+      }
+     }
+    },
+    "Handler": "handlers.reaction_handler.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "ReactionHandlerLogs4CBF5395"
+     }
+    },
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "ReactionHandlerServiceRoleFB5FAA49",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.12",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "ReactionHandlerServiceRoleDefaultPolicyD08386B1",
+    "ReactionHandlerServiceRoleFB5FAA49"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/ReactionHandler/Resource",
+    "aws:asset:path": "asset.dae889b94144b8aeff189fce6cdfc956087344dc499b750f52dc48ca638eb3ae",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "CareerDoomsdayApiBD7C77F8": {
+   "Type": "AWS::ApiGateway::RestApi",
+   "Properties": {
+    "Description": "Career Doomsday Clock 백엔드 API",
+    "Name": "Career Doomsday Clock API"
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Resource"
+   }
+  },
+  "CareerDoomsdayApiCloudWatchRole364C138F": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "apigateway.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+       ]
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/CloudWatchRole/Resource"
+   }
+  },
+  "CareerDoomsdayApiAccount25747448": {
+   "Type": "AWS::ApiGateway::Account",
+   "Properties": {
+    "CloudWatchRoleArn": {
+     "Fn::GetAtt": [
+      "CareerDoomsdayApiCloudWatchRole364C138F",
+      "Arn"
+     ]
+    }
+   },
+   "DependsOn": [
+    "CareerDoomsdayApiBD7C77F8"
+   ],
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Account"
+   }
+  },
+  "CareerDoomsdayApiDeployment6BBBC7EC8c9c8c83dbf9512dfab3d543c323c0b6": {
+   "Type": "AWS::ApiGateway::Deployment",
+   "Properties": {
+    "Description": "Career Doomsday Clock 백엔드 API",
+    "RestApiId": {
+     "Ref": "CareerDoomsdayApiBD7C77F8"
+    }
+   },
+   "DependsOn": [
+    "CareerDoomsdayApiguestbookidOPTIONSF09A7E75",
+    "CareerDoomsdayApiguestbookidreactionOPTIONSFFE510C3",
+    "CareerDoomsdayApiguestbookidreactionPOST489F8EE1",
+    "CareerDoomsdayApiguestbookidreaction286A3589",
+    "CareerDoomsdayApiguestbookid9E16A089",
+    "CareerDoomsdayApiguestbookGETEB750AA6",
+    "CareerDoomsdayApiguestbookOPTIONS047E91A1",
+    "CareerDoomsdayApiguestbookPOSTBB6F22B7",
+    "CareerDoomsdayApiguestbook0E752B97",
+    "CareerDoomsdayApiOPTIONS0B2EAB3B",
+    "CareerDoomsdayApiresultsidGET2EF7550E",
+    "CareerDoomsdayApiresultsidOPTIONS9ACC9DFF",
+    "CareerDoomsdayApiresultsid797268B5",
+    "CareerDoomsdayApiresultOPTIONS69F78E22",
+    "CareerDoomsdayApiresult5C64F041",
+    "CareerDoomsdayApisurveyOPTIONSD13AE144",
+    "CareerDoomsdayApisurveyPOSTA2FDE6E3",
+    "CareerDoomsdayApisurvey2C7D00CB"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Deployment/Resource",
+    "aws:cdk:do-not-refactor": true
+   }
+  },
+  "CareerDoomsdayApiDeploymentStageprodF5824E6C": {
+   "Type": "AWS::ApiGateway::Stage",
+   "Properties": {
+    "DeploymentId": {
+     "Ref": "CareerDoomsdayApiDeployment6BBBC7EC8c9c8c83dbf9512dfab3d543c323c0b6"
+    },
+    "MethodSettings": [
+     {
+      "DataTraceEnabled": false,
+      "HttpMethod": "*",
+      "ResourcePath": "/*",
+      "ThrottlingBurstLimit": 100,
+      "ThrottlingRateLimit": 50
+     }
+    ],
+    "RestApiId": {
+     "Ref": "CareerDoomsdayApiBD7C77F8"
+    },
+    "StageName": "prod"
+   },
+   "DependsOn": [
+    "CareerDoomsdayApiAccount25747448"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/DeploymentStage.prod/Resource"
+   }
+  },
+  "CareerDoomsdayApiOPTIONS0B2EAB3B": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Fn::GetAtt": [
+      "CareerDoomsdayApiBD7C77F8",
+      "RootResourceId"
+     ]
+    },
+    "RestApiId": {
+     "Ref": "CareerDoomsdayApiBD7C77F8"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/OPTIONS/Resource"
+   }
+  },
+  "CareerDoomsdayApisurvey2C7D00CB": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "CareerDoomsdayApiBD7C77F8",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "survey",
+    "RestApiId": {
+     "Ref": "CareerDoomsdayApiBD7C77F8"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/survey/Resource"
+   }
+  },
+  "CareerDoomsdayApisurveyOPTIONSD13AE144": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "CareerDoomsdayApisurvey2C7D00CB"
+    },
+    "RestApiId": {
+     "Ref": "CareerDoomsdayApiBD7C77F8"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/survey/OPTIONS/Resource"
+   }
+  },
+  "CareerDoomsdayApisurveyPOSTApiPermissionCareerDoomsdayApiStackCareerDoomsdayApi9B28BDD7POSTsurvey389936C9": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "SurveyHandler210E96A3",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "CareerDoomsdayApiBD7C77F8"
+       },
+       "/",
+       {
+        "Ref": "CareerDoomsdayApiDeploymentStageprodF5824E6C"
+       },
+       "/POST/survey"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/survey/POST/ApiPermission.CareerDoomsdayApiStackCareerDoomsdayApi9B28BDD7.POST..survey"
+   }
+  },
+  "CareerDoomsdayApisurveyPOSTApiPermissionTestCareerDoomsdayApiStackCareerDoomsdayApi9B28BDD7POSTsurvey84C4DB74": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "SurveyHandler210E96A3",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "CareerDoomsdayApiBD7C77F8"
+       },
+       "/test-invoke-stage/POST/survey"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/survey/POST/ApiPermission.Test.CareerDoomsdayApiStackCareerDoomsdayApi9B28BDD7.POST..survey"
+   }
+  },
+  "CareerDoomsdayApisurveyPOSTA2FDE6E3": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:",
+        {
+         "Ref": "AWS::Region"
+        },
+        ":lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "SurveyHandler210E96A3",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "CareerDoomsdayApisurvey2C7D00CB"
+    },
+    "RestApiId": {
+     "Ref": "CareerDoomsdayApiBD7C77F8"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/survey/POST/Resource"
+   }
+  },
+  "CareerDoomsdayApiresult5C64F041": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "CareerDoomsdayApiBD7C77F8",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "result",
+    "RestApiId": {
+     "Ref": "CareerDoomsdayApiBD7C77F8"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/result/Resource"
+   }
+  },
+  "CareerDoomsdayApiresultOPTIONS69F78E22": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "CareerDoomsdayApiresult5C64F041"
+    },
+    "RestApiId": {
+     "Ref": "CareerDoomsdayApiBD7C77F8"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/result/OPTIONS/Resource"
+   }
+  },
+  "CareerDoomsdayApiresultsid797268B5": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "CareerDoomsdayApiresult5C64F041"
+    },
+    "PathPart": "{sid}",
+    "RestApiId": {
+     "Ref": "CareerDoomsdayApiBD7C77F8"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/result/{sid}/Resource"
+   }
+  },
+  "CareerDoomsdayApiresultsidOPTIONS9ACC9DFF": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "CareerDoomsdayApiresultsid797268B5"
+    },
+    "RestApiId": {
+     "Ref": "CareerDoomsdayApiBD7C77F8"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/result/{sid}/OPTIONS/Resource"
+   }
+  },
+  "CareerDoomsdayApiresultsidGETApiPermissionCareerDoomsdayApiStackCareerDoomsdayApi9B28BDD7GETresultsid3181D2ED": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "ResultHandler8CE72AD4",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "CareerDoomsdayApiBD7C77F8"
+       },
+       "/",
+       {
+        "Ref": "CareerDoomsdayApiDeploymentStageprodF5824E6C"
+       },
+       "/GET/result/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/result/{sid}/GET/ApiPermission.CareerDoomsdayApiStackCareerDoomsdayApi9B28BDD7.GET..result.{sid}"
+   }
+  },
+  "CareerDoomsdayApiresultsidGETApiPermissionTestCareerDoomsdayApiStackCareerDoomsdayApi9B28BDD7GETresultsid1E0AF6C1": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "ResultHandler8CE72AD4",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "CareerDoomsdayApiBD7C77F8"
+       },
+       "/test-invoke-stage/GET/result/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/result/{sid}/GET/ApiPermission.Test.CareerDoomsdayApiStackCareerDoomsdayApi9B28BDD7.GET..result.{sid}"
+   }
+  },
+  "CareerDoomsdayApiresultsidGET2EF7550E": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:",
+        {
+         "Ref": "AWS::Region"
+        },
+        ":lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "ResultHandler8CE72AD4",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "CareerDoomsdayApiresultsid797268B5"
+    },
+    "RestApiId": {
+     "Ref": "CareerDoomsdayApiBD7C77F8"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/result/{sid}/GET/Resource"
+   }
+  },
+  "CareerDoomsdayApiguestbook0E752B97": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "CareerDoomsdayApiBD7C77F8",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "guestbook",
+    "RestApiId": {
+     "Ref": "CareerDoomsdayApiBD7C77F8"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/guestbook/Resource"
+   }
+  },
+  "CareerDoomsdayApiguestbookOPTIONS047E91A1": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "CareerDoomsdayApiguestbook0E752B97"
+    },
+    "RestApiId": {
+     "Ref": "CareerDoomsdayApiBD7C77F8"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/guestbook/OPTIONS/Resource"
+   }
+  },
+  "CareerDoomsdayApiguestbookPOSTApiPermissionCareerDoomsdayApiStackCareerDoomsdayApi9B28BDD7POSTguestbook3653D2A9": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GuestbookPostHandlerB3A82B05",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "CareerDoomsdayApiBD7C77F8"
+       },
+       "/",
+       {
+        "Ref": "CareerDoomsdayApiDeploymentStageprodF5824E6C"
+       },
+       "/POST/guestbook"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/guestbook/POST/ApiPermission.CareerDoomsdayApiStackCareerDoomsdayApi9B28BDD7.POST..guestbook"
+   }
+  },
+  "CareerDoomsdayApiguestbookPOSTApiPermissionTestCareerDoomsdayApiStackCareerDoomsdayApi9B28BDD7POSTguestbook1580B7DE": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GuestbookPostHandlerB3A82B05",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "CareerDoomsdayApiBD7C77F8"
+       },
+       "/test-invoke-stage/POST/guestbook"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/guestbook/POST/ApiPermission.Test.CareerDoomsdayApiStackCareerDoomsdayApi9B28BDD7.POST..guestbook"
+   }
+  },
+  "CareerDoomsdayApiguestbookPOSTBB6F22B7": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:",
+        {
+         "Ref": "AWS::Region"
+        },
+        ":lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "GuestbookPostHandlerB3A82B05",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "CareerDoomsdayApiguestbook0E752B97"
+    },
+    "RestApiId": {
+     "Ref": "CareerDoomsdayApiBD7C77F8"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/guestbook/POST/Resource"
+   }
+  },
+  "CareerDoomsdayApiguestbookGETApiPermissionCareerDoomsdayApiStackCareerDoomsdayApi9B28BDD7GETguestbookF2EC31D4": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GuestbookGetHandler06FF7EF3",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "CareerDoomsdayApiBD7C77F8"
+       },
+       "/",
+       {
+        "Ref": "CareerDoomsdayApiDeploymentStageprodF5824E6C"
+       },
+       "/GET/guestbook"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/guestbook/GET/ApiPermission.CareerDoomsdayApiStackCareerDoomsdayApi9B28BDD7.GET..guestbook"
+   }
+  },
+  "CareerDoomsdayApiguestbookGETApiPermissionTestCareerDoomsdayApiStackCareerDoomsdayApi9B28BDD7GETguestbook22144346": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GuestbookGetHandler06FF7EF3",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "CareerDoomsdayApiBD7C77F8"
+       },
+       "/test-invoke-stage/GET/guestbook"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/guestbook/GET/ApiPermission.Test.CareerDoomsdayApiStackCareerDoomsdayApi9B28BDD7.GET..guestbook"
+   }
+  },
+  "CareerDoomsdayApiguestbookGETEB750AA6": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:",
+        {
+         "Ref": "AWS::Region"
+        },
+        ":lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "GuestbookGetHandler06FF7EF3",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "CareerDoomsdayApiguestbook0E752B97"
+    },
+    "RestApiId": {
+     "Ref": "CareerDoomsdayApiBD7C77F8"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/guestbook/GET/Resource"
+   }
+  },
+  "CareerDoomsdayApiguestbookid9E16A089": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "CareerDoomsdayApiguestbook0E752B97"
+    },
+    "PathPart": "{id}",
+    "RestApiId": {
+     "Ref": "CareerDoomsdayApiBD7C77F8"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/guestbook/{id}/Resource"
+   }
+  },
+  "CareerDoomsdayApiguestbookidOPTIONSF09A7E75": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "CareerDoomsdayApiguestbookid9E16A089"
+    },
+    "RestApiId": {
+     "Ref": "CareerDoomsdayApiBD7C77F8"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/guestbook/{id}/OPTIONS/Resource"
+   }
+  },
+  "CareerDoomsdayApiguestbookidreaction286A3589": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "CareerDoomsdayApiguestbookid9E16A089"
+    },
+    "PathPart": "reaction",
+    "RestApiId": {
+     "Ref": "CareerDoomsdayApiBD7C77F8"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/guestbook/{id}/reaction/Resource"
+   }
+  },
+  "CareerDoomsdayApiguestbookidreactionOPTIONSFFE510C3": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "CareerDoomsdayApiguestbookidreaction286A3589"
+    },
+    "RestApiId": {
+     "Ref": "CareerDoomsdayApiBD7C77F8"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/guestbook/{id}/reaction/OPTIONS/Resource"
+   }
+  },
+  "CareerDoomsdayApiguestbookidreactionPOSTApiPermissionCareerDoomsdayApiStackCareerDoomsdayApi9B28BDD7POSTguestbookidreaction92DECA25": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "ReactionHandlerA7E36661",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "CareerDoomsdayApiBD7C77F8"
+       },
+       "/",
+       {
+        "Ref": "CareerDoomsdayApiDeploymentStageprodF5824E6C"
+       },
+       "/POST/guestbook/*/reaction"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/guestbook/{id}/reaction/POST/ApiPermission.CareerDoomsdayApiStackCareerDoomsdayApi9B28BDD7.POST..guestbook.{id}.reaction"
+   }
+  },
+  "CareerDoomsdayApiguestbookidreactionPOSTApiPermissionTestCareerDoomsdayApiStackCareerDoomsdayApi9B28BDD7POSTguestbookidreaction55C3F8DF": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "ReactionHandlerA7E36661",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "CareerDoomsdayApiBD7C77F8"
+       },
+       "/test-invoke-stage/POST/guestbook/*/reaction"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/guestbook/{id}/reaction/POST/ApiPermission.Test.CareerDoomsdayApiStackCareerDoomsdayApi9B28BDD7.POST..guestbook.{id}.reaction"
+   }
+  },
+  "CareerDoomsdayApiguestbookidreactionPOST489F8EE1": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:",
+        {
+         "Ref": "AWS::Region"
+        },
+        ":lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "ReactionHandlerA7E36661",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "CareerDoomsdayApiguestbookidreaction286A3589"
+    },
+    "RestApiId": {
+     "Ref": "CareerDoomsdayApiBD7C77F8"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CareerDoomsdayApi/Default/guestbook/{id}/reaction/POST/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02OUW7CMAyGz8J78KDlAmXTeNk0VA6AQup1oWlc1c6qqsrdpwTQePq/+HNsF1DsNrBZ6YnXpunWzl5gOYk2ndITnxdHLcPyQe1hpDCo12//4Kic7i+NhuU9eCOWfLLPfMSxt8yWfFRW97DU5DCJnEdy1sy5L1NUXJ41MwpDlUJxCftgOpS9ZlR6sK0WnPQMS40s1WDzrH+sjKHgRb3h4Gju0UuqPr1Oott8wA1qZAqjwTz+E+WHmiTv9LD3JZljVPm09N/6NqmvIEOQqDw1CFd++S12sC1hu7qytesxeLE9Qn3LPwxB5otuAQAA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "CareerDoomsdayApiStack/CDKMetadata/Default"
+   },
+   "Condition": "CDKMetadataAvailable"
+  }
+ },
+ "Outputs": {
+  "CareerDoomsdayApiEndpointC61CA77E": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "CareerDoomsdayApiBD7C77F8"
+      },
+      ".execute-api.",
+      {
+       "Ref": "AWS::Region"
+      },
+      ".",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "CareerDoomsdayApiDeploymentStageprodF5824E6C"
+      },
+      "/"
+     ]
+    ]
+   }
+  },
+  "ApiUrl": {
+   "Description": "API Gateway 엔드포인트 URL",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "CareerDoomsdayApiBD7C77F8"
+      },
+      ".execute-api.",
+      {
+       "Ref": "AWS::Region"
+      },
+      ".",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "CareerDoomsdayApiDeploymentStageprodF5824E6C"
+      },
+      "/"
+     ]
+    ]
+   }
+  },
+  "ExportsOutputRefCareerDoomsdayApiBD7C77F8A617CB9C": {
+   "Value": {
+    "Ref": "CareerDoomsdayApiBD7C77F8"
+   },
+   "Export": {
+    "Name": "CareerDoomsdayApiStack:ExportsOutputRefCareerDoomsdayApiBD7C77F8A617CB9C"
+   }
+  },
+  "ExportsOutputRefCareerDoomsdayApiDeploymentStageprodF5824E6C5D48FF77": {
+   "Value": {
+    "Ref": "CareerDoomsdayApiDeploymentStageprodF5824E6C"
+   },
+   "Export": {
+    "Name": "CareerDoomsdayApiStack:ExportsOutputRefCareerDoomsdayApiDeploymentStageprodF5824E6C5D48FF77"
+   }
+  }
+ },
+ "Conditions": {
+  "CDKMetadataAvailable": {
+   "Fn::Or": [
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "af-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-3"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-south-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-3"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-4"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ca-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ca-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-northwest-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-central-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-south-2"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-3"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "il-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "me-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "me-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "sa-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-west-1"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Equals": [
+      {
+       "Ref": "AWS::Region"
+      },
+      "us-west-2"
+     ]
+    }
+   ]
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}
