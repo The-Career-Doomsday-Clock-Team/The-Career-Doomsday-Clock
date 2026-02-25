@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Career Doomsday Clock은 인류 멸망한 디스토피아 세계관을 배경으로, 사용자의 직업 수명을 분석하고 새로운 커리어를 제안하는 인터랙티브 웹 서비스이다. 사용자는 폐허 도시의 네온사인 건물에 들어서 설문을 통해 자신의 직업 정보를 입력하고, AI 분석을 통해 직업 수명 선고(디스토피아)와 새로운 직업 제안(유토피아)을 경험한다. 방명록에 흔적을 남기고 탈출하는 것으로 여정이 마무리된다. 프론트엔드는 Next.js + AWS Amplify, 백엔드는 API Gateway + Lambda, AI는 Amazon Bedrock(Claude 3.5 Sonnet) + Knowledge Base + Agent를 사용하며, 인프라는 AWS CDK로 배포한다.
+Career Doomsday Clock은 인류 멸망한 디스토피아 세계관을 배경으로, 사용자의 직업 수명을 분석하고 새로운 커리어를 제안하는 인터랙티브 웹 서비스이다. 사용자는 폐허 도시의 네온사인 건물에 들어서 설문을 통해 자신의 직업 정보를 입력하고, AI 분석을 통해 직업 수명 선고(디스토피아)와 새로운 직업 제안(유토피아)을 경험한다. 방명록에 흔적을 남기고 탈출하는 것으로 여정이 마무리된다. 프론트엔드는 Next.js + AWS Amplify, 백엔드는 API Gateway + Lambda, AI는 Amazon Bedrock(Claude 4.5 Sonnet) + Knowledge Base + Agent를 사용하며, 인프라는 AWS CDK로 배포한다.
 
 ## Glossary
 

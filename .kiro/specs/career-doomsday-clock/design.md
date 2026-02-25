@@ -7,7 +7,7 @@ Career Doomsday Clock은 AI 디스토피아 세계관 기반의 인터랙티브 
 기술 스택:
 - **프론트엔드**: Next.js (App Router) + TypeScript, AWS Amplify 호스팅
 - **백엔드**: API Gateway REST API + Lambda (Python 3.12)
-- **AI**: Amazon Bedrock (Claude 3.5 Sonnet) + Knowledge Base (OpenSearch Serverless, 소스: `pdfdata/Future_of_Jobs_Report_2025.pdf`, `pdfdata/WEF_Future_of_Jobs_Report_2025(Skill outlook).pdf`) + Agent
+- **AI**: Amazon Bedrock (Claude 4.5 Sonnet) + Knowledge Base (OpenSearch Serverless, 소스: `pdfdata/Future_of_Jobs_Report_2025.pdf`, `pdfdata/WEF_Future_of_Jobs_Report_2025(Skill outlook).pdf`) + Agent
 - **스토리지**: DynamoDB (4개 테이블), S3 (`pdfdata/` 폴더 PDF 파일들 저장)
 - **인프라**: AWS CDK (TypeScript)
 

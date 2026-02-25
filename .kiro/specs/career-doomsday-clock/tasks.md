@@ -139,7 +139,7 @@
   - [x] 6.2 analyze_handler Lambda 구현
 
 
-    - Bedrock Agent 호출 (Claude 3.5 Sonnet)
+    - Bedrock Agent 호출 (Claude 4.5 Sonnet)
     - Knowledge Base 검색 (`pdfdata/Future_of_Jobs_Report_2025.pdf` + `WEF_Future_of_Jobs_Report_2025(Skill outlook).pdf` 기반) + Web Search Action Group 활용
     - 스킬별 위험도 분석 결과를 skill_graph 테이블에 저장
     - 커리어 카드 3개를 career_cards 테이블에 저장
