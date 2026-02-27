@@ -1,0 +1,33 @@
+﻿INIT_START Runtime Version: python:3.12.v104	Runtime Version ARN: arn:aws:lambda:us-west-2::runtime:db3c84011294fca0fe7b1a23046dff08606163e107373f3875220c35007134cf
+	START RequestId: 6fb3f776-19b8-4050-97ab-6813d78c1a1c Version: $LATEST
+	2026-02-27 01:53:40,508 [INFO] handlers.analyze_handler ??遺꾩꽍 ?쒖옉: session_id=c174e255-c973-434a-9874-2e45fa6c0b42, job_title=students
+	[INFO]	2026-02-27T01:53:40.508Z	6fb3f776-19b8-4050-97ab-6813d78c1a1c	遺꾩꽍 ?쒖옉: session_id=c174e255-c973-434a-9874-2e45fa6c0b42, job_title=students
+	[ERROR]	2026-02-27T01:53:41.859Z	6fb3f776-19b8-4050-97ab-6813d78c1a1c	遺꾩꽍 以??덇린移??딆? ?ㅻ쪟: session_id=c174e255-c973-434a-9874-2e45fa6c0b42
+Traceback (most recent call last):
+  File "/var/task/handlers/analyze_handler.py", line 189, in handler
+    raw_response = _invoke_bedrock_agent(prompt)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/task/handlers/analyze_handler.py", line 110, in _invoke_bedrock_agent
+    for event in response.get("completion", []):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/task/botocore/eventstream.py", line 592, in __iter__
+    parsed_event = self._parse_event(event)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/task/botocore/eventstream.py", line 608, in _parse_event
+    raise EventStreamError(parsed_response, self._operation_name)
+botocore.exceptions.EventStreamError: An error occurred (accessDeniedException) when calling the InvokeAgent operation: Access denied when calling Bedrock. Check your request permissions and retry the request.	2026-02-27 01:53:41,859 [ERROR] handlers.analyze_handler ??遺꾩꽍 以??덇린移??딆? ?ㅻ쪟: session_id=c174e255-c973-434a-9874-2e45fa6c0b42
+	Traceback (most recent call last):
+	File "/var/task/handlers/analyze_handler.py", line 189, in handler
+	raw_response = _invoke_bedrock_agent(prompt)
+	^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	File "/var/task/handlers/analyze_handler.py", line 110, in _invoke_bedrock_agent
+	for event in response.get("completion", []):
+	^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	File "/var/task/botocore/eventstream.py", line 592, in __iter__
+	parsed_event = self._parse_event(event)
+	^^^^^^^^^^^^^^^^^^^^^^^^
+	File "/var/task/botocore/eventstream.py", line 608, in _parse_event
+	raise EventStreamError(parsed_response, self._operation_name)
+	botocore.exceptions.EventStreamError: An error occurred (accessDeniedException) when calling the InvokeAgent operation: Access denied when calling Bedrock. Check your request permissions and retry the request.
+	[INFO]	2026-02-27T01:53:41.926Z	6fb3f776-19b8-4050-97ab-6813d78c1a1c	survey status ?낅뜲?댄듃: session_id=c174e255-c973-434a-9874-2e45fa6c0b42, status=error
+

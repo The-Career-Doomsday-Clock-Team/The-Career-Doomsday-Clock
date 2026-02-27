@@ -99,9 +99,18 @@ export class ApiStack extends cdk.Stack {
     // Bedrock Agent 호출 권한 부여
     analyzeHandler.addToRolePolicy(
       new cdk.aws_iam.PolicyStatement({
-        actions: ["bedrock:InvokeAgent"],
+        actions: [
+          "bedrock:InvokeAgent",
+          "bedrock:GetAgent",
+          "bedrock:GetAgentAlias",
+          "bedrock:InvokeModel",
+          "bedrock:Retrieve",
+        ],
         resources: [
+          `arn:aws:bedrock:${this.region}:${this.account}:agent/*`,
           `arn:aws:bedrock:${this.region}:${this.account}:agent-alias/*`,
+          `arn:aws:bedrock:${this.region}:${this.account}:knowledge-base/*`,
+          `arn:aws:bedrock:${this.region}::foundation-model/*`,
         ],
       })
     );

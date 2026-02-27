@@ -1,0 +1,21 @@
+﻿INIT_START Runtime Version: python:3.12.v104	Runtime Version ARN: arn:aws:lambda:us-west-2::runtime:db3c84011294fca0fe7b1a23046dff08606163e107373f3875220c35007134cf
+	START RequestId: 1cc7fe6f-0e2e-4748-9a74-03bedb560f08 Version: $LATEST
+	2026-02-27 01:53:40,628 [INFO] handlers.result_handler ??GET /result ?붿껌 ?섏떊: session_id=c174e255-c973-434a-9874-2e45fa6c0b42
+	[INFO]	2026-02-27T01:53:40.628Z	1cc7fe6f-0e2e-4748-9a74-03bedb560f08	GET /result ?붿껌 ?섏떊: session_id=c174e255-c973-434a-9874-2e45fa6c0b42
+	[INFO]	2026-02-27T01:53:40.777Z	1cc7fe6f-0e2e-4748-9a74-03bedb560f08	遺꾩꽍 吏꾪뻾 以? session_id=c174e255-c973-434a-9874-2e45fa6c0b42
+	2026-02-27 01:53:40,777 [INFO] handlers.result_handler ??遺꾩꽍 吏꾪뻾 以? session_id=c174e255-c973-434a-9874-2e45fa6c0b42
+	END RequestId: 1cc7fe6f-0e2e-4748-9a74-03bedb560f08
+	REPORT RequestId: 1cc7fe6f-0e2e-4748-9a74-03bedb560f08	Duration: 170.09 ms	Billed Duration: 1075 ms	Memory Size: 256 MB	Max Memory Used: 87 MB	Init Duration: 904.29 ms	
+	START RequestId: 7be78ecd-91b3-4633-bbd0-df2ee5c51383 Version: $LATEST
+	2026-02-27 01:53:41,485 [INFO] handlers.result_handler ??GET /result ?붿껌 ?섏떊: session_id=c174e255-c973-434a-9874-2e45fa6c0b42
+	[INFO]	2026-02-27T01:53:41.485Z	7be78ecd-91b3-4633-bbd0-df2ee5c51383	GET /result ?붿껌 ?섏떊: session_id=c174e255-c973-434a-9874-2e45fa6c0b42
+	[INFO]	2026-02-27T01:53:41.556Z	7be78ecd-91b3-4633-bbd0-df2ee5c51383	遺꾩꽍 吏꾪뻾 以? session_id=c174e255-c973-434a-9874-2e45fa6c0b42
+	2026-02-27 01:53:41,556 [INFO] handlers.result_handler ??遺꾩꽍 吏꾪뻾 以? session_id=c174e255-c973-434a-9874-2e45fa6c0b42
+	END RequestId: 7be78ecd-91b3-4633-bbd0-df2ee5c51383
+	REPORT RequestId: 7be78ecd-91b3-4633-bbd0-df2ee5c51383	Duration: 92.06 ms	Billed Duration: 93 ms	Memory Size: 256 MB	Max Memory Used: 87 MB	
+	START RequestId: cc1aac0d-557f-4ea2-842d-966d6cb41342 Version: $LATEST
+	[INFO]	2026-02-27T01:53:43.485Z	cc1aac0d-557f-4ea2-842d-966d6cb41342	GET /result ?붿껌 ?섏떊: session_id=c174e255-c973-434a-9874-2e45fa6c0b42
+	2026-02-27 01:53:43,485 [INFO] handlers.result_handler ??GET /result ?붿껌 ?섏떊: session_id=c174e255-c973-434a-9874-2e45fa6c0b42
+	[INFO]	2026-02-27T01:53:43.496Z	cc1aac0d-557f-4ea2-842d-966d6cb41342	遺꾩꽍 ?먮윭 ?곹깭: session_id=c174e255-c973-434a-9874-2e45fa6c0b42
+	2026-02-27 01:53:43,496 [INFO] handlers.result_handler ??遺꾩꽍 ?먮윭 ?곹깭: session_id=c174e255-c973-434a-9874-2e45fa6c0b42
+
