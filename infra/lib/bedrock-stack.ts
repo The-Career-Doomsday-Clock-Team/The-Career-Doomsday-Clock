@@ -220,8 +220,11 @@ export class BedrockStack extends cdk.Stack {
     });
 
     agentRole.addToPolicy(new iam.PolicyStatement({
-      actions: ["bedrock:InvokeModel"],
-      resources: [agentModelArn],
+      actions: ["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"],
+      resources: [
+        agentModelArn,
+        `arn:aws:bedrock:${region}::foundation-model/*`,
+      ],
     }));
 
     agentRole.addToPolicy(new iam.PolicyStatement({
