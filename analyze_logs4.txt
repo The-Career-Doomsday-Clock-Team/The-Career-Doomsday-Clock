@@ -1,0 +1,36 @@
+﻿INIT_START Runtime Version: python:3.12.v104	Runtime Version ARN: arn:aws:lambda:us-west-2::runtime:db3c84011294fca0fe7b1a23046dff08606163e107373f3875220c35007134cf
+	START RequestId: 22a76104-4630-4f10-a930-98ea6838fd66 Version: $LATEST
+	2026-02-27 02:19:50,661 [INFO] handlers.analyze_handler ??遺꾩꽍 ?쒖옉: session_id=0dfe661c-2693-4a84-8375-9b3f450a8130, job_title=?붿??덉뼱
+	[INFO]	2026-02-27T02:19:50.661Z	22a76104-4630-4f10-a930-98ea6838fd66	遺꾩꽍 ?쒖옉: session_id=0dfe661c-2693-4a84-8375-9b3f450a8130, job_title=?붿??덉뼱
+	2026-02-27 02:19:51,901 [ERROR] handlers.analyze_handler ??遺꾩꽍 以??덇린移??딆? ?ㅻ쪟: session_id=0dfe661c-2693-4a84-8375-9b3f450a8130
+	Traceback (most recent call last):
+	File "/var/task/handlers/analyze_handler.py", line 189, in handler
+	raw_response = _invoke_bedrock_agent(prompt)
+	^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	File "/var/task/handlers/analyze_handler.py", line 110, in _invoke_bedrock_agent
+	for event in response.get("completion", []):
+	^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	File "/var/task/botocore/eventstream.py", line 592, in __iter__
+	parsed_event = self._parse_event(event)
+	^^^^^^^^^^^^^^^^^^^^^^^^
+	File "/var/task/botocore/eventstream.py", line 608, in _parse_event
+	raise EventStreamError(parsed_response, self._operation_name)
+	botocore.exceptions.EventStreamError: An error occurred (resourceNotFoundException) when calling the InvokeAgent operation: The ARN you specified was not found. Check if it matches an active model and whether you have enabled model access for that model. Then retry your request.
+	[ERROR]	2026-02-27T02:19:51.901Z	22a76104-4630-4f10-a930-98ea6838fd66	遺꾩꽍 以??덇린移??딆? ?ㅻ쪟: session_id=0dfe661c-2693-4a84-8375-9b3f450a8130
+Traceback (most recent call last):
+  File "/var/task/handlers/analyze_handler.py", line 189, in handler
+    raw_response = _invoke_bedrock_agent(prompt)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/task/handlers/analyze_handler.py", line 110, in _invoke_bedrock_agent
+    for event in response.get("completion", []):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/task/botocore/eventstream.py", line 592, in __iter__
+    parsed_event = self._parse_event(event)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/task/botocore/eventstream.py", line 608, in _parse_event
+    raise EventStreamError(parsed_response, self._operation_name)
+botocore.exceptions.EventStreamError: An error occurred (resourceNotFoundException) when calling the InvokeAgent operation: The ARN you specified was not found. Check if it matches an active model and whether you have enabled model access for that model. Then retry your request.	[INFO]	2026-02-27T02:19:51.958Z	22a76104-4630-4f10-a930-98ea6838fd66	survey status ?낅뜲?댄듃: session_id=0dfe661c-2693-4a84-8375-9b3f450a8130, status=error
+	2026-02-27 02:19:51,958 [INFO] handlers.analyze_handler ??survey status ?낅뜲?댄듃: session_id=0dfe661c-2693-4a84-8375-9b3f450a8130, status=error
+	END RequestId: 22a76104-4630-4f10-a930-98ea6838fd66
+	REPORT RequestId: 22a76104-4630-4f10-a930-98ea6838fd66	Duration: 1299.88 ms	Billed Duration: 2244 ms	Memory Size: 512 MB	Max Memory Used: 89 MB	Init Duration: 943.61 ms	
+

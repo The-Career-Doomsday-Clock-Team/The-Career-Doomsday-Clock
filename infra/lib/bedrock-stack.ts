@@ -269,7 +269,7 @@ export class BedrockStack extends cdk.Stack {
       properties: {
         AgentId: agent.getAtt("AgentId"),
         AgentAliasName: "prod",
-        Description: "Production agent alias",
+        Description: "Production agent alias - v2 with updated IAM permissions",
       },
     });
 
