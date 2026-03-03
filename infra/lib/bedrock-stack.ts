@@ -22,9 +22,11 @@ export class BedrockStack extends cdk.Stack {
     const accountId = cdk.Stack.of(this).account;
     const region = cdk.Stack.of(this).region;
 
-    const foundationModelId = "anthropic.claude-sonnet-4-5-20250929-v1:0";
+    // inference profile을 사용해야 on-demand 호출이 가능
+    const foundationModelId =
+      "us.anthropic.claude-sonnet-4-5-20250929-v1:0";
     const embeddingModelArn = `arn:aws:bedrock:${region}::foundation-model/amazon.titan-embed-text-v2:0`;
-    const agentModelArn = `arn:aws:bedrock:${region}::foundation-model/${foundationModelId}`;
+    const agentModelArn = `arn:aws:bedrock:${region}:${accountId}:inference-profile/${foundationModelId}`;
 
     // ── OpenSearch Serverless ──
     const collectionName = "career-doom-kb";
@@ -224,6 +226,7 @@ export class BedrockStack extends cdk.Stack {
       resources: [
         agentModelArn,
         `arn:aws:bedrock:${region}::foundation-model/*`,
+        `arn:aws:bedrock:${region}:${accountId}:inference-profile/*`,
       ],
     }));
 
@@ -269,7 +272,7 @@ export class BedrockStack extends cdk.Stack {
       properties: {
         AgentId: agent.getAtt("AgentId"),
         AgentAliasName: "prod",
-        Description: "Production agent alias - v2 with updated IAM permissions",
+        Description: "Production agent alias - v3 inference profile",
       },
     });
 

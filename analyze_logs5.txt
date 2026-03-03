@@ -1,0 +1,36 @@
+﻿INIT_START Runtime Version: python:3.12.v104	Runtime Version ARN: arn:aws:lambda:us-west-2::runtime:db3c84011294fca0fe7b1a23046dff08606163e107373f3875220c35007134cf
+	START RequestId: ada820d9-1145-4457-9cb7-2b0469fdd463 Version: $LATEST
+	2026-03-03 04:31:27,581 [INFO] handlers.analyze_handler ??遺꾩꽍 ?쒖옉: session_id=b3a2fe3e-ed0e-410e-b338-7a0d4bb54889, job_title=?붿??덉뼱
+	[INFO]	2026-03-03T04:31:27.581Z	ada820d9-1145-4457-9cb7-2b0469fdd463	遺꾩꽍 ?쒖옉: session_id=b3a2fe3e-ed0e-410e-b338-7a0d4bb54889, job_title=?붿??덉뼱
+	[ERROR]	2026-03-03T04:31:28.020Z	ada820d9-1145-4457-9cb7-2b0469fdd463	遺꾩꽍 以??덇린移??딆? ?ㅻ쪟: session_id=b3a2fe3e-ed0e-410e-b338-7a0d4bb54889
+Traceback (most recent call last):
+  File "/var/task/handlers/analyze_handler.py", line 189, in handler
+    raw_response = _invoke_bedrock_agent(prompt)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/task/handlers/analyze_handler.py", line 110, in _invoke_bedrock_agent
+    for event in response.get("completion", []):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/task/botocore/eventstream.py", line 592, in __iter__
+    parsed_event = self._parse_event(event)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/task/botocore/eventstream.py", line 608, in _parse_event
+    raise EventStreamError(parsed_response, self._operation_name)
+botocore.exceptions.EventStreamError: An error occurred (validationException) when calling the InvokeAgent operation: Invocation of model ID anthropic.claude-sonnet-4-5-20250929-v1:0 with on-demand throughput isn?셳 supported. Retry your request with the ID or ARN of an inference profile that contains this model. (Service: BedrockRuntime, Status Code: 400, Request ID: 3b4f5c6d-4d4d-4186-91f0-f67b426d1d66) (SDK Attempt Count: 1)	2026-03-03 04:31:28,020 [ERROR] handlers.analyze_handler ??遺꾩꽍 以??덇린移??딆? ?ㅻ쪟: session_id=b3a2fe3e-ed0e-410e-b338-7a0d4bb54889
+	Traceback (most recent call last):
+	File "/var/task/handlers/analyze_handler.py", line 189, in handler
+	raw_response = _invoke_bedrock_agent(prompt)
+	^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	File "/var/task/handlers/analyze_handler.py", line 110, in _invoke_bedrock_agent
+	for event in response.get("completion", []):
+	^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	File "/var/task/botocore/eventstream.py", line 592, in __iter__
+	parsed_event = self._parse_event(event)
+	^^^^^^^^^^^^^^^^^^^^^^^^
+	File "/var/task/botocore/eventstream.py", line 608, in _parse_event
+	raise EventStreamError(parsed_response, self._operation_name)
+	botocore.exceptions.EventStreamError: An error occurred (validationException) when calling the InvokeAgent operation: Invocation of model ID anthropic.claude-sonnet-4-5-20250929-v1:0 with on-demand throughput isn?셳 supported. Retry your request with the ID or ARN of an inference profile that contains this model. (Service: BedrockRuntime, Status Code: 400, Request ID: 3b4f5c6d-4d4d-4186-91f0-f67b426d1d66) (SDK Attempt Count: 1)
+	[INFO]	2026-03-03T04:31:28.078Z	ada820d9-1145-4457-9cb7-2b0469fdd463	survey status ?낅뜲?댄듃: session_id=b3a2fe3e-ed0e-410e-b338-7a0d4bb54889, status=error
+	2026-03-03 04:31:28,078 [INFO] handlers.analyze_handler ??survey status ?낅뜲?댄듃: session_id=b3a2fe3e-ed0e-410e-b338-7a0d4bb54889, status=error
+	END RequestId: ada820d9-1145-4457-9cb7-2b0469fdd463
+	REPORT RequestId: ada820d9-1145-4457-9cb7-2b0469fdd463	Duration: 499.79 ms	Billed Duration: 1420 ms	Memory Size: 512 MB	Max Memory Used: 91 MB	Init Duration: 920.10 ms	
+
