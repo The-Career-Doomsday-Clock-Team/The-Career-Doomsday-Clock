@@ -78,6 +78,7 @@ def handler(event: dict, context) -> dict:
             "session_id": session_id,
             "status": "completed",
             "dday": survey_item.get("dday", 0),
+            "dday_reason": survey_item.get("dday_reason", ""),
             "skill_risks": skill_risks,
             "career_cards": career_cards,
         })

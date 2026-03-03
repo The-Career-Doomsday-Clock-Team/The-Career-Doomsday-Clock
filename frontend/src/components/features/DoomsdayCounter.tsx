@@ -8,10 +8,11 @@ import { useEffect, useState } from "react";
  */
 interface DoomsdayCounterProps {
   targetDday: number;
+  ddayReason?: string;
   onComplete: () => void;
 }
 
-export function DoomsdayCounter({ targetDday, onComplete }: DoomsdayCounterProps) {
+export function DoomsdayCounter({ targetDday, ddayReason, onComplete }: DoomsdayCounterProps) {
   const [currentValue, setCurrentValue] = useState(0);
   const [done, setDone] = useState(false);
 
@@ -68,6 +69,15 @@ export function DoomsdayCounter({ targetDday, onComplete }: DoomsdayCounterProps
       >
         년 후, 당신의 직업은 소멸한다
       </p>
+
+      {done && ddayReason && (
+        <p
+          className="font-[family-name:var(--font-mono)] text-xs mt-3 max-w-md text-center leading-relaxed animate-fade-in"
+          style={{ color: "rgba(255,180,100,0.7)" }}
+        >
+          ⚡ {ddayReason}
+        </p>
+      )}
     </div>
   );
 }

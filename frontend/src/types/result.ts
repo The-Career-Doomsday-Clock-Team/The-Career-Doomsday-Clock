@@ -26,6 +26,7 @@ export interface ResultData {
   session_id: string;
   status: "analyzing" | "completed" | "error";
   dday?: number;
+  dday_reason?: string;
   skill_risks?: SkillRisk[];
   career_cards?: CareerCard[];
 }

@@ -109,7 +109,7 @@ export default function ResultPage() {
           role="region"
           aria-label="직업 수명 선고"
         >
-          <DoomsdayCounter targetDday={result.dday ?? 0} onComplete={handleCounterComplete} />
+          <DoomsdayCounter targetDday={result.dday ?? 0} ddayReason={result.dday_reason} onComplete={handleCounterComplete} />
 
           {counterDone && result.skill_risks && (
             <>

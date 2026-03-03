@@ -44,9 +44,21 @@ def _build_prompt(name: str, job_title: str, age_group: str, strengths: str, hob
         f"연령대: {age_group}\n"
         f"보유 스킬: {skills}\n"
         f"희망 근무 기간: {desired_work_years}\n\n"
+        f"## 중요 지침\n"
+        f"1. 사용자 입력의 진지도를 판단하세요. 직업이나 스킬이 비현실적이거나 장난스러운 경우(예: '우주해적', '숨쉬기'), "
+        f"해당 입력을 가장 가까운 현실 직업/스킬로 해석하여 분석하세요.\n"
+        f"2. career_cards의 추천 직업은 창의적이고 미래지향적이어야 합니다. "
+        f"AI 시대에 새롭게 떠오르는 직업이나 기존 직업의 진화된 형태를 추천하세요. "
+        f"예: 'AI 윤리 컨설턴트', '프롬프트 엔지니어', '디지털 트윈 설계사', 'AI-인간 협업 코디네이터' 등. "
+        f"단, 완전히 허구적인 직업(예: '우주 마법사')은 제외하고, 실현 가능성이 있는 미래 직업을 추천하세요.\n"
+        f"3. dday_reason은 D-Day 예측의 핵심 근거를 1~2문장으로 간결하게 작성하세요. "
+        f"예: 'AI 코딩 도구의 급속한 발전으로 단순 개발 업무의 80%가 5년 내 자동화 예상'\n"
+        f"4. 로드맵의 각 단계 duration은 현실적으로 설정하세요. "
+        f"한 단계는 최소 1개월, 최대 12개월로 제한하고, 전체 로드맵은 6개월~3년 이내로 구성하세요.\n\n"
         f"다음 JSON 형식으로 응답해주세요:\n"
         f'{{\n'
-        f'  "dday": <직업 수명 예측 년수 (숫자)>,\n'
+        f'  "dday": <직업 수명 예측 년수 (숫자, 최소 1)>,\n'
+        f'  "dday_reason": "<D-Day 예측의 핵심 근거 1~2문장>",\n'
         f'  "skill_risks": [\n'
         f'    {{\n'
         f'      "skill_name": "<스킬명>",\n'
@@ -62,7 +74,7 @@ def _build_prompt(name: str, job_title: str, age_group: str, strengths: str, hob
         f'      "combo_formula": "[{job_title}] + [보유 스킬] = [새 직업명]",\n'
         f'      "reason": "<추천 사유>",\n'
         f'      "roadmap": [\n'
-        f'        {{ "step": "<단계 설명>", "duration": "<기간>" }}\n'
+        f'        {{ "step": "<단계 설명>", "duration": "<기간, 예: 3개월>" }}\n'
         f'      ]\n'
         f'    }}\n'
         f'  ]\n'
@@ -210,15 +222,16 @@ def handler(event: dict, context) -> None:
         career_cards = result.get("career_cards", [])
         _save_career_cards(session_id, career_cards)
 
-        # D-Day 값을 survey 테이블에 저장하고 status를 completed로 업데이트
+        # D-Day 값과 근거를 survey 테이블에 저장하고 status를 completed로 업데이트
         table = dynamodb.Table(SURVEY_TABLE_NAME)
         table.update_item(
             Key={"session_id": session_id},
-            UpdateExpression="SET #s = :s, dday = :d",
+            UpdateExpression="SET #s = :s, dday = :d, dday_reason = :r",
             ExpressionAttributeNames={"#s": "status"},
             ExpressionAttributeValues={
                 ":s": "completed",
                 ":d": _convert_to_decimal(result.get("dday", 0)),
+                ":r": result.get("dday_reason", ""),
             },
         )
         logger.info("분석 완료: session_id=%s", session_id)
