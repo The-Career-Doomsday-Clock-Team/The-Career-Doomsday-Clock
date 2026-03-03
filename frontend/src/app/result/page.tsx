@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import type { ResultData } from "@/types/result";
+import { submitSurvey } from "@/lib/api";
 import { DoomsdayCounter } from "@/components/features/DoomsdayCounter";
 import { SkillRiskCard } from "@/components/features/SkillRiskCard";
 import { CareerCardComponent } from "@/components/features/CareerCard";
@@ -20,6 +21,7 @@ export default function ResultPage() {
   const [phase, setPhase] = useState<Phase>("doom");
   const [counterDone, setCounterDone] = useState(false);
   const [showDivider, setShowDivider] = useState(false);
+  const [retrying, setRetrying] = useState(false);
   const autoTransitionRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -54,6 +56,29 @@ export default function ResultPage() {
 
   const handleEscape = useCallback(() => { router.push("/guestbook"); }, [router]);
 
+  /** 동일 데이터로 AI 재분석 */
+  const handleRetryAnalysis = useCallback(async () => {
+    const raw = sessionStorage.getItem("survey_form");
+    if (!raw) { router.push("/survey"); return; }
+
+    setRetrying(true);
+    try {
+      const form = JSON.parse(raw);
+      await submitSurvey({
+        name: form.name,
+        job_title: form.job_title,
+        age_group: form.age_group,
+        strengths: form.skills || form.strengths || "",
+        hobbies: form.skills || form.hobbies || "",
+        desired_work_years: form.desired_work_years,
+      });
+      sessionStorage.removeItem("result_data");
+      router.push("/loading-screen");
+    } catch {
+      setRetrying(false);
+    }
+  }, [router]);
+
   if (!result) {
     return (
       <main className="flex min-h-screen items-center justify-center">
@@ -79,7 +104,7 @@ export default function ResultPage() {
 
         {/* 1단계: 디스토피아 선고 */}
         <section
-          className={`flex flex-col items-center gap-10 ${phase !== "doom" ? "opacity-40" : ""} transition-opacity duration-700`}
+          className={`flex flex-col items-center gap-10 ${phase !== "doom" ? "opacity-70" : ""} transition-opacity duration-700`}
           onClick={handleSkip}
           role="region"
           aria-label="직업 수명 선고"
@@ -130,9 +155,24 @@ export default function ResultPage() {
               ))}
             </div>
 
-            <div className="flex gap-4 mt-6">
-              <button type="button" onClick={() => router.push("/survey")} className="neon-button neon-button-red" aria-label="다시 분석하기">
-                ↻ RETRY ANALYSIS
+            <div className="flex flex-wrap justify-center gap-4 mt-6">
+              <button
+                type="button"
+                onClick={handleRetryAnalysis}
+                disabled={retrying}
+                className="neon-button neon-button-red disabled:opacity-40 disabled:cursor-not-allowed"
+                aria-label="동일 데이터로 다시 분석"
+              >
+                {retrying ? "RETRYING…" : "↻ RETRY ANALYSIS"}
+              </button>
+              <button
+                type="button"
+                onClick={() => router.push("/survey")}
+                className="text-xs tracking-widest border border-yellow-500/40 text-yellow-400 px-5 py-3 hover:border-yellow-400/70 hover:text-yellow-300 transition-all"
+                style={{ fontFamily: "var(--font-mono)", letterSpacing: "0.15em" }}
+                aria-label="처음부터 새롭게 시작"
+              >
+                ◀ START OVER
               </button>
               <button type="button" onClick={handleEscape} className="neon-button" aria-label="방명록으로 이동">
                 ESCAPE THE RUINS ▶

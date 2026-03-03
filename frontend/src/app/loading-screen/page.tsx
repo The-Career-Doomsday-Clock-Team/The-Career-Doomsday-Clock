@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { fetchResult } from "@/lib/api";
+import { fetchResult, submitSurvey } from "@/lib/api";
 
 /**
  * 로딩 화면 — DISTRICT Ω 분석 시스템
@@ -25,9 +25,17 @@ export default function LoadingScreen() {
   const [messageIndex, setMessageIndex] = useState(0);
   const [timedOut, setTimedOut] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [retrying, setRetrying] = useState(false);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const messageRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  /** 타이머/폴링 정리 */
+  const clearAllTimers = useCallback(() => {
+    if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
+    if (timeoutRef.current) { clearTimeout(timeoutRef.current); timeoutRef.current = null; }
+    if (messageRef.current) { clearInterval(messageRef.current); messageRef.current = null; }
+  }, []);
 
   const pollResult = useCallback(async () => {
     const sessionId = sessionStorage.getItem("session_id");
@@ -44,25 +52,53 @@ export default function LoadingScreen() {
     } catch { /* 폴링 계속 */ }
   }, [router]);
 
+  /** 폴링 + 타임아웃 시작 */
+  const startPolling = useCallback(() => {
+    pollResult();
+    pollRef.current = setInterval(pollResult, POLL_INTERVAL_MS);
+    timeoutRef.current = setTimeout(() => { setTimedOut(true); }, TIMEOUT_MS);
+    messageRef.current = setInterval(() => {
+      setMessageIndex((prev) => (prev + 1) % LOADING_MESSAGES.length);
+    }, 3000);
+  }, [pollResult]);
+
+  /** 동일 데이터로 재분석 요청 */
+  const handleRetry = useCallback(async () => {
+    const raw = sessionStorage.getItem("survey_form");
+    if (!raw) { router.push("/survey"); return; }
+
+    setRetrying(true);
+    setFailed(false);
+    setTimedOut(false);
+    clearAllTimers();
+
+    try {
+      const form = JSON.parse(raw);
+      await submitSurvey({
+        name: form.name,
+        job_title: form.job_title,
+        age_group: form.age_group,
+        strengths: form.skills || form.strengths || "",
+        hobbies: form.skills || form.hobbies || "",
+        desired_work_years: form.desired_work_years,
+      });
+      // 재분석 요청 성공 → 폴링 재시작
+      startPolling();
+    } catch {
+      setFailed(true);
+    } finally {
+      setRetrying(false);
+    }
+  }, [router, clearAllTimers, startPolling]);
+
   useEffect(() => {
     const sessionId = sessionStorage.getItem("session_id");
     if (!sessionId) { router.push("/"); return; }
 
-    messageRef.current = setInterval(() => {
-      setMessageIndex((prev) => (prev + 1) % LOADING_MESSAGES.length);
-    }, 3000);
+    startPolling();
 
-    pollResult();
-    pollRef.current = setInterval(pollResult, POLL_INTERVAL_MS);
-
-    timeoutRef.current = setTimeout(() => { setTimedOut(true); }, TIMEOUT_MS);
-
-    return () => {
-      if (pollRef.current) clearInterval(pollRef.current);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      if (messageRef.current) clearInterval(messageRef.current);
-    };
-  }, [router, pollResult]);
+    return clearAllTimers;
+  }, [router, startPolling, clearAllTimers]);
 
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center px-4">
@@ -123,14 +159,26 @@ export default function LoadingScreen() {
             <p className="neon-text-red font-[family-name:var(--font-mono)] text-sm tracking-wide">
               ⚠ ANALYSIS FAILED — SYSTEM ERROR DETECTED
             </p>
-            <button
-              type="button"
-              onClick={() => router.push("/survey")}
-              className="neon-button neon-button-red"
-              aria-label="다시 시도"
-            >
-              ↻ RETRY
-            </button>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={handleRetry}
+                disabled={retrying}
+                className="neon-button neon-button-red disabled:opacity-40 disabled:cursor-not-allowed"
+                aria-label="동일 데이터로 다시 분석"
+              >
+                {retrying ? "RETRYING…" : "↻ RETRY"}
+              </button>
+              <button
+                type="button"
+                onClick={() => router.push("/survey")}
+                className="text-xs tracking-widest border border-gray-600/30 text-gray-400 px-5 py-3 hover:border-cyan-500/50 hover:text-cyan-400 transition-all"
+                style={{ fontFamily: "var(--font-mono)" }}
+                aria-label="처음부터 다시하기"
+              >
+                ◀ 처음부터 다시하기
+              </button>
+            </div>
           </div>
         )}
       </div>

@@ -1,5 +1,7 @@
 import * as cdk from "aws-cdk-lib";
 import * as amplify from "aws-cdk-lib/aws-amplify";
+import * as iam from "aws-cdk-lib/aws-iam";
+import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import { Construct } from "constructs";
 
 export interface FrontendStackProps extends cdk.StackProps {
@@ -10,6 +12,11 @@ export interface FrontendStackProps extends cdk.StackProps {
 export class FrontendStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: FrontendStackProps) {
     super(scope, id, props);
+
+    // Secrets Manager에서 GitHub 토큰 가져오기
+    const githubToken = secretsmanager.Secret.fromSecretNameV2(
+      this, "GitHubToken", "dooms/github-token"
+    );
 
     const buildSpecYaml = [
       "version: 1",
@@ -32,9 +39,21 @@ export class FrontendStack extends cdk.Stack {
       "          - node_modules/**/*",
     ].join("\n");
 
-    // ── Amplify App (정적 호스팅) ──
+    // Amplify IAM 서비스 역할
+    const amplifyRole = new iam.Role(this, "AmplifyRole", {
+      assumedBy: new iam.ServicePrincipal("amplify.amazonaws.com"),
+      description: "Amplify service role for Career Doomsday Clock frontend",
+      managedPolicies: [
+        iam.ManagedPolicy.fromAwsManagedPolicyName("AdministratorAccess-Amplify"),
+      ],
+    });
+
+    // ── Amplify App (GitHub 연동) ──
     const amplifyApp = new amplify.CfnApp(this, "CareerDoomsdayFrontend", {
       name: "career-doomsday-clock",
+      repository: "https://github.com/The-Career-Doomsday-Clock-Team/The-Career-Doomsday-Clock",
+      accessToken: githubToken.secretValue.unsafeUnwrap(),
+      iamServiceRole: amplifyRole.roleArn,
       platform: "WEB",
       environmentVariables: [
         {
@@ -47,9 +66,17 @@ export class FrontendStack extends cdk.Stack {
         },
       ],
       buildSpec: buildSpecYaml,
+      // SPA 라우팅 규칙
+      customRules: [
+        {
+          source: "</^[^.]+$|\\.(?!(css|gif|ico|jpg|js|png|txt|svg|woff|ttf|map|json)$)([^.]+$)/>",
+          target: "/index.html",
+          status: "200",
+        },
+      ],
     });
 
-    // ── main 브랜치 ──
+    // ── main 브랜치 (GitHub 연동, 자동 빌드) ──
     new amplify.CfnBranch(this, "MainBranch", {
       appId: amplifyApp.attrAppId,
       branchName: "main",

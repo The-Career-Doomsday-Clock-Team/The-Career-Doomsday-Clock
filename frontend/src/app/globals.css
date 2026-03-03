@@ -491,10 +491,10 @@ body::after {
   inset: 0;
   z-index: 0;
   background:
-    radial-gradient(ellipse at 50% 20%, rgba(255,34,68,0.1) 0%, transparent 50%),
-    radial-gradient(ellipse at 20% 80%, rgba(0,207,255,0.08) 0%, transparent 40%),
-    radial-gradient(ellipse at 80% 60%, rgba(255,230,0,0.04) 0%, transparent 40%),
-    linear-gradient(180deg, rgba(12,14,26,1) 0%, rgba(16,18,32,1) 100%);
+    radial-gradient(ellipse at 50% 20%, rgba(255,34,68,0.14) 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 80%, rgba(0,207,255,0.12) 0%, transparent 40%),
+    radial-gradient(ellipse at 80% 60%, rgba(255,230,0,0.06) 0%, transparent 40%),
+    linear-gradient(180deg, rgba(18,20,38,1) 0%, rgba(22,24,44,1) 100%);
 }
 .guestbook-bg {
   position: fixed;
@@ -537,10 +537,10 @@ body::after {
   align-items: center;
   justify-content: center;
   padding: 2.5rem 3.5rem;
-  border: 2px solid rgba(255,34,68,0.3);
+  border: 2px solid rgba(255,34,68,0.4);
   border-radius: 8px;
-  background: rgba(255,34,68,0.03);
-  box-shadow: 0 0 40px rgba(255,34,68,0.1), inset 0 0 40px rgba(255,34,68,0.05);
+  background: rgba(255,34,68,0.06);
+  box-shadow: 0 0 40px rgba(255,34,68,0.15), inset 0 0 40px rgba(255,34,68,0.08);
 }
 .doomsday-counter-inner {
   display: flex;
@@ -569,7 +569,7 @@ body::after {
   letter-spacing: 0.1em;
 }
 .skill-risk-card {
-  background: rgba(20,28,42,0.95);
+  background: rgba(28,36,54,0.95);
   border: 1px solid rgba(255,34,68,0.3);
   padding: 1.5rem;
   border-radius: 6px;

@@ -35,13 +35,14 @@ BEDROCK_AGENT_ALIAS_ID = os.environ.get("BEDROCK_AGENT_ALIAS_ID", "")
 
 def _build_prompt(name: str, job_title: str, age_group: str, strengths: str, hobbies: str, desired_work_years: str) -> str:
     """Bedrock Agent에 전달할 분석 프롬프트를 생성한다."""
+    # strengths와 hobbies는 동일한 '보유 스킬' 값이 전달됨
+    skills = strengths
     return (
         f"다음 사용자의 직업 수명과 커리어 전환을 분석해주세요.\n\n"
         f"이름: {name}\n"
         f"현재 직업: {job_title}\n"
         f"연령대: {age_group}\n"
-        f"장점: {strengths}\n"
-        f"취미: {hobbies}\n"
+        f"보유 스킬: {skills}\n"
         f"희망 근무 기간: {desired_work_years}\n\n"
         f"다음 JSON 형식으로 응답해주세요:\n"
         f'{{\n'
@@ -58,7 +59,7 @@ def _build_prompt(name: str, job_title: str, age_group: str, strengths: str, hob
         f'  "career_cards": [\n'
         f'    {{\n'
         f'      "card_index": <0, 1, 또는 2>,\n'
-        f'      "combo_formula": "[{job_title}] + [장점] + [취미] = [새 직업명]",\n'
+        f'      "combo_formula": "[{job_title}] + [보유 스킬] = [새 직업명]",\n'
         f'      "reason": "<추천 사유>",\n'
         f'      "roadmap": [\n'
         f'        {{ "step": "<단계 설명>", "duration": "<기간>" }}\n'

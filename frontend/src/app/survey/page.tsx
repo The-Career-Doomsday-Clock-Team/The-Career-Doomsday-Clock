@@ -16,8 +16,7 @@ interface FormData {
   name: string;
   job_title: string;
   age_group: string;
-  strengths: string;
-  hobbies: string;
+  skills: string;
   desired_work_years: string;
 }
 
@@ -27,12 +26,11 @@ const INITIAL_FORM: FormData = {
   name: "",
   job_title: "",
   age_group: "",
-  strengths: "",
-  hobbies: "",
+  skills: "",
   desired_work_years: "",
 };
 
-const REQUIRED_FIELDS: FieldKey[] = ["name", "job_title", "age_group", "strengths", "hobbies", "desired_work_years"];
+const REQUIRED_FIELDS: FieldKey[] = ["name", "job_title", "age_group", "skills", "desired_work_years"];
 
 export default function SurveyPage() {
   const router = useRouter();
@@ -80,8 +78,8 @@ export default function SurveyPage() {
           name: form.name,
           job_title: form.job_title,
           age_group: form.age_group,
-          strengths: form.strengths,
-          hobbies: form.hobbies,
+          strengths: form.skills,
+          hobbies: form.skills,
           desired_work_years: form.desired_work_years,
         });
         router.push("/loading-screen");
@@ -179,30 +177,17 @@ export default function SurveyPage() {
               {errors.desired_work_years && <p className="dystopia-error" role="alert">{errors.desired_work_years}</p>}
             </div>
 
-            {/* 장점 - 전체 너비 */}
+            {/* 보유 스킬 - 전체 너비 */}
             <div className="flex flex-col gap-1.5 sm:col-span-2">
-              <label htmlFor="strengths" className="dystopia-label">STRENGTH // 장점</label>
+              <label htmlFor="skills" className="dystopia-label">SKILLS // 보유 스킬</label>
               <input
-                id="strengths" type="text" value={form.strengths}
-                onChange={(e) => handleChange("strengths", e.target.value)}
-                placeholder="예: 문제 해결력, 커뮤니케이션, 창의성"
-                className={`dystopia-input ${errors.strengths ? "dystopia-input-error" : ""}`}
+                id="skills" type="text" value={form.skills}
+                onChange={(e) => handleChange("skills", e.target.value)}
+                placeholder="예: Python, 데이터 분석, 프로젝트 관리, UX 디자인"
+                className={`dystopia-input ${errors.skills ? "dystopia-input-error" : ""}`}
                 disabled={submitting}
               />
-              {errors.strengths && <p className="dystopia-error" role="alert">{errors.strengths}</p>}
-            </div>
-
-            {/* 취미 - 전체 너비 */}
-            <div className="flex flex-col gap-1.5 sm:col-span-2">
-              <label htmlFor="hobbies" className="dystopia-label">HOBBY // 취미</label>
-              <input
-                id="hobbies" type="text" value={form.hobbies}
-                onChange={(e) => handleChange("hobbies", e.target.value)}
-                placeholder="예: 독서, 요리, 코딩 (쉼표로 구분)"
-                className={`dystopia-input ${errors.hobbies ? "dystopia-input-error" : ""}`}
-                disabled={submitting}
-              />
-              {errors.hobbies && <p className="dystopia-error" role="alert">{errors.hobbies}</p>}
+              {errors.skills && <p className="dystopia-error" role="alert">{errors.skills}</p>}
             </div>
           </div>
 
