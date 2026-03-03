@@ -24,6 +24,7 @@ export default function LoadingScreen() {
   const router = useRouter();
   const [messageIndex, setMessageIndex] = useState(0);
   const [timedOut, setTimedOut] = useState(false);
+  const [failed, setFailed] = useState(false);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const messageRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -36,6 +37,9 @@ export default function LoadingScreen() {
       if (data.status === "completed") {
         sessionStorage.setItem("result_data", JSON.stringify(data));
         router.push("/result");
+      } else if (data.status === "error") {
+        setFailed(true);
+        if (pollRef.current) clearInterval(pollRef.current);
       }
     } catch { /* 폴링 계속 */ }
   }, [router]);
@@ -107,10 +111,27 @@ export default function LoadingScreen() {
         </p>
 
         {/* 타임아웃 (Req 4.3) */}
-        {timedOut && (
+        {timedOut && !failed && (
           <p className="neon-text-yellow font-[family-name:var(--font-mono)] text-sm tracking-wide animate-fade-in">
             ⚠ EXTENDED ANALYSIS REQUIRED... PLEASE STAND BY
           </p>
+        )}
+
+        {/* 분석 실패 시 재시도 */}
+        {failed && (
+          <div className="flex flex-col items-center gap-4 animate-fade-in">
+            <p className="neon-text-red font-[family-name:var(--font-mono)] text-sm tracking-wide">
+              ⚠ ANALYSIS FAILED — SYSTEM ERROR DETECTED
+            </p>
+            <button
+              type="button"
+              onClick={() => router.push("/survey")}
+              className="neon-button neon-button-red"
+              aria-label="다시 시도"
+            >
+              ↻ RETRY
+            </button>
+          </div>
         )}
       </div>
     </main>

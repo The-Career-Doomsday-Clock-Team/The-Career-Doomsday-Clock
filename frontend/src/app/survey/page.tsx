@@ -9,23 +9,30 @@ import { submitSurvey, ApiError } from "@/lib/api";
  * Requirements: 2.1, 2.2, 2.3, 3.1
  */
 
-const FIELDS = [
-  { key: "name" as const, label: "IDENT_NAME // 이름", placeholder: "성명을 입력하라" },
-  { key: "job_title" as const, label: "OCCUPATION // 직업", placeholder: "멸망 전 직업명" },
-  { key: "strengths" as const, label: "STRENGTH // 장점", placeholder: "당신의 장점을 기록하라" },
-  { key: "hobbies" as const, label: "HOBBY // 취미", placeholder: "당신의 취미를 입력하라" },
-] as const;
-
-type FieldKey = (typeof FIELDS)[number]["key"];
+const AGE_GROUPS = ["10대", "20대", "30대", "40대", "50대 이상"] as const;
+const RETIRE_OPTIONS = ["5년 이내", "10년 이내", "20년 이내", "평생 현역"] as const;
 
 interface FormData {
   name: string;
   job_title: string;
+  age_group: string;
   strengths: string;
   hobbies: string;
+  desired_work_years: string;
 }
 
-const INITIAL_FORM: FormData = { name: "", job_title: "", strengths: "", hobbies: "" };
+type FieldKey = keyof FormData;
+
+const INITIAL_FORM: FormData = {
+  name: "",
+  job_title: "",
+  age_group: "",
+  strengths: "",
+  hobbies: "",
+  desired_work_years: "",
+};
+
+const REQUIRED_FIELDS: FieldKey[] = ["name", "job_title", "age_group", "strengths", "hobbies", "desired_work_years"];
 
 export default function SurveyPage() {
   const router = useRouter();
@@ -44,19 +51,17 @@ export default function SurveyPage() {
     });
   }, []);
 
-  // 유효성 검증 (Req 2.2, 2.3)
   const validate = useCallback((): boolean => {
     const newErrors: Partial<Record<FieldKey, string>> = {};
-    for (const field of FIELDS) {
-      if (!form[field.key].trim()) {
-        newErrors[field.key] = `> ${field.label} required`;
+    for (const key of REQUIRED_FIELDS) {
+      if (!form[key].trim()) {
+        newErrors[key] = "> 필수 항목입니다";
       }
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }, [form]);
 
-  // 제출 (Req 3.1)
   const handleSubmit = useCallback(
     async (e: FormEvent) => {
       e.preventDefault();
@@ -66,13 +71,18 @@ export default function SurveyPage() {
       const sessionId = sessionStorage.getItem("session_id");
       if (!sessionId) { router.push("/"); return; }
 
+      // 재시도를 위해 설문 데이터 보관
+      sessionStorage.setItem("survey_form", JSON.stringify(form));
+
       setSubmitting(true);
       try {
         await submitSurvey({
           name: form.name,
           job_title: form.job_title,
+          age_group: form.age_group,
           strengths: form.strengths,
           hobbies: form.hobbies,
+          desired_work_years: form.desired_work_years,
         });
         router.push("/loading-screen");
       } catch (err) {
@@ -110,39 +120,102 @@ export default function SurveyPage() {
         </div>
         <div className="panel-divider mb-7" />
 
-        {/* 폼 (Req 2.1) */}
+        {/* 폼 */}
         <form onSubmit={handleSubmit} noValidate autoComplete="off">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-4">
-            {FIELDS.map((field) => (
-              <div key={field.key} className="flex flex-col gap-1.5">
-                <label htmlFor={field.key} className="dystopia-label">
-                  {field.label}
-                </label>
-                <input
-                  id={field.key}
-                  type="text"
-                  value={form[field.key]}
-                  onChange={(e) => handleChange(field.key, e.target.value)}
-                  placeholder={field.placeholder}
-                  className={`dystopia-input ${errors[field.key] ? "dystopia-input-error" : ""}`}
-                  aria-invalid={!!errors[field.key]}
-                  aria-describedby={errors[field.key] ? `${field.key}-error` : undefined}
-                  disabled={submitting}
-                />
-                {errors[field.key] && (
-                  <p id={`${field.key}-error`} className="dystopia-error" role="alert">
-                    {errors[field.key]}
-                  </p>
-                )}
-              </div>
-            ))}
+            {/* 이름 */}
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="name" className="dystopia-label">IDENT_NAME // 이름</label>
+              <input
+                id="name" type="text" value={form.name}
+                onChange={(e) => handleChange("name", e.target.value)}
+                placeholder="성명을 입력하라"
+                className={`dystopia-input ${errors.name ? "dystopia-input-error" : ""}`}
+                disabled={submitting}
+              />
+              {errors.name && <p className="dystopia-error" role="alert">{errors.name}</p>}
+            </div>
+
+            {/* 직업 */}
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="job_title" className="dystopia-label">OCCUPATION // 직업</label>
+              <input
+                id="job_title" type="text" value={form.job_title}
+                onChange={(e) => handleChange("job_title", e.target.value)}
+                placeholder="예: 개발자, 학생, N잡러, 무직"
+                className={`dystopia-input ${errors.job_title ? "dystopia-input-error" : ""}`}
+                disabled={submitting}
+              />
+              {errors.job_title && <p className="dystopia-error" role="alert">{errors.job_title}</p>}
+            </div>
+
+            {/* 연령대 */}
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="age_group" className="dystopia-label">AGE_GROUP // 연령대</label>
+              <select
+                id="age_group" value={form.age_group}
+                onChange={(e) => handleChange("age_group", e.target.value)}
+                className={`dystopia-select ${errors.age_group ? "dystopia-input-error" : ""}`}
+                disabled={submitting}
+              >
+                <option value="">연령대를 선택하라</option>
+                {AGE_GROUPS.map((g) => <option key={g} value={g}>{g}</option>)}
+              </select>
+              {errors.age_group && <p className="dystopia-error" role="alert">{errors.age_group}</p>}
+            </div>
+
+            {/* 희망 근무 기간 */}
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="desired_work_years" className="dystopia-label">RETIRE_PLAN // 희망 근무</label>
+              <select
+                id="desired_work_years" value={form.desired_work_years}
+                onChange={(e) => handleChange("desired_work_years", e.target.value)}
+                className={`dystopia-select ${errors.desired_work_years ? "dystopia-input-error" : ""}`}
+                disabled={submitting}
+              >
+                <option value="">언제까지 일하고 싶은가</option>
+                {RETIRE_OPTIONS.map((o) => <option key={o} value={o}>{o}</option>)}
+              </select>
+              {errors.desired_work_years && <p className="dystopia-error" role="alert">{errors.desired_work_years}</p>}
+            </div>
+
+            {/* 장점 - 전체 너비 */}
+            <div className="flex flex-col gap-1.5 sm:col-span-2">
+              <label htmlFor="strengths" className="dystopia-label">STRENGTH // 장점</label>
+              <input
+                id="strengths" type="text" value={form.strengths}
+                onChange={(e) => handleChange("strengths", e.target.value)}
+                placeholder="예: 문제 해결력, 커뮤니케이션, 창의성"
+                className={`dystopia-input ${errors.strengths ? "dystopia-input-error" : ""}`}
+                disabled={submitting}
+              />
+              {errors.strengths && <p className="dystopia-error" role="alert">{errors.strengths}</p>}
+            </div>
+
+            {/* 취미 - 전체 너비 */}
+            <div className="flex flex-col gap-1.5 sm:col-span-2">
+              <label htmlFor="hobbies" className="dystopia-label">HOBBY // 취미</label>
+              <input
+                id="hobbies" type="text" value={form.hobbies}
+                onChange={(e) => handleChange("hobbies", e.target.value)}
+                placeholder="예: 독서, 요리, 코딩 (쉼표로 구분)"
+                className={`dystopia-input ${errors.hobbies ? "dystopia-input-error" : ""}`}
+                disabled={submitting}
+              />
+              {errors.hobbies && <p className="dystopia-error" role="alert">{errors.hobbies}</p>}
+            </div>
           </div>
 
           {apiError && (
             <p className="dystopia-error text-center mt-4" role="alert">⚠ {apiError}</p>
           )}
 
-          <div className="flex justify-end gap-3 mt-7">
+          {/* 개인정보 안내 */}
+          <p className="text-center mt-5 text-[0.6rem] tracking-wider" style={{ color: "rgba(100,160,200,0.4)" }}>
+            🔒 입력된 정보는 분석 목적으로만 사용되며, 세션 종료 시 자동 삭제됩니다
+          </p>
+
+          <div className="flex justify-end gap-3 mt-5">
             <button
               type="button"
               onClick={() => router.push("/")}
@@ -152,8 +225,7 @@ export default function SurveyPage() {
               ABORT
             </button>
             <button
-              type="submit"
-              disabled={submitting}
+              type="submit" disabled={submitting}
               className="neon-button disabled:opacity-40 disabled:cursor-not-allowed"
               aria-label="설문 제출"
             >
@@ -162,7 +234,6 @@ export default function SurveyPage() {
           </div>
         </form>
 
-        {/* 하단 프로그레스 바 */}
         <div className="progress-bar" style={{ width: "100%" }} />
       </div>
     </main>

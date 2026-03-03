@@ -103,8 +103,10 @@ async function parseResponse<T>(res: Response): Promise<T> {
 export interface SurveyPayload {
   name: string;
   job_title: string;
+  age_group: string;
   strengths: string;
   hobbies: string;
+  desired_work_years: string;
 }
 
 export interface SurveyResponse {
@@ -128,8 +130,10 @@ export async function submitSurvey(
       session_id: sessionId,
       name: data.name.trim(),
       job_title: data.job_title.trim(),
+      age_group: data.age_group.trim(),
       strengths: data.strengths.trim(),
       hobbies: data.hobbies.trim(),
+      desired_work_years: data.desired_work_years.trim(),
     }),
   });
 

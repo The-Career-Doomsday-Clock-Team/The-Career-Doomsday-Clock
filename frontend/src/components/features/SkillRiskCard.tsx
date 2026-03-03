@@ -9,9 +9,10 @@ import type { SkillRisk } from "@/types/result";
 interface SkillRiskCardProps {
   risk: SkillRisk;
   index: number;
+  isCritical?: boolean;
 }
 
-export function SkillRiskCard({ risk, index }: SkillRiskCardProps) {
+export function SkillRiskCard({ risk, index, isCritical = false }: SkillRiskCardProps) {
   // 위험도에 따라 색상 결정
   const prob = risk.replacement_prob ?? 0;
   const dangerColor = prob >= 70 ? "var(--neon-red)" : prob >= 40 ? "var(--neon-yellow)" : "var(--neon-green)";
@@ -24,15 +25,27 @@ export function SkillRiskCard({ risk, index }: SkillRiskCardProps) {
       aria-label={`${risk.skill_name} 위험도`}
     >
       {/* 스킬명 */}
-      <h3
-        className="font-[family-name:var(--font-heading)] text-xs tracking-[0.2em] mb-4 pb-3 uppercase"
-        style={{
-          color: "#e0ecf4",
-          borderBottom: "1px solid rgba(0,207,255,0.15)",
-        }}
-      >
-        {risk.skill_name}
-      </h3>
+      <div className="flex items-center justify-between mb-4 pb-3" style={{ borderBottom: "1px solid rgba(0,207,255,0.15)" }}>
+        <h3
+          className="font-[family-name:var(--font-heading)] text-xs tracking-[0.2em] uppercase"
+          style={{ color: "#e0ecf4" }}
+        >
+          {risk.skill_name}
+        </h3>
+        {isCritical && (
+          <span
+            className="font-[family-name:var(--font-heading)] text-[0.55rem] tracking-[0.2em] px-2 py-0.5 rounded-sm"
+            style={{
+              color: "var(--neon-red)",
+              border: "1px solid var(--neon-red)",
+              textShadow: "0 0 6px var(--neon-red)",
+              animation: "neon-flicker 3.5s infinite",
+            }}
+          >
+            CRITICAL
+          </span>
+        )}
+      </div>
 
       {/* 수치 */}
       <div className="flex items-end justify-between mb-4">

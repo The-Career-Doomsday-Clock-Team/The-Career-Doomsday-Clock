@@ -16,9 +16,10 @@ const CARD_THEMES = [
 
 interface CareerCardComponentProps {
   card: CareerCard;
+  isTopPick?: boolean;
 }
 
-export function CareerCardComponent({ card }: CareerCardComponentProps) {
+export function CareerCardComponent({ card, isTopPick = false }: CareerCardComponentProps) {
   const theme = CARD_THEMES[card.card_index] ?? CARD_THEMES[0];
 
   return (
@@ -28,11 +29,26 @@ export function CareerCardComponent({ card }: CareerCardComponentProps) {
       aria-label={`커리어 카드 ${card.card_index + 1}`}
     >
       {/* 경로 라벨 */}
-      <div
-        className="font-[family-name:var(--font-heading)] text-[0.6rem] tracking-[0.3em] mb-4"
-        style={{ color: theme.accent, textShadow: `0 0 6px ${theme.accent}` }}
-      >
-        {theme.label}
+      <div className="flex items-center justify-between mb-4">
+        <div
+          className="font-[family-name:var(--font-heading)] text-[0.6rem] tracking-[0.3em]"
+          style={{ color: theme.accent, textShadow: `0 0 6px ${theme.accent}` }}
+        >
+          {theme.label}
+        </div>
+        {isTopPick && (
+          <span
+            className="font-[family-name:var(--font-heading)] text-[0.55rem] tracking-[0.2em] px-2 py-0.5 rounded-sm"
+            style={{
+              color: "var(--neon-green)",
+              border: "1px solid var(--neon-green)",
+              textShadow: "0 0 6px var(--neon-green)",
+              animation: "success-pulse 2s ease-in-out infinite",
+            }}
+          >
+            ★ TOP PICK
+          </span>
+        )}
       </div>
 
       {/* 조합 공식 (Req 6.3) */}
@@ -86,6 +102,9 @@ export function CareerCardComponent({ card }: CareerCardComponentProps) {
               </div>
             ))}
           </div>
+          <p className="mt-3 text-[0.6rem] tracking-wider" style={{ color: "rgba(100,160,200,0.4)" }}>
+            💡 관련 교육 과정은 Coursera, Udemy 등에서 검색해보세요
+          </p>
         </div>
       )}
     </div>

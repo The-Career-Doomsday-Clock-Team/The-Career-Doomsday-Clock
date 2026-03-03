@@ -33,14 +33,16 @@ BEDROCK_AGENT_ID = os.environ.get("BEDROCK_AGENT_ID", "")
 BEDROCK_AGENT_ALIAS_ID = os.environ.get("BEDROCK_AGENT_ALIAS_ID", "")
 
 
-def _build_prompt(name: str, job_title: str, strengths: str, hobbies: str) -> str:
+def _build_prompt(name: str, job_title: str, age_group: str, strengths: str, hobbies: str, desired_work_years: str) -> str:
     """Bedrock Agent에 전달할 분석 프롬프트를 생성한다."""
     return (
         f"다음 사용자의 직업 수명과 커리어 전환을 분석해주세요.\n\n"
         f"이름: {name}\n"
         f"현재 직업: {job_title}\n"
+        f"연령대: {age_group}\n"
         f"장점: {strengths}\n"
-        f"취미: {hobbies}\n\n"
+        f"취미: {hobbies}\n"
+        f"희망 근무 기간: {desired_work_years}\n\n"
         f"다음 JSON 형식으로 응답해주세요:\n"
         f'{{\n'
         f'  "dday": <직업 수명 예측 년수 (숫자)>,\n'
@@ -183,14 +185,16 @@ def handler(event: dict, context) -> None:
     session_id = event.get("session_id", "")
     name = event.get("name", "")
     job_title = event.get("job_title", "")
+    age_group = event.get("age_group", "")
     strengths = event.get("strengths", "")
     hobbies = event.get("hobbies", "")
+    desired_work_years = event.get("desired_work_years", "")
 
     logger.info("분석 시작: session_id=%s, job_title=%s", session_id, job_title)
 
     try:
         # Bedrock Agent 호출
-        prompt = _build_prompt(name, job_title, strengths, hobbies)
+        prompt = _build_prompt(name, job_title, age_group, strengths, hobbies, desired_work_years)
         raw_response = _invoke_bedrock_agent(prompt)
         logger.info("Bedrock Agent 응답 수신: session_id=%s", session_id)
 

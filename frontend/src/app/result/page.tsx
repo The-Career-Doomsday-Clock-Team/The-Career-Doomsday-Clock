@@ -90,12 +90,14 @@ export default function ResultPage() {
             <>
               <div className="text-center">
                 <h2 className="result-section-title text-neon-red">THREAT ANALYSIS</h2>
-                <p className="result-section-sub">AI 대체 위험도 분석 결과</p>
+                <p className="result-section-sub">AI 대체 위험도 분석 결과 (위험도 순)</p>
               </div>
               <div className="grid w-full gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {result.skill_risks.map((risk, i) => (
-                  <SkillRiskCard key={risk.skill_name} risk={risk} index={i} />
-                ))}
+                {[...result.skill_risks]
+                  .sort((a, b) => (b.replacement_prob ?? 0) - (a.replacement_prob ?? 0))
+                  .map((risk, i) => (
+                    <SkillRiskCard key={risk.skill_name} risk={risk} index={i} isCritical={i === 0} />
+                  ))}
               </div>
             </>
           )}
@@ -124,13 +126,18 @@ export default function ResultPage() {
 
             <div className="grid w-full gap-6 md:grid-cols-3">
               {result.career_cards.map((card) => (
-                <CareerCardComponent key={card.card_index} card={card} />
+                <CareerCardComponent key={card.card_index} card={card} isTopPick={card.card_index === 0} />
               ))}
             </div>
 
-            <button type="button" onClick={handleEscape} className="neon-button mt-6" aria-label="방명록으로 이동">
-              ESCAPE THE RUINS ▶
-            </button>
+            <div className="flex gap-4 mt-6">
+              <button type="button" onClick={() => router.push("/survey")} className="neon-button neon-button-red" aria-label="다시 분석하기">
+                ↻ RETRY ANALYSIS
+              </button>
+              <button type="button" onClick={handleEscape} className="neon-button" aria-label="방명록으로 이동">
+                ESCAPE THE RUINS ▶
+              </button>
+            </div>
           </section>
         )}
       </div>

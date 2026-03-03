@@ -58,8 +58,10 @@ def handler(event: dict, context) -> dict:
         "session_id": survey.session_id,
         "name": survey.name,
         "job_title": survey.job_title,
+        "age_group": survey.age_group,
         "strengths": survey.strengths,
         "hobbies": survey.hobbies,
+        "desired_work_years": survey.desired_work_years,
         "status": "analyzing",
         "created_at": datetime.now(timezone.utc).isoformat(),
     }
@@ -80,8 +82,10 @@ def handler(event: dict, context) -> dict:
                 "session_id": survey.session_id,
                 "name": survey.name,
                 "job_title": survey.job_title,
+                "age_group": survey.age_group,
                 "strengths": survey.strengths,
                 "hobbies": survey.hobbies,
+                "desired_work_years": survey.desired_work_years,
             }),
         )
         logger.info("analyze_handler 비동기 호출 완료: session_id=%s", survey.session_id)
