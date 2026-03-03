@@ -203,14 +203,15 @@ export async function fetchGuestbook(
 /** POST /guestbook/{id}/reaction — 이모지 반응 추가 (Req 8.3) */
 export async function addReaction(
   entryId: string,
-  emoji: string
+  emoji: string,
+  createdAt: string
 ): Promise<ReactionResponse> {
   const res = await fetchWithRetry(
     `${API_BASE_URL}/guestbook/${entryId}/reaction`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ emoji }),
+      body: JSON.stringify({ emoji, created_at: createdAt }),
     }
   );
 

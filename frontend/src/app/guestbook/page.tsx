@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useRef, type FormEvent } from "react";
 import type { GuestbookEntry } from "@/types/guestbook";
 import { fetchGuestbook, postGuestbook, addReaction, ApiError } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 /**
  * 방명록 페이지 — DISTRICT Ω 생존자 기록부
@@ -13,6 +14,7 @@ const REACTION_EMOJIS = ["😱", "💪", "🤖", "🔥"] as const;
 const PAGE_LIMIT = 20;
 
 export default function GuestbookPage() {
+  const router = useRouter();
   const [entries, setEntries] = useState<GuestbookEntry[]>([]);
   const [lastKey, setLastKey] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -78,11 +80,11 @@ export default function GuestbookPage() {
   );
 
   const handleReaction = useCallback(
-    async (entryId: string, emoji: string) => {
+    async (entryId: string, emoji: string, createdAt: string) => {
       if (reactingIds.has(entryId)) return;
       setReactingIds((prev) => new Set(prev).add(entryId));
       try {
-        const data = await addReaction(entryId, emoji);
+        const data = await addReaction(entryId, emoji, createdAt);
         setEntries((prev) => prev.map((entry) =>
           entry.entry_id === entryId ? { ...entry, reactions: data.reactions } : entry
         ));
@@ -115,6 +117,18 @@ export default function GuestbookPage() {
           <p className="mt-2 font-[family-name:var(--font-mono)] text-xs" style={{ color: "rgba(100,160,200,0.5)" }}>
             이 폐허를 지나간 자들의 흔적을 기록하라
           </p>
+          <div className="flex justify-center gap-3 mt-4">
+            <button type="button" onClick={() => router.push("/")}
+              className="text-xs tracking-widest border border-gray-600/30 text-gray-400 px-4 py-2 hover:border-cyan-500/50 hover:text-cyan-400 transition-all"
+              style={{ fontFamily: "var(--font-mono)" }}>
+              ← HOME
+            </button>
+            <button type="button" onClick={() => router.push("/result")}
+              className="text-xs tracking-widest border border-gray-600/30 text-gray-400 px-4 py-2 hover:border-red-500/50 hover:text-red-400 transition-all"
+              style={{ fontFamily: "var(--font-mono)" }}>
+              ← RESULT
+            </button>
+          </div>
         </header>
 
         {/* 등록 폼 */}
@@ -173,7 +187,7 @@ export default function GuestbookPage() {
               <div className="flex items-center justify-between">
                 <div className="flex gap-2" role="group" aria-label="이모지 반응">
                   {REACTION_EMOJIS.map((emoji) => (
-                    <button key={emoji} type="button" onClick={() => handleReaction(entry.entry_id, emoji)}
+                    <button key={emoji} type="button" onClick={() => handleReaction(entry.entry_id, emoji, entry.created_at)}
                       disabled={reactingIds.has(entry.entry_id)} className="guestbook-reaction-btn" aria-label={`${emoji} 반응 추가`}>
                       <span>{emoji}</span>
                       {(entry.reactions[emoji] ?? 0) > 0 && (
