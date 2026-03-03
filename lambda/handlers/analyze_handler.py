@@ -14,12 +14,17 @@ from typing import Any, Dict, List
 
 import boto3
 
+from botocore.config import Config
+
 from utils.logging import get_logger
 
 logger = get_logger(__name__)
 
 dynamodb = boto3.resource("dynamodb")
-bedrock_agent_runtime = boto3.client("bedrock-agent-runtime")
+bedrock_agent_runtime = boto3.client(
+    "bedrock-agent-runtime",
+    config=Config(read_timeout=120, connect_timeout=10, retries={"max_attempts": 2}),
+)
 
 SURVEY_TABLE_NAME = os.environ.get("SURVEY_TABLE_NAME", "")
 SKILL_GRAPH_TABLE_NAME = os.environ.get("SKILL_GRAPH_TABLE_NAME", "")

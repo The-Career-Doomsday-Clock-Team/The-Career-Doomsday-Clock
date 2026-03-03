@@ -80,7 +80,7 @@ export class ApiStack extends cdk.Stack {
       runtime: commonRuntime,
       code: commonCode,
       memorySize: 512,
-      timeout: cdk.Duration.seconds(120),
+      timeout: cdk.Duration.seconds(180),
       logGroup: new logs.LogGroup(this, "AnalyzeHandlerLogs", {
         retention: logs.RetentionDays.ONE_WEEK,
         removalPolicy: cdk.RemovalPolicy.DESTROY,
