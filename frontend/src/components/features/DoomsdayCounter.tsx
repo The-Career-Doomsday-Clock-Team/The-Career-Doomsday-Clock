@@ -44,21 +44,28 @@ export function DoomsdayCounter({ targetDday, onComplete }: DoomsdayCounterProps
   }, [targetDday, onComplete]);
 
   return (
-    <div className="doomsday-counter animate-fade-in" role="status" aria-label={`D-Day ${targetDday}년`}>
-      <p className="panel-tag mb-3">VERDICT_COUNTDOWN</p>
-      <div className={`doomsday-value ${done ? "" : ""}`}>
-        <span
-          className="font-[family-name:var(--font-heading)] text-6xl sm:text-7xl md:text-8xl"
-          style={{
-            color: "#fff",
-            textShadow: `0 0 8px var(--neon-red), 0 0 20px var(--neon-red), 0 0 50px var(--neon-red), 0 0 100px rgba(255,34,68,0.5)`,
-            animation: done ? "neon-flicker 3.5s infinite" : "none",
-          }}
-        >
-          D-{currentValue}
-        </span>
+    <div className="doomsday-counter-wrapper animate-fade-in" role="status" aria-label={`D-Day ${targetDday}년`}>
+      <p className="panel-tag mb-2 tracking-[0.4em]">VERDICT_COUNTDOWN</p>
+
+      <div className="doomsday-counter-ring">
+        <div className="doomsday-counter-inner">
+          <span
+            className="font-[family-name:var(--font-heading)] text-7xl sm:text-8xl md:text-9xl font-black"
+            style={{
+              color: "#fff",
+              textShadow: `0 0 10px var(--neon-red), 0 0 30px var(--neon-red), 0 0 60px var(--neon-red), 0 0 120px rgba(255,34,68,0.4)`,
+              animation: done ? "neon-flicker 3.5s infinite" : "none",
+            }}
+          >
+            D-{currentValue}
+          </span>
+        </div>
       </div>
-      <p className="font-[family-name:var(--font-mono)] text-xs mt-3" style={{ color: "rgba(100,160,200,0.5)" }}>
+
+      <p
+        className="font-[family-name:var(--font-mono)] text-sm mt-4 tracking-wider"
+        style={{ color: "rgba(200,220,240,0.5)" }}
+      >
         년 후, 당신의 직업은 소멸한다
       </p>
     </div>

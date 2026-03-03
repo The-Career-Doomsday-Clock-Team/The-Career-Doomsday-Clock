@@ -491,9 +491,10 @@ body::after {
   inset: 0;
   z-index: 0;
   background:
-    radial-gradient(ellipse at 50% 30%, rgba(255,34,68,0.04) 0%, transparent 50%),
-    linear-gradient(0deg, rgba(0,207,255,0.03) 0%, transparent 30%),
-    var(--dark-bg);
+    radial-gradient(ellipse at 50% 20%, rgba(255,34,68,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 80%, rgba(0,207,255,0.04) 0%, transparent 40%),
+    radial-gradient(ellipse at 80% 60%, rgba(255,230,0,0.02) 0%, transparent 40%),
+    linear-gradient(180deg, rgba(5,5,12,1) 0%, rgba(8,8,18,1) 100%);
 }
 .guestbook-bg {
   position: fixed;
@@ -524,23 +525,61 @@ body::after {
 }
 
 /* ── 결과 페이지 ── */
-.doomsday-counter {
+.doomsday-counter-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.25rem;
 }
-.doomsday-value { padding: 1rem 2rem; }
+.doomsday-counter-ring {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 3.5rem;
+  border: 2px solid rgba(255,34,68,0.3);
+  border-radius: 8px;
+  background: rgba(255,34,68,0.03);
+  box-shadow: 0 0 40px rgba(255,34,68,0.1), inset 0 0 40px rgba(255,34,68,0.05);
+}
+.doomsday-counter-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.result-section-title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.25rem;
+}
+.result-section-title.text-neon-red {
+  color: var(--neon-red);
+  text-shadow: 0 0 8px var(--neon-red), 0 0 20px var(--neon-red);
+}
+.result-section-title.text-neon-green {
+  color: var(--neon-green);
+  text-shadow: 0 0 8px var(--neon-green), 0 0 20px var(--neon-green);
+}
+.result-section-sub {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: rgba(200,220,240,0.4);
+  letter-spacing: 0.1em;
+}
 .skill-risk-card {
-  background: rgba(0,15,25,0.6);
-  border: 1px solid rgba(255,34,68,0.25);
-  padding: 1.25rem;
-  border-radius: 4px;
+  background: rgba(10,15,25,0.75);
+  border: 1px solid rgba(255,34,68,0.2);
+  padding: 1.5rem;
+  border-radius: 6px;
   transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
 }
 .skill-risk-card:hover {
-  border-color: var(--neon-red);
-  box-shadow: 0 0 12px rgba(255,34,68,0.3), 0 0 24px rgba(255,34,68,0.15);
+  border-color: rgba(255,34,68,0.5);
+  box-shadow: 0 0 16px rgba(255,34,68,0.2), 0 0 32px rgba(255,34,68,0.1);
+  transform: translateY(-2px);
 }
 .result-divider {
   height: 1px;
@@ -550,12 +589,16 @@ body::after {
   transform: scaleX(0);
 }
 .career-card {
-  background: rgba(0,15,25,0.6);
-  padding: 1.5rem;
-  border-radius: 4px;
+  background: rgba(10,15,25,0.75);
+  padding: 1.75rem;
+  border-radius: 6px;
   transition: all 0.3s ease;
   opacity: 0;
   animation: fade-in 0.6s ease-out forwards;
+  backdrop-filter: blur(4px);
+}
+.career-card:hover {
+  transform: translateY(-2px);
 }
 .career-card:nth-child(1) { animation-delay: 0ms; }
 .career-card:nth-child(2) { animation-delay: 200ms; }
