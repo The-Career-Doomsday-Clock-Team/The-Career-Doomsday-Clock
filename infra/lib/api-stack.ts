@@ -104,13 +104,21 @@ export class ApiStack extends cdk.Stack {
           "bedrock:GetAgent",
           "bedrock:GetAgentAlias",
           "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream",
+          "bedrock:GetInferenceProfile",
+          "bedrock:GetFoundationModel",
           "bedrock:Retrieve",
         ],
         resources: [
           `arn:aws:bedrock:${this.region}:${this.account}:agent/*`,
           `arn:aws:bedrock:${this.region}:${this.account}:agent-alias/*`,
           `arn:aws:bedrock:${this.region}:${this.account}:knowledge-base/*`,
+          `arn:aws:bedrock:${this.region}:${this.account}:inference-profile/*`,
           `arn:aws:bedrock:${this.region}::foundation-model/*`,
+          // cross-region inference에 필요한 원본 모델 리전 ARN
+          `arn:aws:bedrock:us-east-1::foundation-model/*`,
+          `arn:aws:bedrock:us-east-2::foundation-model/*`,
+          `arn:aws:bedrock:us-west-1::foundation-model/*`,
         ],
       })
     );

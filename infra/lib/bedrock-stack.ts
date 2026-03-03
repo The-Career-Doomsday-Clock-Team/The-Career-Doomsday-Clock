@@ -222,11 +222,19 @@ export class BedrockStack extends cdk.Stack {
     });
 
     agentRole.addToPolicy(new iam.PolicyStatement({
-      actions: ["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"],
+      actions: [
+        "bedrock:InvokeModel",
+        "bedrock:InvokeModelWithResponseStream",
+        "bedrock:GetInferenceProfile",
+        "bedrock:GetFoundationModel",
+      ],
       resources: [
         agentModelArn,
         `arn:aws:bedrock:${region}::foundation-model/*`,
         `arn:aws:bedrock:${region}:${accountId}:inference-profile/*`,
+        `arn:aws:bedrock:us-east-1::foundation-model/*`,
+        `arn:aws:bedrock:us-east-2::foundation-model/*`,
+        `arn:aws:bedrock:us-west-1::foundation-model/*`,
       ],
     }));
 
@@ -272,7 +280,7 @@ export class BedrockStack extends cdk.Stack {
       properties: {
         AgentId: agent.getAtt("AgentId"),
         AgentAliasName: "prod",
-        Description: "Production agent alias - v3 inference profile",
+        Description: "Production agent alias - v4 expanded permissions",
       },
     });
 
