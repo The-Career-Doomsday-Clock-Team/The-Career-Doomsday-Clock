@@ -27,7 +27,7 @@ export function SkillRiskCard({ risk, index }: SkillRiskCardProps) {
       <h3
         className="font-[family-name:var(--font-heading)] text-xs tracking-[0.2em] mb-4 pb-3 uppercase"
         style={{
-          color: "rgba(200,220,240,0.9)",
+          color: "#e0ecf4",
           borderBottom: "1px solid rgba(0,207,255,0.15)",
         }}
       >
@@ -43,7 +43,7 @@ export function SkillRiskCard({ risk, index }: SkillRiskCardProps) {
           >
             {prob}%
           </span>
-          <span className="text-[0.65rem] ml-1.5 tracking-wider" style={{ color: "rgba(200,220,240,0.4)" }}>
+          <span className="text-[0.65rem] ml-1.5 tracking-wider" style={{ color: "rgba(200,220,240,0.6)" }}>
             대체 확률
           </span>
         </div>
@@ -54,7 +54,7 @@ export function SkillRiskCard({ risk, index }: SkillRiskCardProps) {
           >
             {risk.time_horizon}년
           </span>
-          <span className="text-[0.65rem] ml-1 tracking-wider" style={{ color: "rgba(200,220,240,0.4)" }}>
+          <span className="text-[0.65rem] ml-1 tracking-wider" style={{ color: "rgba(200,220,240,0.6)" }}>
             이내
           </span>
         </div>
@@ -75,7 +75,7 @@ export function SkillRiskCard({ risk, index }: SkillRiskCardProps) {
       {/* 근거 */}
       <p
         className="font-[family-name:var(--font-mono)] text-xs leading-relaxed"
-        style={{ color: "rgba(200,220,240,0.55)" }}
+        style={{ color: "rgba(200,220,240,0.75)" }}
       >
         {risk.justification}
       </p>

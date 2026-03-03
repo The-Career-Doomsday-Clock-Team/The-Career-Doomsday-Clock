@@ -53,7 +53,7 @@ export function CareerCardComponent({ card }: CareerCardComponentProps) {
         </h4>
         <p
           className="font-[family-name:var(--font-mono)] text-xs leading-relaxed"
-          style={{ color: "rgba(200,220,240,0.6)" }}
+          style={{ color: "rgba(200,220,240,0.75)" }}
         >
           {card.reason}
         </p>
@@ -79,7 +79,7 @@ export function CareerCardComponent({ card }: CareerCardComponentProps) {
                 </span>
                 <span
                   className="font-[family-name:var(--font-mono)] text-xs"
-                  style={{ color: "rgba(200,220,240,0.55)" }}
+                  style={{ color: "rgba(200,220,240,0.7)" }}
                 >
                   {step.step}
                 </span>
