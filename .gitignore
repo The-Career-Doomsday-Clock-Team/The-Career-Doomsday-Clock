@@ -7,4 +7,5 @@ __pycache__/
 .env
 *.js.map
 tsconfig.tsbuildinfo
-lambda/layers/common/python/
+# Lambda 리팩토링 백업 (임시)
+lambda/lambda_backup/
