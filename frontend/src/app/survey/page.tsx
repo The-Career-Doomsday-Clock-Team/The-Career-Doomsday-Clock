@@ -97,11 +97,11 @@ export default function SurveyPage() {
     <main className="relative flex min-h-screen items-center justify-center px-4 py-12">
       <div className="survey-bg" aria-hidden="true" />
 
-      <div className="dystopia-panel relative z-10 w-full max-w-xl p-9 sm:p-10 animate-fade-in" style={{ animation: "fade-in-scale 0.4s ease" }}>
+      <div className="dystopia-panel relative z-10 w-full max-w-xl p-8 sm:p-12 animate-fade-in" style={{ animation: "fade-in-scale 0.4s ease" }}>
         <div className="panel-scanlines" />
 
         {/* 헤더 */}
-        <div className="flex items-start justify-between mb-7">
+        <div className="flex items-start justify-between mb-8">
           <div>
             <div className="panel-tag">// DISTRICT-Ω REGISTRY SYSTEM v2.4.1</div>
             <div className="panel-title mt-1">SURVIVOR_INTAKE</div>
@@ -116,11 +116,11 @@ export default function SurveyPage() {
             [ ESC ]
           </button>
         </div>
-        <div className="panel-divider mb-7" />
+        <div className="panel-divider mb-8" />
 
         {/* 폼 */}
         <form onSubmit={handleSubmit} noValidate autoComplete="off">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-6">
             {/* 이름 */}
             <div className="flex flex-col gap-1.5">
               <label htmlFor="name" className="dystopia-label">IDENT_NAME // 이름</label>
@@ -192,15 +192,15 @@ export default function SurveyPage() {
           </div>
 
           {apiError && (
-            <p className="dystopia-error text-center mt-4" role="alert">⚠ {apiError}</p>
+            <p className="dystopia-error text-center mt-5" role="alert">⚠ {apiError}</p>
           )}
 
           {/* 개인정보 안내 */}
-          <p className="text-center mt-5 text-[0.6rem] tracking-wider" style={{ color: "rgba(100,160,200,0.4)" }}>
+          <p className="text-center mt-6 text-[0.6rem] tracking-wider" style={{ color: "rgba(100,160,200,0.4)" }}>
             🔒 입력된 정보는 분석 목적으로만 사용되며, 세션 종료 시 자동 삭제됩니다
           </p>
 
-          <div className="flex justify-end gap-3 mt-5">
+          <div className="flex justify-end gap-3 mt-6">
             <button
               type="button"
               onClick={() => router.push("/")}

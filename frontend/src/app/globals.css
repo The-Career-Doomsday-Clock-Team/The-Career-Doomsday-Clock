@@ -387,8 +387,8 @@ body::after {
   border-radius: 2px;
   color: #c8f0ff;
   font-family: var(--font-mono);
-  font-size: 0.82rem;
-  padding: 9px 12px;
+  font-size: 0.9rem;
+  padding: 12px 14px;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
   width: 100%;
@@ -418,8 +418,8 @@ body::after {
   border-radius: 2px;
   color: #c8f0ff;
   font-family: var(--font-mono);
-  font-size: 0.82rem;
-  padding: 9px 12px;
+  font-size: 0.9rem;
+  padding: 12px 14px;
   outline: none;
   width: 100%;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -624,6 +624,8 @@ body::after {
   padding: 1.25rem;
   border-radius: 4px;
   transition: all 0.3s ease;
+  margin: 0 auto;
+  max-width: 100%;
 }
 .guestbook-reaction-btn {
   display: flex;

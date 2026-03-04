@@ -104,7 +104,7 @@ export default function ResultPage() {
 
         {/* 1단계: 디스토피아 선고 */}
         <section
-          className={`flex flex-col items-center gap-10 ${phase !== "doom" ? "opacity-70" : ""} transition-opacity duration-700`}
+          className={`flex flex-col items-center gap-10 ${phase !== "doom" ? "opacity-50" : ""} transition-opacity duration-700`}
           onClick={handleSkip}
           role="region"
           aria-label="직업 수명 선고"
