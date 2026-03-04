@@ -21,8 +21,6 @@
   --font-mono: var(--font-jetbrains-mono), 'Share Tech Mono', monospace;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
 body {
   background-color: var(--dark-bg);
   color: var(--color-text);
