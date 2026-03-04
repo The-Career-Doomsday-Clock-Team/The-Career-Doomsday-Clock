@@ -94,10 +94,10 @@ export default function SurveyPage() {
   );
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center px-4 py-12">
+    <main className="relative flex min-h-screen items-center justify-center px-4 py-12 sm:px-6">
       <div className="survey-bg" aria-hidden="true" />
 
-      <div className="dystopia-panel relative z-10 w-full max-w-xl p-8 sm:p-12 animate-fade-in" style={{ animation: "fade-in-scale 0.4s ease" }}>
+      <div className="dystopia-panel relative z-10 w-full max-w-3xl p-10 sm:p-16 animate-fade-in" style={{ animation: "fade-in-scale 0.4s ease" }}>
         <div className="panel-scanlines" />
 
         {/* 헤더 */}
@@ -196,7 +196,7 @@ export default function SurveyPage() {
           )}
 
           {/* 개인정보 안내 */}
-          <p className="text-center mt-6 text-[0.6rem] tracking-wider" style={{ color: "rgba(100,160,200,0.4)" }}>
+          <p className="text-center mt-6 text-xs tracking-wider" style={{ color: "rgba(150,200,230,1)" }}>
             🔒 입력된 정보는 분석 목적으로만 사용되며, 세션 종료 시 자동 삭제됩니다
           </p>
 
