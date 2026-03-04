@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef, type FormEvent } from "react";
 import type { GuestbookEntry } from "@/types/guestbook";
-import { fetchGuestbook, postGuestbook, addReaction, ApiError } from "@/lib/api";
+import { fetchGuestbook, postGuestbook, addReaction, fetchResult, ApiError } from "@/lib/api";
 import { useRouter } from "next/navigation";
 
 /**
@@ -27,6 +27,8 @@ export default function GuestbookPage() {
   const observerRef = useRef<IntersectionObserver | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const [reactingIds, setReactingIds] = useState<Set<string>>(new Set());
+  const [loadingResult, setLoadingResult] = useState(true);
+  const [hasAnalysisResult, setHasAnalysisResult] = useState(false);
 
   const fetchEntries = useCallback(
     async (key: string | null = null) => {
@@ -42,7 +44,36 @@ export default function GuestbookPage() {
     [loading]
   );
 
-  useEffect(() => { fetchEntries(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, []);
+  // 분석 결과 조회 및 자동 채우기
+  useEffect(() => {
+    const loadAnalysisResult = async () => {
+      try {
+        const result = await fetchResult();
+        if (result.status === "completed" && result.dday !== undefined) {
+          setHasAnalysisResult(true);
+          // 분석 결과에서 job_title 가져오기 (sessionStorage에서 fallback)
+          const surveyData = sessionStorage.getItem("survey_form");
+          if (surveyData) {
+            const parsed = JSON.parse(surveyData);
+            setJobTitle(parsed.job_title || "");
+          }
+          setDday(String(result.dday));
+        } else {
+          // 분석이 완료되지 않았으면 홈으로 리다이렉트
+          router.push("/");
+        }
+      } catch {
+        // 분석 결과가 없으면 홈으로 리다이렉트
+        router.push("/");
+      } finally {
+        setLoadingResult(false);
+      }
+    };
+
+    loadAnalysisResult();
+    fetchEntries();
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+  }, []);
 
   useEffect(() => {
     if (!hasMore || loading) return;
@@ -95,6 +126,18 @@ export default function GuestbookPage() {
     [reactingIds]
   );
 
+  // 분석 결과 로딩 중
+  if (loadingResult) {
+    return (
+      <main className="relative min-h-screen px-4 py-12 flex items-center justify-center">
+        <div className="guestbook-bg" aria-hidden="true" />
+        <p className="relative z-10 font-[family-name:var(--font-mono)] text-sm" style={{ color: "rgba(100,160,200,0.6)", animation: "blink 1.8s step-end infinite" }}>
+          LOADING...
+        </p>
+      </main>
+    );
+  }
+
   return (
     <main className="relative min-h-screen px-4 py-12">
       <div className="guestbook-bg" aria-hidden="true" />
@@ -139,13 +182,13 @@ export default function GuestbookPage() {
             <div className="flex gap-3 mb-4">
               <div className="flex-1 flex flex-col gap-1.5">
                 <label htmlFor="gb-job" className="dystopia-label">OCCUPATION_CODE</label>
-                <input id="gb-job" type="text" value={jobTitle} onChange={(e) => setJobTitle(e.target.value)}
-                  placeholder="멸망 전 직업" className="dystopia-input" disabled={submitting} autoComplete="off" />
+                <input id="gb-job" type="text" value={jobTitle} readOnly
+                  placeholder="멸망 전 직업" className="dystopia-input opacity-70 cursor-not-allowed" autoComplete="off" />
               </div>
               <div className="w-24 flex flex-col gap-1.5">
                 <label htmlFor="gb-dday" className="dystopia-label" style={{ color: "var(--neon-yellow)", textShadow: "0 0 4px var(--neon-yellow)" }}>D-DAY</label>
-                <input id="gb-dday" type="number" value={dday} onChange={(e) => setDday(e.target.value)}
-                  placeholder="년" className="dystopia-input text-center" disabled={submitting} autoComplete="off" />
+                <input id="gb-dday" type="text" value={dday} readOnly
+                  placeholder="년" className="dystopia-input text-center opacity-70 cursor-not-allowed" autoComplete="off" />
               </div>
             </div>
             <div className="flex flex-col gap-1.5 mb-4">
