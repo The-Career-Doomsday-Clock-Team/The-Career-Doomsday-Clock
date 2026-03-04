@@ -1,0 +1,140 @@
+[19:54:09] CDK Toolkit CLI version: 2.1107.0 (build e51b1ae)
+[19:54:09] Command line arguments: {
+  _: [ 'synth' ],
+  verbose: 1,
+  v: 1,
+  defaultRegion: 'us-west-2',
+  app: undefined,
+  a: undefined,
+  build: undefined,
+  trace: undefined,
+  strict: undefined,
+  lookups: true,
+  'ignore-errors': false,
+  ignoreErrors: false,
+  json: false,
+  j: false,
+  debug: false,
+  profile: undefined,
+  proxy: undefined,
+  'ca-bundle-path': undefined,
+  caBundlePath: undefined,
+  ec2creds: undefined,
+  i: undefined,
+  'version-reporting': undefined,
+  telemetry: undefined,
+  versionReporting: undefined,
+  'path-metadata': undefined,
+  pathMetadata: undefined,
+  'asset-metadata': undefined,
+  assetMetadata: undefined,
+  'role-arn': undefined,
+  r: undefined,
+  roleArn: undefined,
+  staging: true,
+  output: undefined,
+  o: undefined,
+  notices: undefined,
+  'no-color': false,
+  noColor: false,
+  color: undefined,
+  ci: false,
+  unstable: [],
+  'telemetry-file': undefined,
+  telemetryFile: undefined,
+  yes: false,
+  y: false,
+  exclusively: undefined,
+  e: undefined,
+  validation: true,
+  quiet: false,
+  q: false,
+  '$0': '/Users/mz01-doyaji7/Code/10000Aideas/The-Career-Doomsday-Clock/infra/node_modules/.bin/cdk',
+  language: undefined
+}
+[19:54:09] cdk.json: {
+  "app": "npx ts-node --prefer-ts-exts bin/app.ts",
+  "watch": {
+    "include": [
+      "**"
+    ],
+    "exclude": [
+      "README.md",
+      "cdk*.json",
+      "**/*.d.ts",
+      "**/*.js",
+      "tsconfig.json",
+      "package*.json",
+      "yarn.lock",
+      "node_modules",
+      "test"
+    ]
+  },
+  "context": {
+    "@aws-cdk/aws-lambda:recognizeLayerVersion": true,
+    "@aws-cdk/core:checkSecretUsage": true,
+    "@aws-cdk/core:target-partitions": [
+      "aws",
+      "aws-cn"
+    ]
+  }
+}
+[19:54:09] merged settings: {
+  versionReporting: true,
+  assetMetadata: true,
+  pathMetadata: true,
+  output: 'cdk.out',
+  app: 'npx ts-node --prefer-ts-exts bin/app.ts',
+  watch: {
+    include: [ '**' ],
+    exclude: [
+      'README.md',
+      'cdk*.json',
+      '**/*.d.ts',
+      '**/*.js',
+      'tsconfig.json',
+      'package*.json',
+      'yarn.lock',
+      'node_modules',
+      'test'
+    ]
+  },
+  context: {
+    '@aws-cdk/aws-lambda:recognizeLayerVersion': true,
+    '@aws-cdk/core:checkSecretUsage': true,
+    '@aws-cdk/core:target-partitions': [ 'aws', 'aws-cn' ]
+  },
+  debug: false,
+  toolkitBucket: {},
+  staging: true,
+  bundlingStacks: [ '**' ],
+  lookups: true,
+  hotswap: { ecs: {} },
+  unstable: []
+}
+[19:54:09] Toolkit stack: CDKToolkit
+[19:54:09] context: {
+  '@aws-cdk/aws-lambda:recognizeLayerVersion': true,
+  '@aws-cdk/core:checkSecretUsage': true,
+  '@aws-cdk/core:target-partitions': [ 'aws', 'aws-cn' ],
+  'aws:cdk:enable-path-metadata': true,
+  'aws:cdk:enable-asset-metadata': true,
+  'aws:cdk:version-reporting': true,
+  'aws:cdk:bundling-stacks': [ '**' ]
+}
+[19:54:09] Setting "CDK_DEFAULT_REGION" environment variable to us-west-2
+[19:54:09] Reading cached notices from /Users/mz01-doyaji7/.cdk/cache/notices.json
+[19:54:09] Retrieved account ID 661893373836 from disk cache
+[19:54:09] Setting "CDK_DEFAULT_ACCOUNT" environment variable to 661893373836
+[19:54:09] Not a file: 'npx ts-node --prefer-ts-exts bin/app.ts'. Using 'npx ts-node --prefer-ts-exts bin/app.ts as command-line
+[19:54:09] outdir: cdk.out
+[19:54:09] env: {
+  CDK_DEFAULT_REGION: 'us-west-2',
+  CDK_DEFAULT_ACCOUNT: '661893373836',
+  CDK_OUTDIR: 'cdk.out',
+  CDK_CLI_ASM_VERSION: '52.0.0',
+  CDK_CLI_VERSION: '2.1107.0'
+}
+Successfully synthesized to /Users/mz01-doyaji7/Code/10000Aideas/The-Career-Doomsday-Clock/infra/cdk.out
+Supply a stack id (CareerDoomsdayStorageStack, CareerDoomsdayBedrockStack, CareerDoomsdayApiStack, CareerDoomsdayFrontendStack) to display its template.
+72 feature flags are not configured. Run 'cdk flags --unstable=flags' to learn more.

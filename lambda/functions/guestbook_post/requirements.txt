@@ -1,0 +1,2 @@
+# Guestbook Post 함수 전용 의존성
+# 공통 의존성은 Lambda Layer에 포함됩니다

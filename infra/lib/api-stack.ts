@@ -23,52 +23,47 @@ export class ApiStack extends cdk.Stack {
     super(scope, id, props);
 
     // ── 공통 Lambda 설정 ──
-    const commonRuntime = lambda.Runtime.PYTHON_3_12;
-    const commonCode = lambda.Code.fromAsset("../lambda", {
-      bundling: {
-        image: commonRuntime.bundlingImage,
-        local: {
-          tryBundle(outputDir: string) {
-            const { execSync } = require("child_process");
-            try {
-              execSync(
-                `pip install -r requirements.txt -t "${outputDir}" --platform manylinux2014_x86_64 --only-binary=:all: --python-version 3.12`,
-                { cwd: "../lambda", stdio: "inherit" }
-              );
-              execSync(
-                process.platform === "win32"
-                  ? `xcopy /E /I /Y . "${outputDir}"`
-                  : `cp -au . "${outputDir}"`,
-                { cwd: "../lambda", stdio: "inherit" }
-              );
-              return true;
-            } catch {
-              return false;
-            }
-          },
-        },
-        command: [
-          "bash",
-          "-c",
-          "pip install -r requirements.txt -t /asset-output && cp -au . /asset-output",
-        ],
-      },
-    });
+    const commonRuntime = lambda.Runtime.PYTHON_3_14;
     const commonMemory = 256;
     const commonTimeout = cdk.Duration.seconds(30);
+
+    // ── Lambda Layer 정의 ──
+    const commonLayer = new lambda.LayerVersion(this, "CommonLayer", {
+      code: lambda.Code.fromAsset("../lambda", {
+        bundling: {
+          image: cdk.DockerImage.fromRegistry(
+            "public.ecr.aws/sam/build-python3.14:1.154.0-20260211230116"
+          ),
+          command: [
+            "bash",
+            "-c",
+            [
+              "pip install -r layers/common/requirements.txt -t /asset-output/python --platform manylinux2014_x86_64 --only-binary=:all:",
+              "cp -r layers/common/python/models /asset-output/python/",
+              "cp -r layers/common/python/services /asset-output/python/",
+              "cp -r layers/common/python/utils /asset-output/python/",
+            ].join(" && "),
+          ],
+        },
+      }),
+      compatibleRuntimes: [lambda.Runtime.PYTHON_3_14],
+      description: "공통 유틸리티, 모델, 서비스 (utils, models, services)",
+      removalPolicy: cdk.RemovalPolicy.DESTROY, // 개발 환경용
+    });
 
     // ── Lambda 함수 6개 정의 ──
 
     const surveyHandler = new lambda.Function(this, "SurveyHandler", {
       runtime: commonRuntime,
-      code: commonCode,
+      code: lambda.Code.fromAsset("../lambda/functions/survey"),
+      handler: "handler.handler",
+      layers: [commonLayer],
       memorySize: commonMemory,
       timeout: commonTimeout,
       logGroup: new logs.LogGroup(this, "SurveyHandlerLogs", {
         retention: logs.RetentionDays.ONE_WEEK,
         removalPolicy: cdk.RemovalPolicy.DESTROY,
       }),
-      handler: "handlers.survey_handler.handler",
       description: "설문 저장 및 분석 트리거",
       environment: {
         SURVEY_TABLE_NAME: props.surveyTable.tableName,
@@ -78,14 +73,15 @@ export class ApiStack extends cdk.Stack {
 
     const analyzeHandler = new lambda.Function(this, "AnalyzeHandler", {
       runtime: commonRuntime,
-      code: commonCode,
+      code: lambda.Code.fromAsset("../lambda/functions/analyze"),
+      handler: "handler.handler",
+      layers: [commonLayer],
       memorySize: 512,
       timeout: cdk.Duration.seconds(180),
       logGroup: new logs.LogGroup(this, "AnalyzeHandlerLogs", {
         retention: logs.RetentionDays.ONE_WEEK,
         removalPolicy: cdk.RemovalPolicy.DESTROY,
       }),
-      handler: "handlers.analyze_handler.handler",
       description: "Bedrock Agent 호출 및 분석 결과 저장",
       environment: {
         SURVEY_TABLE_NAME: props.surveyTable.tableName,
@@ -131,14 +127,15 @@ export class ApiStack extends cdk.Stack {
 
     const resultHandler = new lambda.Function(this, "ResultHandler", {
       runtime: commonRuntime,
-      code: commonCode,
+      code: lambda.Code.fromAsset("../lambda/functions/result"),
+      handler: "handler.handler",
+      layers: [commonLayer],
       memorySize: commonMemory,
       timeout: commonTimeout,
       logGroup: new logs.LogGroup(this, "ResultHandlerLogs", {
         retention: logs.RetentionDays.ONE_WEEK,
         removalPolicy: cdk.RemovalPolicy.DESTROY,
       }),
-      handler: "handlers.result_handler.handler",
       description: "세션별 분석 결과 조회",
       environment: {
         SURVEY_TABLE_NAME: props.surveyTable.tableName,
@@ -152,14 +149,15 @@ export class ApiStack extends cdk.Stack {
       "GuestbookPostHandler",
       {
         runtime: commonRuntime,
-        code: commonCode,
+        code: lambda.Code.fromAsset("../lambda/functions/guestbook_post"),
+        handler: "handler.handler",
+        layers: [commonLayer],
         memorySize: commonMemory,
         timeout: commonTimeout,
         logGroup: new logs.LogGroup(this, "GuestbookPostHandlerLogs", {
           retention: logs.RetentionDays.ONE_WEEK,
           removalPolicy: cdk.RemovalPolicy.DESTROY,
         }),
-        handler: "handlers.guestbook_post_handler.handler",
         description: "방명록 등록",
         environment: {
           GUESTBOOK_TABLE_NAME: props.guestbookTable.tableName,
@@ -172,14 +170,15 @@ export class ApiStack extends cdk.Stack {
       "GuestbookGetHandler",
       {
         runtime: commonRuntime,
-        code: commonCode,
+        code: lambda.Code.fromAsset("../lambda/functions/guestbook_get"),
+        handler: "handler.handler",
+        layers: [commonLayer],
         memorySize: commonMemory,
         timeout: commonTimeout,
         logGroup: new logs.LogGroup(this, "GuestbookGetHandlerLogs", {
           retention: logs.RetentionDays.ONE_WEEK,
           removalPolicy: cdk.RemovalPolicy.DESTROY,
         }),
-        handler: "handlers.guestbook_get_handler.handler",
         description: "방명록 목록 조회 (페이지네이션)",
         environment: {
           GUESTBOOK_TABLE_NAME: props.guestbookTable.tableName,
@@ -189,14 +188,15 @@ export class ApiStack extends cdk.Stack {
 
     const reactionHandler = new lambda.Function(this, "ReactionHandler", {
       runtime: commonRuntime,
-      code: commonCode,
+      code: lambda.Code.fromAsset("../lambda/functions/reaction"),
+      handler: "handler.handler",
+      layers: [commonLayer],
       memorySize: commonMemory,
       timeout: commonTimeout,
       logGroup: new logs.LogGroup(this, "ReactionHandlerLogs", {
         retention: logs.RetentionDays.ONE_WEEK,
         removalPolicy: cdk.RemovalPolicy.DESTROY,
       }),
-      handler: "handlers.reaction_handler.handler",
       description: "이모지 반응 추가 (DynamoDB ADD)",
       environment: {
         GUESTBOOK_TABLE_NAME: props.guestbookTable.tableName,

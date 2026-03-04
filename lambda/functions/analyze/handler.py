@@ -8,6 +8,7 @@ Requirements: 3.2, 3.3, 3.4
 
 import json
 import os
+import time
 import uuid
 from decimal import Decimal
 from typing import Any, Dict, List
@@ -203,26 +204,47 @@ def handler(event: dict, context) -> None:
     hobbies = event.get("hobbies", "")
     desired_work_years = event.get("desired_work_years", "")
 
+    start_time = time.time()
     logger.info("분석 시작: session_id=%s, job_title=%s", session_id, job_title)
 
     try:
-        # Bedrock Agent 호출
+        # 1. 프롬프트 생성
+        prompt_start = time.time()
         prompt = _build_prompt(name, job_title, age_group, strengths, hobbies, desired_work_years)
+        prompt_duration = time.time() - prompt_start
+        logger.info("[TIMING] 프롬프트 생성: session_id=%s, duration=%.3fs", session_id, prompt_duration)
+
+        # 2. Bedrock Agent 호출
+        agent_start = time.time()
         raw_response = _invoke_bedrock_agent(prompt)
-        logger.info("Bedrock Agent 응답 수신: session_id=%s", session_id)
+        agent_duration = time.time() - agent_start
+        logger.info("[TIMING] Bedrock Agent 호출 완료: session_id=%s, duration=%.3fs, response_length=%d", 
+                    session_id, agent_duration, len(raw_response))
 
-        # 응답 파싱
+        # 3. 응답 파싱
+        parse_start = time.time()
         result = _parse_agent_response(raw_response)
+        parse_duration = time.time() - parse_start
+        logger.info("[TIMING] 응답 파싱 완료: session_id=%s, duration=%.3fs", session_id, parse_duration)
 
-        # 스킬 위험도 저장
+        # 4. 스킬 위험도 저장
+        skill_save_start = time.time()
         skill_risks = result.get("skill_risks", [])
         _save_skill_risks(session_id, skill_risks)
+        skill_save_duration = time.time() - skill_save_start
+        logger.info("[TIMING] 스킬 위험도 저장: session_id=%s, duration=%.3fs, count=%d", 
+                    session_id, skill_save_duration, len(skill_risks))
 
-        # 커리어 카드 저장
+        # 5. 커리어 카드 저장
+        card_save_start = time.time()
         career_cards = result.get("career_cards", [])
         _save_career_cards(session_id, career_cards)
+        card_save_duration = time.time() - card_save_start
+        logger.info("[TIMING] 커리어 카드 저장: session_id=%s, duration=%.3fs, count=%d", 
+                    session_id, card_save_duration, len(career_cards))
 
-        # D-Day 값과 근거를 survey 테이블에 저장하고 status를 completed로 업데이트
+        # 6. D-Day 값과 근거를 survey 테이블에 저장하고 status를 completed로 업데이트
+        survey_update_start = time.time()
         table = dynamodb.Table(SURVEY_TABLE_NAME)
         table.update_item(
             Key={"session_id": session_id},
@@ -234,7 +256,16 @@ def handler(event: dict, context) -> None:
                 ":r": result.get("dday_reason", ""),
             },
         )
-        logger.info("분석 완료: session_id=%s", session_id)
+        survey_update_duration = time.time() - survey_update_start
+        logger.info("[TIMING] Survey 업데이트: session_id=%s, duration=%.3fs", session_id, survey_update_duration)
+
+        # 전체 소요 시간
+        total_duration = time.time() - start_time
+        logger.info("[TIMING] 전체 분석 완료: session_id=%s, total_duration=%.3fs", session_id, total_duration)
+        logger.info("[TIMING] 비율 - Agent: %.1f%%, Parsing: %.1f%%, DB저장: %.1f%%", 
+                    (agent_duration/total_duration)*100,
+                    (parse_duration/total_duration)*100,
+                    ((skill_save_duration + card_save_duration + survey_update_duration)/total_duration)*100)
 
     except json.JSONDecodeError:
         logger.exception("Bedrock Agent 응답 파싱 실패: session_id=%s", session_id)

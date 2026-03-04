@@ -7,3 +7,4 @@ __pycache__/
 .env
 *.js.map
 tsconfig.tsbuildinfo
+lambda/layers/common/python/
