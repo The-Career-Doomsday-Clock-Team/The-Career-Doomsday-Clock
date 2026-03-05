@@ -7,8 +7,6 @@ import { submitSurvey } from "@/lib/api";
 import { DoomsdayCounter } from "@/components/features/DoomsdayCounter";
 import { SkillRiskCard } from "@/components/features/SkillRiskCard";
 import { CareerCardComponent } from "@/components/features/CareerCard";
-import { downloadResultAsPdf } from "@/lib/pdf";
-import { generateShareText, copyToClipboard } from "@/lib/share";
 
 /**
  * 결과 페이지 — DISTRICT Ω 선고 시스템
@@ -24,11 +22,7 @@ export default function ResultPage() {
   const [counterDone, setCounterDone] = useState(false);
   const [showDivider, setShowDivider] = useState(false);
   const [retrying, setRetrying] = useState(false);
-  const [pdfLoading, setPdfLoading] = useState(false);
-  const [shareStatus, setShareStatus] = useState<"idle" | "copied" | "fallback">("idle");
-  const [fallbackText, setFallbackText] = useState("");
   const autoTransitionRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const resultRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const stored = sessionStorage.getItem("result_data");
@@ -61,47 +55,6 @@ export default function ResultPage() {
   }, [phase]);
 
   const handleEscape = useCallback(() => { router.push("/guestbook"); }, [router]);
-
-  /** PDF 다운로드 */
-  const handleDownloadPdf = useCallback(async () => {
-    if (!resultRef.current || pdfLoading) return;
-    setPdfLoading(true);
-    try {
-      await downloadResultAsPdf(resultRef.current);
-    } catch (err) {
-      console.error("PDF 생성 실패:", err);
-      alert("PDF 생성에 실패했습니다. 다시 시도해주세요.");
-    } finally {
-      setPdfLoading(false);
-    }
-  }, [pdfLoading]);
-
-  /** 공유하기 — 클립보드 복사 */
-  const handleShare = useCallback(async () => {
-    if (!result) return;
-    // sessionStorage에서 직업명 가져오기
-    let jobTitle = "";
-    try {
-      const raw = sessionStorage.getItem("survey_form");
-      if (raw) {
-        const form = JSON.parse(raw);
-        jobTitle = form.job_title || "";
-      }
-    } catch { /* 무시 */ }
-
-    const text = generateShareText(result, jobTitle);
-    const success = await copyToClipboard(text);
-
-    if (success) {
-      setShareStatus("copied");
-      setTimeout(() => setShareStatus("idle"), 2000);
-    } else {
-      // Clipboard API 미지원 시 fallback
-      setFallbackText(text);
-      setShareStatus("fallback");
-      setTimeout(() => setShareStatus("idle"), 5000);
-    }
-  }, [result]);
 
   /** 동일 데이터로 AI 재분석 */
   const handleRetryAnalysis = useCallback(async () => {
@@ -140,7 +93,7 @@ export default function ResultPage() {
     <main className="relative min-h-screen flex flex-col items-center px-4 py-16">
       <div className="result-bg" aria-hidden="true" />
 
-      <div ref={resultRef} className="relative z-10 w-full max-w-4xl">
+      <div className="relative z-10 w-full max-w-4xl">
         {/* 시스템 태그 */}
         <div className="text-center mb-12">
           <div className="panel-tag tracking-[0.4em]" style={{ animation: "neon-flicker2 2.8s infinite" }}>
@@ -204,23 +157,6 @@ export default function ResultPage() {
             <div className="flex flex-wrap justify-center gap-4 mt-6">
               <button
                 type="button"
-                onClick={handleDownloadPdf}
-                disabled={pdfLoading}
-                className="neon-button neon-button-cyan disabled:opacity-40 disabled:cursor-not-allowed"
-                aria-label="결과를 PDF로 다운로드"
-              >
-                {pdfLoading ? "GENERATING…" : "⬇ DOWNLOAD PDF"}
-              </button>
-              <button
-                type="button"
-                onClick={handleShare}
-                className="neon-button neon-button-green"
-                aria-label="결과 공유하기"
-              >
-                {shareStatus === "copied" ? "✓ COPIED!" : "📋 SHARE"}
-              </button>
-              <button
-                type="button"
                 onClick={handleRetryAnalysis}
                 disabled={retrying}
                 className="neon-button neon-button-red disabled:opacity-40 disabled:cursor-not-allowed"
@@ -241,21 +177,6 @@ export default function ResultPage() {
                 ESCAPE THE RUINS ▶
               </button>
             </div>
-
-            {/* 공유 fallback 메시지 */}
-            {shareStatus === "fallback" && fallbackText && (
-              <div className="mt-4 p-4 rounded" style={{ background: "rgba(0,15,25,0.8)", border: "1px solid rgba(0,207,255,0.3)" }}>
-                <p className="text-xs mb-2" style={{ color: "var(--neon-blue)", letterSpacing: "0.15em" }}>
-                  아래 텍스트를 복사하세요:
-                </p>
-                <pre
-                  className="text-xs whitespace-pre-wrap break-words"
-                  style={{ color: "rgba(200,220,240,0.8)", fontFamily: "var(--font-mono)" }}
-                >
-                  {fallbackText}
-                </pre>
-              </div>
-            )}
           </section>
         )}
       </div>
