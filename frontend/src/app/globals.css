@@ -37,8 +37,8 @@ body::after {
   z-index: 9999;
   background: repeating-linear-gradient(
     0deg,
-    rgba(0,0,0,0.06) 0px,
-    rgba(0,0,0,0.06) 1px,
+    rgba(0,0,0,0.03) 0px,
+    rgba(0,0,0,0.03) 1px,
     transparent 1px,
     transparent 3px
   );
@@ -343,8 +343,8 @@ body::after {
   inset: 0;
   background: repeating-linear-gradient(
     0deg,
-    rgba(0,207,255,0.025) 0px,
-    rgba(0,207,255,0.025) 1px,
+    rgba(0,207,255,0.015) 0px,
+    rgba(0,207,255,0.015) 1px,
     transparent 1px,
     transparent 4px
   );
@@ -618,12 +618,18 @@ body::after {
   border-radius: 4px;
 }
 .guestbook-entry {
-  background: rgba(0,15,25,0.5);
-  padding: 1.25rem;
-  border-radius: 4px;
+  background: rgba(10,20,35,0.85);
+  padding: 1.25rem 1.5rem;
+  border-radius: 6px;
   transition: all 0.3s ease;
   margin: 0 auto;
   max-width: 100%;
+  backdrop-filter: blur(4px);
+}
+.guestbook-entry:hover {
+  background: rgba(15,28,45,0.9);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0,207,255,0.1);
 }
 .guestbook-reaction-btn {
   display: flex;

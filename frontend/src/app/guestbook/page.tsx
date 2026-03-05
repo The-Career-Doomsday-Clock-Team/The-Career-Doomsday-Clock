@@ -207,15 +207,16 @@ export default function GuestbookPage() {
         </form>
 
         {/* 방명록 목록 */}
-        <section aria-label="방명록 목록" className="flex flex-col gap-4">
+        <section aria-label="방명록 목록" className="flex flex-col gap-3">
           {entries.length === 0 && !loading && (
             <p className="text-center font-[family-name:var(--font-mono)] text-sm" style={{ color: "rgba(100,160,200,0.4)" }}>
               아직 아무도 흔적을 남기지 않았다...
             </p>
           )}
 
-          {entries.map((entry) => (
-            <article key={entry.entry_id} className="guestbook-entry neon-border-cyan" aria-label={`${entry.job_title}의 방명록`}>
+          {entries.map((entry, idx) => (
+            <article key={entry.entry_id} className="guestbook-entry neon-border-cyan" aria-label={`${entry.job_title}의 방명록`}
+              style={{ animationDelay: `${idx * 60}ms`, animation: "fade-in 0.4s ease-out forwards", opacity: 0 }}>
               <div className="flex items-baseline justify-between mb-2">
                 <span className="font-[family-name:var(--font-heading)] text-sm tracking-wider neon-text-cyan">
                   {entry.job_title}
@@ -234,12 +235,12 @@ export default function GuestbookPage() {
                       disabled={reactingIds.has(entry.entry_id)} className="guestbook-reaction-btn" aria-label={`${emoji} 반응 추가`}>
                       <span>{emoji}</span>
                       {(entry.reactions[emoji] ?? 0) > 0 && (
-                        <span className="text-xs" style={{ color: "rgba(100,160,200,0.6)" }}>{entry.reactions[emoji]}</span>
+                        <span className="text-xs" style={{ color: "rgba(100,160,200,0.7)" }}>{entry.reactions[emoji]}</span>
                       )}
                     </button>
                   ))}
                 </div>
-                <time dateTime={entry.created_at} className="font-[family-name:var(--font-mono)] text-xs" style={{ color: "rgba(100,160,200,0.4)" }}>
+                <time dateTime={entry.created_at} className="font-[family-name:var(--font-mono)] text-xs" style={{ color: "rgba(100,160,200,0.5)" }}>
                   {formatRelativeTime(entry.created_at)}
                 </time>
               </div>

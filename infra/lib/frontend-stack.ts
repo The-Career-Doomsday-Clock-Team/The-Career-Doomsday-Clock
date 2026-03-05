@@ -66,12 +66,13 @@ export class FrontendStack extends cdk.Stack {
         },
       ],
       buildSpec: buildSpecYaml,
-      // SPA 라우팅 규칙
+      // 정적 export 빌드이므로 각 경로별 HTML 파일이 존재
+      // SPA 리다이렉트 대신 404 fallback만 설정
       customRules: [
         {
-          source: "</^[^.]+$|\\.(?!(css|gif|ico|jpg|js|png|txt|svg|woff|ttf|map|json)$)([^.]+$)/>",
+          source: "/<*>",
           target: "/index.html",
-          status: "200",
+          status: "404-200",
         },
       ],
     });

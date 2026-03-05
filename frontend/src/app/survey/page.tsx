@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, type FormEvent } from "react";
+import { useState, useCallback, useEffect, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { submitSurvey, ApiError } from "@/lib/api";
 
@@ -38,6 +38,14 @@ export default function SurveyPage() {
   const [errors, setErrors] = useState<Partial<Record<FieldKey, string>>>({});
   const [submitting, setSubmitting] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
+
+  // 세션 ID가 없으면 메인 페이지로 리다이렉트
+  useEffect(() => {
+    const sessionId = sessionStorage.getItem("session_id");
+    if (!sessionId) {
+      router.push("/");
+    }
+  }, [router]);
 
   const handleChange = useCallback((key: FieldKey, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
