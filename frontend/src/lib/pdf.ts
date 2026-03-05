@@ -4,9 +4,6 @@
  * Requirements: 4.1, 4.2, 4.3
  */
 
-import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
-
 /**
  * 지정된 HTML 요소를 캡처하여 PDF로 다운로드
  * - 디스토피아 테마 배경색 유지
@@ -14,10 +11,22 @@ import { jsPDF } from "jspdf";
  * - 파일명: career-doomsday-{timestamp}.pdf
  */
 export async function downloadResultAsPdf(element: HTMLElement): Promise<void> {
+  // 동적 import로 SSR 이슈 방지
+  const [{ default: html2canvas }, { jsPDF }] = await Promise.all([
+    import("html2canvas"),
+    import("jspdf"),
+  ]);
+
   // 폰트 로딩 완료 대기
-  if (document.fonts && document.fonts.ready) {
+  if (document.fonts?.ready) {
     await document.fonts.ready;
   }
+
+  // 한국어 fallback 폰트
+  const fallbackFonts =
+    '"Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif';
+  const monoFallback =
+    '"JetBrains Mono", "D2Coding", "Consolas", "Courier New", monospace';
 
   // html2canvas로 요소를 이미지로 캡처
   const canvas = await html2canvas(element, {
@@ -28,46 +37,42 @@ export async function downloadResultAsPdf(element: HTMLElement): Promise<void> {
     logging: false,
     // 클론된 DOM에서 폰트를 시스템 폰트로 fallback 지정
     onclone: (clonedDoc: Document) => {
-      const clonedEl = clonedDoc.body;
-      // 한국어 지원 시스템 폰트를 fallback으로 추가
-      const fallbackFonts =
-        '"Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif';
-      const monoFallback =
-        '"JetBrains Mono", "D2Coding", "Consolas", "Courier New", monospace';
-
-      // 모든 요소에 한국어 fallback 폰트 적용
-      const allElements = clonedEl.querySelectorAll("*");
-      allElements.forEach((el) => {
-        const htmlEl = el as HTMLElement;
-        const computed = window.getComputedStyle(el);
-        const fontFamily = computed.fontFamily;
-
-        // mono 폰트 계열이면 mono fallback 적용
-        if (
-          fontFamily.includes("mono") ||
-          fontFamily.includes("JetBrains") ||
-          fontFamily.includes("var(--font-mono)") ||
-          fontFamily.includes("var(--font-jetbrains")
-        ) {
-          htmlEl.style.fontFamily = monoFallback;
-        } else {
-          htmlEl.style.fontFamily = fontFamily + ", " + fallbackFonts;
-        }
-      });
-
-      // CSS 변수 기반 폰트를 직접 해결
+      // CSS 변수 기반 폰트를 직접 해결하는 스타일 삽입
       const style = clonedDoc.createElement("style");
       style.textContent = `
         :root {
-          --font-mono: "JetBrains Mono", "D2Coding", "Consolas", monospace;
+          --font-mono: ${monoFallback};
+          --font-heading: "Orbitron", ${fallbackFonts};
           --font-orbitron: "Orbitron", ${fallbackFonts};
+          --font-jetbrains-mono: ${monoFallback};
         }
         * {
+          animation: none !important;
+          transition: none !important;
           -webkit-font-smoothing: antialiased;
           text-rendering: optimizeLegibility;
         }
       `;
       clonedDoc.head.appendChild(style);
+
+      // 모든 요소에 한국어 fallback 폰트 적용
+      const allElements = clonedDoc.querySelectorAll("*");
+      allElements.forEach((el) => {
+        const htmlEl = el as HTMLElement;
+        const cs = window.getComputedStyle(el);
+        const ff = cs.fontFamily;
+        if (
+          ff.includes("mono") ||
+          ff.includes("JetBrains") ||
+          ff.includes("Consolas")
+        ) {
+          htmlEl.style.fontFamily = monoFallback;
+        } else if (ff.includes("Orbitron")) {
+          htmlEl.style.fontFamily = `"Orbitron", ${fallbackFonts}`;
+        } else {
+          htmlEl.style.fontFamily = ff + ", " + fallbackFonts;
+        }
+      });
     },
   });
 
@@ -76,27 +81,20 @@ export async function downloadResultAsPdf(element: HTMLElement): Promise<void> {
 
   // A4 사이즈 기준 PDF 생성 (mm 단위)
   const pdfWidth = 210;
-  const pdfContentWidth = pdfWidth - 20; // 좌우 10mm 여백
+  const pdfContentWidth = pdfWidth - 20;
   const ratio = pdfContentWidth / imgWidth;
   const pdfContentHeight = imgHeight * ratio;
+  const pageHeight = 297;
+  const usableHeight = pageHeight - 20;
 
-  const pdf = new jsPDF({
-    orientation: "portrait",
-    unit: "mm",
-    format: "a4",
-  });
+  const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
 
-  // 페이지 분할 처리
-  const pageHeight = 297; // A4 높이
-  const usableHeight = pageHeight - 20; // 상하 10mm 여백
   let remainingHeight = pdfContentHeight;
   let sourceY = 0;
   let page = 0;
 
   while (remainingHeight > 0) {
-    if (page > 0) {
-      pdf.addPage();
-    }
+    if (page > 0) pdf.addPage();
 
     // 배경 채우기
     pdf.setFillColor(10, 10, 15);
@@ -105,7 +103,6 @@ export async function downloadResultAsPdf(element: HTMLElement): Promise<void> {
     const sliceHeight = Math.min(usableHeight, remainingHeight);
     const sourceSliceHeight = sliceHeight / ratio;
 
-    // 캔버스에서 해당 영역만 잘라서 삽입
     const sliceCanvas = document.createElement("canvas");
     sliceCanvas.width = imgWidth;
     sliceCanvas.height = Math.ceil(sourceSliceHeight);
@@ -113,14 +110,8 @@ export async function downloadResultAsPdf(element: HTMLElement): Promise<void> {
     if (ctx) {
       ctx.drawImage(
         canvas,
-        0,
-        sourceY,
-        imgWidth,
-        sourceSliceHeight,
-        0,
-        0,
-        imgWidth,
-        sourceSliceHeight,
+        0, sourceY, imgWidth, sourceSliceHeight,
+        0, 0, imgWidth, sourceSliceHeight,
       );
     }
 
@@ -132,10 +123,6 @@ export async function downloadResultAsPdf(element: HTMLElement): Promise<void> {
     page++;
   }
 
-  // 타임스탬프 기반 파일명
-  const timestamp = new Date()
-    .toISOString()
-    .replace(/[:.]/g, "-")
-    .slice(0, 19);
+  const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
   pdf.save(`career-doomsday-${timestamp}.pdf`);
 }
