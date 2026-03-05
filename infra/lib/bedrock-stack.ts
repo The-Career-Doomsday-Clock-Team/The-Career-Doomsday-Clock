@@ -212,6 +212,43 @@ export class BedrockStack extends cdk.Stack {
             InclusionPrefixes: ["pdfdata/"],
           },
         },
+        VectorIngestionConfiguration: {
+          ChunkingConfiguration: {
+            ChunkingStrategy: "HIERARCHICAL",
+            HierarchicalChunkingConfiguration: {
+              LevelConfigurations: [
+                {
+                  MaxTokens: 1500, // 부모 청크 - 큰 문맥 보존
+                },
+                {
+                  MaxTokens: 300, // 자식 청크 - 검색 단위
+                },
+              ],
+              OverlapTokens: 60,
+            },
+          },
+          ParsingConfiguration: {
+            ParsingStrategy: "BEDROCK_FOUNDATION_MODEL",
+            BedrockFoundationModelConfiguration: {
+              ModelArn: `arn:aws:bedrock:${region}:${accountId}:inference-profile/us.anthropic.claude-sonnet-4-20250514-v1:0`,
+              ParsingPrompt: {
+                ParsingPromptText: [
+                  "Additional instructions for this document set:",
+                  "",
+                  "1. This document contains many statistical charts with ranked lists and percentage values (e.g. 'AI and big data: 87% net increase'). When converting these charts to tables, always include the exact percentage or numerical value for every item in the ranking. Do not truncate rankings - include all items shown in the chart.",
+                  "",
+                  "2. Many figures show side-by-side Industry vs Global comparisons. Always preserve both values in separate columns.",
+                  "",
+                  "3. For job growth/decline figures (e.g. Figure 2.2, 2.3), include both the job title and its exact net growth percentage in the table.",
+                  "",
+                  "4. For skill-related figures (e.g. Figure 3.3, 3.4, 3.5), preserve the full skill name, its category (Cognitive, Technology, Self-efficacy, etc.), and the exact percentage value.",
+                  "",
+                  "5. Preserve all figure and table identifiers (e.g. 'FIGURE 2.2', 'TABLE A1') as markdown headings so they are searchable.",
+                ].join("\n"),
+              },
+            },
+          },
+        },
       },
     });
 
@@ -238,6 +275,18 @@ export class BedrockStack extends cdk.Stack {
       ],
     }));
 
+    // KB Role에 Foundation Model Parser 권한 추가
+    kbRole.addToPolicy(new iam.PolicyStatement({
+      actions: [
+        "bedrock:InvokeModel",
+        "bedrock:GetInferenceProfile",
+      ],
+      resources: [
+        `arn:aws:bedrock:*:${accountId}:inference-profile/*`,
+        `arn:aws:bedrock:*::foundation-model/*`,
+      ],
+    }));
+
     agentRole.addToPolicy(new iam.PolicyStatement({
       actions: ["bedrock:Retrieve"],
       resources: [`arn:aws:bedrock:${region}:${accountId}:knowledge-base/*`],
@@ -246,14 +295,69 @@ export class BedrockStack extends cdk.Stack {
     // ── Bedrock Agent ──
     const agentInstruction = [
       "You are the AI Tribunal of Career Doomsday Clock.",
-      "Analyze user career data in a dystopian tone.",
-      "Use the Future of Jobs Report 2025 from the Knowledge Base to ground your analysis with real data.",
-      "Search the Knowledge Base thoroughly for relevant job market trends, skill demands, and automation risks.",
-      "1. Predict D-Day (years until job replacement by AI) based on Knowledge Base data.",
-      "2. Analyze 3-5 key skills with AI replacement probability (0-100%) and time horizon (years).",
-      "3. Suggest 3 new career cards combining user strengths and hobbies with emerging job trends from the report.",
-      "Respond ONLY in valid JSON format.",
-    ].join(" ");
+      "You analyze user career data and deliver verdicts in a cold, dystopian tone.",
+      "Your judgments are grounded in real labor market data from the Future of Jobs Report 2025, retrieved from the Knowledge Base.",
+      "",
+      "## Mission",
+      "1. Predict D-Day: years until the user's job is substantially replaced by AI.",
+      "2. Analyze 3-5 key skills with AI replacement probability and time horizon.",
+      "3. Suggest exactly 3 future career cards based on the user's current skills.",
+      "",
+      "## Knowledge Base Usage",
+      "Search the Knowledge Base to ground your analysis in real data.",
+      "You MUST limit your Knowledge Base searches to a maximum of 2 queries total.",
+      "Combine multiple topics into a single broad query rather than making separate searches for each topic.",
+      'For example, search "software developer automation emerging roles skill trends 2025 2030" instead of making 5 separate queries.',
+      "After completing your searches, proceed directly to generating the final response. Do NOT search again.",
+      "",
+      "## Input Interpretation Guidelines",
+      "1. If the user's input contains typos in job titles or skill names, auto-correct to the closest valid term.",
+      "   Examples: '개발ㅈ' → '개발자', 'Pytohn' → 'Python', '데이타분석' → '데이터 분석'",
+      "2. If the user's job title or skills are unrealistic or nonsensical (e.g. 'space pirate', 'breathing'),",
+      "   interpret them as the closest realistic equivalent and proceed with analysis.",
+      "3. career_cards must recommend creative, future-oriented roles that are realistically achievable",
+      "   — emerging jobs or evolved forms of existing ones",
+      "   (e.g. 'AI Ethics Consultant', 'Prompt Engineer', 'Digital Twin Designer', 'AI-Human Collaboration Coordinator').",
+      "   Exclude entirely fictional roles (e.g. 'Space Wizard').",
+      "4. dday_reason must be 1-2 sentences summarizing the core basis for the D-Day prediction.",
+      "5. Each roadmap step duration must be between 1 month and 12 months.",
+      "   The total roadmap must be between 6 months and 3 years.",
+      "",
+      "## Output Format",
+      "Your entire response must be a raw JSON object starting with { and ending with }.",
+      "Do not wrap the output in markdown code fences (```). Do not include any text before or after the JSON.",
+      "All string values within the JSON must be in the language specified in the user input.",
+      "",
+      '{',
+      '  "dday": "<integer, minimum 1>",',
+      '  "dday_reason": "<1-2 sentence summary>",',
+      '  "skill_risks": [',
+      '    {',
+      '      "skill_name": "<skill name>",',
+      '      "category": "<category>",',
+      '      "replacement_prob": "<integer 0-100>",',
+      '      "time_horizon": "<integer, years>",',
+      '      "justification": "<dystopian-toned rationale>"',
+      '    }',
+      '  ],',
+      '  "career_cards": [',
+      '    {',
+      '      "card_index": "<0, 1, or 2>",',
+      '      "combo_formula": "[current job] + [relevant skills] = [new job title]",',
+      '      "reason": "<recommendation rationale>",',
+      '      "roadmap": [',
+      '        { "step": "<step description>", "duration": "<e.g. 3개월>" }',
+      '      ]',
+      '    }',
+      '  ]',
+      '}',
+      "",
+      "## Rules",
+      "- skill_risks: 3 to 5 items.",
+      "- career_cards: exactly 3 items.",
+      "- Output must be valid JSON only. No markdown, no code fences, no explanatory text.",
+      "- Knowledge Base searches: maximum 2 queries total.",
+    ].join("\n");
 
     const agent = new cdk.CfnResource(this, "BedrockAgent", {
       type: "AWS::Bedrock::Agent",
@@ -280,7 +384,7 @@ export class BedrockStack extends cdk.Stack {
       properties: {
         AgentId: agent.getAtt("AgentId"),
         AgentAliasName: "prod",
-        Description: "Production agent alias - v4 expanded permissions",
+        Description: "Production agent alias - v5 system prompt update",
       },
     });
 
