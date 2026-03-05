@@ -9,7 +9,7 @@ from pydantic import ValidationError
 
 from models.schemas import SurveyRequest
 
-REQUIRED_FIELDS = ("name", "job_title", "age_group", "strengths", "hobbies", "desired_work_years")
+REQUIRED_FIELDS = ("name", "job_title", "age_group", "strengths", "hobbies")
 
 
 class SurveyValidationError(Exception):

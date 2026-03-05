@@ -80,7 +80,6 @@ export default function LoadingScreen() {
         age_group: form.age_group,
         strengths: form.skills || form.strengths || "",
         hobbies: form.skills || form.hobbies || "",
-        desired_work_years: form.desired_work_years,
       });
       // 재분석 요청 성공 → 폴링 재시작
       startPolling();

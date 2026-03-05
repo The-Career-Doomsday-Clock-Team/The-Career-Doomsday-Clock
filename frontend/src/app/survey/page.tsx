@@ -10,14 +10,11 @@ import { submitSurvey, ApiError } from "@/lib/api";
  */
 
 const AGE_GROUPS = ["10대", "20대", "30대", "40대", "50대 이상"] as const;
-const RETIRE_OPTIONS = ["5년 이내", "10년 이내", "20년 이내", "평생 현역"] as const;
-
 interface FormData {
   name: string;
   job_title: string;
   age_group: string;
   skills: string;
-  desired_work_years: string;
 }
 
 type FieldKey = keyof FormData;
@@ -27,10 +24,9 @@ const INITIAL_FORM: FormData = {
   job_title: "",
   age_group: "",
   skills: "",
-  desired_work_years: "",
 };
 
-const REQUIRED_FIELDS: FieldKey[] = ["name", "job_title", "age_group", "skills", "desired_work_years"];
+const REQUIRED_FIELDS: FieldKey[] = ["name", "job_title", "age_group", "skills"];
 
 export default function SurveyPage() {
   const router = useRouter();
@@ -88,7 +84,6 @@ export default function SurveyPage() {
           age_group: form.age_group,
           strengths: form.skills,
           hobbies: form.skills,
-          desired_work_years: form.desired_work_years,
         });
         router.push("/loading-screen");
       } catch (err) {
@@ -168,21 +163,6 @@ export default function SurveyPage() {
                 {AGE_GROUPS.map((g) => <option key={g} value={g}>{g}</option>)}
               </select>
               {errors.age_group && <p className="dystopia-error" role="alert">{errors.age_group}</p>}
-            </div>
-
-            {/* 희망 근무 기간 */}
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="desired_work_years" className="dystopia-label">RETIRE_PLAN // 희망 근무</label>
-              <select
-                id="desired_work_years" value={form.desired_work_years}
-                onChange={(e) => handleChange("desired_work_years", e.target.value)}
-                className={`dystopia-select ${errors.desired_work_years ? "dystopia-input-error" : ""}`}
-                disabled={submitting}
-              >
-                <option value="">언제까지 일하고 싶은가</option>
-                {RETIRE_OPTIONS.map((o) => <option key={o} value={o}>{o}</option>)}
-              </select>
-              {errors.desired_work_years && <p className="dystopia-error" role="alert">{errors.desired_work_years}</p>}
             </div>
 
             {/* 보유 스킬 - 전체 너비 */}

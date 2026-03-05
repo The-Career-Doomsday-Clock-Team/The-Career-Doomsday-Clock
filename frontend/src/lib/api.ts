@@ -106,7 +106,6 @@ export interface SurveyPayload {
   age_group: string;
   strengths: string;
   hobbies: string;
-  desired_work_years: string;
 }
 
 export interface SurveyResponse {
@@ -133,7 +132,6 @@ export async function submitSurvey(
       age_group: data.age_group.trim(),
       strengths: data.strengths.trim(),
       hobbies: data.hobbies.trim(),
-      desired_work_years: data.desired_work_years.trim(),
     }),
   });
 

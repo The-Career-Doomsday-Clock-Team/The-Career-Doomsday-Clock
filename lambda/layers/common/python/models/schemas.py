@@ -17,9 +17,8 @@ class SurveyRequest(BaseModel):
     age_group: str = Field(min_length=1)
     strengths: str = Field(min_length=1)
     hobbies: str = Field(min_length=1)
-    desired_work_years: str = Field(min_length=1)
 
-    @field_validator("name", "job_title", "age_group", "strengths", "hobbies", "desired_work_years", mode="before")
+    @field_validator("name", "job_title", "age_group", "strengths", "hobbies", mode="before")
     @classmethod
     def reject_whitespace_only(cls, v: str) -> str:
         if isinstance(v, str) and not v.strip():

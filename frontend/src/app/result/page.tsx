@@ -70,7 +70,6 @@ export default function ResultPage() {
         age_group: form.age_group,
         strengths: form.skills || form.strengths || "",
         hobbies: form.skills || form.hobbies || "",
-        desired_work_years: form.desired_work_years,
       });
       sessionStorage.removeItem("result_data");
       router.push("/loading-screen");

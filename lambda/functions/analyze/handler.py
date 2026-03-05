@@ -34,7 +34,7 @@ BEDROCK_AGENT_ID = os.environ.get("BEDROCK_AGENT_ID", "")
 BEDROCK_AGENT_ALIAS_ID = os.environ.get("BEDROCK_AGENT_ALIAS_ID", "")
 
 
-def _build_prompt(name: str, job_title: str, age_group: str, strengths: str, hobbies: str, desired_work_years: str) -> str:
+def _build_prompt(name: str, job_title: str, age_group: str, strengths: str, hobbies: str) -> str:
     """Bedrock Agent에 전달할 분석 프롬프트를 생성한다."""
     # strengths와 hobbies는 동일한 '보유 스킬' 값이 전달됨
     skills = strengths
@@ -43,8 +43,7 @@ def _build_prompt(name: str, job_title: str, age_group: str, strengths: str, hob
         f"이름: {name}\n"
         f"현재 직업: {job_title}\n"
         f"연령대: {age_group}\n"
-        f"보유 스킬: {skills}\n"
-        f"희망 근무 기간: {desired_work_years}\n\n"
+        f"보유 스킬: {skills}\n\n"
         f"## 중요 지침\n"
         f"1. 사용자 입력에 오타가 있을 수 있습니다. 직업명이나 스킬명에 오타가 있으면 "
         f"가장 유사한 올바른 단어로 자동 보정하여 분석하세요. "
@@ -205,7 +204,6 @@ def handler(event: dict, context) -> None:
     age_group = event.get("age_group", "")
     strengths = event.get("strengths", "")
     hobbies = event.get("hobbies", "")
-    desired_work_years = event.get("desired_work_years", "")
 
     start_time = time.time()
     logger.info("분석 시작: session_id=%s, job_title=%s", session_id, job_title)
@@ -213,7 +211,7 @@ def handler(event: dict, context) -> None:
     try:
         # 1. 프롬프트 생성
         prompt_start = time.time()
-        prompt = _build_prompt(name, job_title, age_group, strengths, hobbies, desired_work_years)
+        prompt = _build_prompt(name, job_title, age_group, strengths, hobbies)
         prompt_duration = time.time() - prompt_start
         logger.info("[TIMING] 프롬프트 생성: session_id=%s, duration=%.3fs", session_id, prompt_duration)
 
