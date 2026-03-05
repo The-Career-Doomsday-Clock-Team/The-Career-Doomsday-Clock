@@ -7,45 +7,45 @@ import { useEffect, useState } from "react";
  * Requirements: 5.1
  */
 interface DoomsdayCounterProps {
-  targetDday: number;
-  ddayReason?: string;
+  targetYears: number;
+  yearsReason?: string;
   onComplete: () => void;
 }
 
-export function DoomsdayCounter({ targetDday, ddayReason, onComplete }: DoomsdayCounterProps) {
+export function DoomsdayCounter({ targetYears, yearsReason, onComplete }: DoomsdayCounterProps) {
   const [currentValue, setCurrentValue] = useState(0);
   const [done, setDone] = useState(false);
 
   useEffect(() => {
-    if (targetDday <= 0) {
+    if (targetYears <= 0) {
       setDone(true);
       onComplete();
       return;
     }
 
     const duration = 1500;
-    const steps = Math.min(targetDday, 60);
+    const steps = Math.min(targetYears, 60);
     const stepTime = duration / steps;
-    const increment = targetDday / steps;
+    const increment = targetYears / steps;
     let step = 0;
 
     const timer = setInterval(() => {
       step++;
-      const current = Math.min(Math.round(increment * step), targetDday);
+      const current = Math.min(Math.round(increment * step), targetYears);
       setCurrentValue(current);
       if (step >= steps) {
         clearInterval(timer);
-        setCurrentValue(targetDday);
+        setCurrentValue(targetYears);
         setDone(true);
         onComplete();
       }
     }, stepTime);
 
     return () => clearInterval(timer);
-  }, [targetDday, onComplete]);
+  }, [targetYears, onComplete]);
 
   return (
-    <div className="doomsday-counter-wrapper animate-fade-in" role="status" aria-label={`D-Day ${targetDday}년`}>
+    <div className="doomsday-counter-wrapper animate-fade-in" role="status" aria-label={`남은 수명 ${targetYears}년`}>
       <p className="panel-tag mb-2 tracking-[0.4em]">VERDICT_COUNTDOWN</p>
 
       <div className="doomsday-counter-ring">
@@ -58,24 +58,24 @@ export function DoomsdayCounter({ targetDday, ddayReason, onComplete }: Doomsday
               animation: done ? "neon-flicker 3.5s infinite" : "none",
             }}
           >
-            D-{currentValue}
+            {currentValue}년
           </span>
         </div>
       </div>
 
       <p
-        className="font-[family-name:var(--font-mono)] text-sm mt-4 tracking-wider"
+        className="font-[family-name:var(--font-mono)] text-base mt-4 tracking-wider"
         style={{ color: "rgba(200,220,240,0.7)" }}
       >
         년 후, 당신의 직업은 소멸한다
       </p>
 
-      {done && ddayReason && (
+      {done && yearsReason && (
         <p
-          className="font-[family-name:var(--font-mono)] text-xs mt-3 max-w-md text-center leading-relaxed animate-fade-in"
+          className="font-[family-name:var(--font-mono)] text-sm mt-3 max-w-md text-center leading-relaxed animate-fade-in"
           style={{ color: "rgba(255,180,100,0.85)" }}
         >
-          ⚡ {ddayReason}
+          ⚡ {yearsReason}
         </p>
       )}
     </div>

@@ -51,6 +51,13 @@ export class StorageStack extends cdk.Stack {
       projectionType: dynamodb.ProjectionType.ALL,
     });
 
+    // GSI for guestbook: session_id 기반 중복 등록 방지용
+    this.guestbookTable.addGlobalSecondaryIndex({
+      indexName: "session_id-index",
+      partitionKey: { name: "session_id", type: dynamodb.AttributeType.STRING },
+      projectionType: dynamodb.ProjectionType.KEYS_ONLY,
+    });
+
     // ── S3 Bucket for Knowledge Base source files ──
 
     this.kbBucket = new s3.Bucket(this, "KnowledgeBaseBucket", {

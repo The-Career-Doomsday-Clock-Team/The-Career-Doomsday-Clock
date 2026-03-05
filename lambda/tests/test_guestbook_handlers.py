@@ -92,7 +92,7 @@ class TestGuestbookPostHandler:
         event = _make_post_event({
             "session_id": "test-sid",
             "job_title": "개발자",
-            "dday": 5,
+            "remaining_years": 5,
             "message": "AI가 무섭다",
         })
         resp = handler(event, None)
@@ -109,7 +109,7 @@ class TestGuestbookPostHandler:
         event = _make_post_event({
             "session_id": "test-sid",
             "job_title": "개발자",
-            "dday": 5,
+            "remaining_years": 5,
             "message": "",
         })
         resp = handler(event, None)
@@ -122,7 +122,7 @@ class TestGuestbookPostHandler:
         event = _make_post_event({
             "session_id": "test-sid",
             "job_title": "개발자",
-            "dday": 5,
+            "remaining_years": 5,
             "message": "   ",
         })
         resp = handler(event, None)
@@ -175,7 +175,7 @@ class TestGuestbookGetHandler:
             "gsi_pk": "ALL",
             "session_id": "s2",
             "job_title": "디자이너",
-            "dday": "7",
+            "remaining_years": "7",
             "message": "두 번째",
             "reactions": {},
         })

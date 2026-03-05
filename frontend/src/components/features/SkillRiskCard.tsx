@@ -27,14 +27,14 @@ export function SkillRiskCard({ risk, index, isCritical = false }: SkillRiskCard
       {/* 스킬명 */}
       <div className="flex items-center justify-between mb-4 pb-3" style={{ borderBottom: "1px solid rgba(0,207,255,0.15)" }}>
         <h3
-          className="font-[family-name:var(--font-heading)] text-xs tracking-[0.2em] uppercase"
+          className="font-[family-name:var(--font-heading)] text-sm tracking-[0.2em] uppercase"
           style={{ color: "#e0ecf4" }}
         >
           {risk.skill_name}
         </h3>
         {isCritical && (
           <span
-            className="font-[family-name:var(--font-heading)] text-[0.55rem] tracking-[0.2em] px-2 py-0.5 rounded-sm"
+            className="font-[family-name:var(--font-heading)] text-[0.65rem] tracking-[0.2em] px-2 py-0.5 rounded-sm"
             style={{
               color: "var(--neon-red)",
               border: "1px solid var(--neon-red)",
@@ -51,23 +51,23 @@ export function SkillRiskCard({ risk, index, isCritical = false }: SkillRiskCard
       <div className="flex items-end justify-between mb-4">
         <div>
           <span
-            className="font-[family-name:var(--font-heading)] text-4xl font-black"
+            className="font-[family-name:var(--font-heading)] text-5xl font-black"
             style={{ color: dangerColor, textShadow: `0 0 10px ${dangerColor}` }}
           >
             {prob}%
           </span>
-          <span className="text-[0.65rem] ml-1.5 tracking-wider" style={{ color: "rgba(200,220,240,0.8)" }}>
+          <span className="text-[0.75rem] ml-1.5 tracking-wider" style={{ color: "rgba(200,220,240,0.8)" }}>
             대체 확률
           </span>
         </div>
         <div className="text-right">
           <span
-            className="font-[family-name:var(--font-heading)] text-2xl font-bold"
+            className="font-[family-name:var(--font-heading)] text-3xl font-bold"
             style={{ color: "var(--neon-yellow)", textShadow: "0 0 8px var(--neon-yellow)" }}
           >
             {risk.time_horizon}년
           </span>
-          <span className="text-[0.65rem] ml-1 tracking-wider" style={{ color: "rgba(200,220,240,0.8)" }}>
+          <span className="text-[0.75rem] ml-1 tracking-wider" style={{ color: "rgba(200,220,240,0.8)" }}>
             이내
           </span>
         </div>
@@ -87,7 +87,7 @@ export function SkillRiskCard({ risk, index, isCritical = false }: SkillRiskCard
 
       {/* 근거 */}
       <p
-        className="font-[family-name:var(--font-mono)] text-xs leading-relaxed"
+        className="font-[family-name:var(--font-mono)] text-sm leading-relaxed"
         style={{ color: "rgba(200,220,240,0.9)" }}
       >
         {risk.justification}

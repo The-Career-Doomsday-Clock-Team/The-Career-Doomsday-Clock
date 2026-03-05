@@ -216,7 +216,7 @@ export class ApiStack extends cdk.Stack {
       }),
       description: "직업별 D-Day 랭킹 집계",
       environment: {
-        SURVEY_TABLE_NAME: props.surveyTable.tableName,
+        GUESTBOOK_TABLE_NAME: props.guestbookTable.tableName,
       },
     });
 
@@ -236,8 +236,8 @@ export class ApiStack extends cdk.Stack {
     props.skillGraphTable.grantReadData(resultHandler);
     props.careerCardsTable.grantReadData(resultHandler);
 
-    // guestbook_post_handler: guestbook 테이블 쓰기
-    props.guestbookTable.grantWriteData(guestbookPostHandler);
+    // guestbook_post_handler: guestbook 테이블 읽기/쓰기 (중복 등록 체크 + 저장)
+    props.guestbookTable.grantReadWriteData(guestbookPostHandler);
 
     // guestbook_get_handler: guestbook 테이블 읽기
     props.guestbookTable.grantReadData(guestbookGetHandler);
@@ -245,8 +245,8 @@ export class ApiStack extends cdk.Stack {
     // reaction_handler: guestbook 테이블 읽기/쓰기 (ADD 연산)
     props.guestbookTable.grantReadWriteData(reactionHandler);
 
-    // ranking_handler: survey 테이블 읽기
-    props.surveyTable.grantReadData(rankingHandler);
+    // ranking_handler: guestbook 테이블 읽기
+    props.guestbookTable.grantReadData(rankingHandler);
 
     // ── API Gateway REST API ──
 

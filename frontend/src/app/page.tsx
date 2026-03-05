@@ -69,7 +69,7 @@ export default function LandingPage() {
             className="absolute top-6 left-1/2 -translate-x-1/2"
             style={{
               fontFamily: "var(--font-heading)",
-              fontSize: "1.1rem",
+              fontSize: "1.2rem",
               color: "rgba(255,200,80,0.7)",
               textShadow: "0 0 8px rgba(255,200,80,0.5)",
               letterSpacing: "0.1em",
@@ -81,7 +81,7 @@ export default function LandingPage() {
           <div
             className="absolute bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap"
             style={{
-              fontSize: "0.45rem",
+              fontSize: "0.55rem",
               letterSpacing: "0.1em",
               color: "rgba(255,34,68,0.7)",
               textShadow: "0 0 4px var(--neon-red)",
@@ -98,7 +98,7 @@ export default function LandingPage() {
       {/* 좌하단 */}
       <div
         className="neon-deco"
-        style={{ bottom: 28, left: 32, fontSize: "0.55rem", color: "rgba(255,230,0,0.6)", textShadow: "0 0 6px var(--neon-yellow)" }}
+        style={{ bottom: 28, left: 32, fontSize: "0.65rem", color: "rgba(255,230,0,0.6)", textShadow: "0 0 6px var(--neon-yellow)" }}
         aria-hidden="true"
       >
         NODE: 192.168.Ω.13 &nbsp;|&nbsp; ENC: AES-512
@@ -107,7 +107,7 @@ export default function LandingPage() {
       {/* 우하단 */}
       <div
         className="neon-deco"
-        style={{ bottom: 28, right: 32, fontSize: "0.55rem", color: "rgba(255,34,68,0.6)", textShadow: "0 0 6px var(--neon-red)", animation: "blink 2.4s step-end infinite" }}
+        style={{ bottom: 28, right: 32, fontSize: "0.65rem", color: "rgba(255,34,68,0.6)", textShadow: "0 0 6px var(--neon-red)", animation: "blink 2.4s step-end infinite" }}
         aria-hidden="true"
       >
         ⚠ WARNING: TRESPASSERS WILL BE PROCESSED

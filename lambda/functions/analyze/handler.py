@@ -211,12 +211,12 @@ def handler(event: dict, context) -> None:
         table = dynamodb.Table(SURVEY_TABLE_NAME)
         table.update_item(
             Key={"session_id": session_id},
-            UpdateExpression="SET #s = :s, dday = :d, dday_reason = :r",
+            UpdateExpression="SET #s = :s, remaining_years = :d, remaining_years_reason = :r",
             ExpressionAttributeNames={"#s": "status"},
             ExpressionAttributeValues={
                 ":s": "completed",
-                ":d": _convert_to_decimal(result.get("dday", 0)),
-                ":r": result.get("dday_reason", ""),
+                ":d": _convert_to_decimal(result.get("remaining_years", 0)),
+                ":r": result.get("remaining_years_reason", ""),
             },
         )
         survey_update_duration = time.time() - survey_update_start

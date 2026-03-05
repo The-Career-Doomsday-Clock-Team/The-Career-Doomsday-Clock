@@ -7,7 +7,7 @@ export interface GuestbookEntry {
   entry_id: string;
   created_at: string;
   job_title: string;
-  dday: number;
+  remaining_years: number;
   message: string;
   skills?: string;  // 쉼표 구분 스킬 문자열 (옵셔널)
   reactions: Record<string, number>;
@@ -21,7 +21,7 @@ export interface GuestbookListResponse {
 export interface GuestbookPostRequest {
   session_id: string;
   job_title: string;
-  dday: number;
+  remaining_years: number;
   message: string;
   skills?: string;  // 쉼표 구분 스킬 문자열 (옵셔널)
 }

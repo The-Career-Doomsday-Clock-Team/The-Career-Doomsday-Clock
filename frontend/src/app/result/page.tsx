@@ -108,7 +108,7 @@ export default function ResultPage() {
           role="region"
           aria-label="직업 수명 선고"
         >
-          <DoomsdayCounter targetDday={result.dday ?? 0} ddayReason={result.dday_reason} onComplete={handleCounterComplete} />
+          <DoomsdayCounter targetYears={result.remaining_years ?? 0} yearsReason={result.remaining_years_reason} onComplete={handleCounterComplete} />
 
           {counterDone && result.skill_risks && (
             <>
@@ -128,7 +128,7 @@ export default function ResultPage() {
 
           {counterDone && phase === "doom" && (
             <p
-              className="font-[family-name:var(--font-mono)] text-xs cursor-pointer mt-4"
+              className="font-[family-name:var(--font-mono)] text-sm cursor-pointer mt-4"
               style={{ color: "rgba(200,180,100,0.6)", animation: "blink 1.8s step-end infinite" }}
             >
               [ CLICK TO PROCEED ]

@@ -52,18 +52,35 @@ def handler(event: dict, context) -> dict:
         ]
         return response(400, {"error": "Invalid request", "details": details})
 
+    # DynamoDB 테이블 참조
+    table = dynamodb.Table(GUESTBOOK_TABLE_NAME)
+
+    # session_id 중복 등록 체크 (GSI 사용)
+    try:
+        existing = table.query(
+            IndexName="session_id-index",
+            KeyConditionExpression="session_id = :sid",
+            ExpressionAttributeValues={":sid": guestbook_req.session_id},
+            Limit=1,
+            Select="COUNT",
+        )
+        if existing.get("Count", 0) > 0:
+            logger.warning("중복 등록 시도: session_id=%s", guestbook_req.session_id)
+            return response(409, {"error": "이미 방명록을 등록하셨습니다."})
+    except Exception:
+        logger.exception("중복 체크 실패: session_id=%s", guestbook_req.session_id)
+        return response(500, {"error": "Internal server error"})
+
     # DynamoDB에 저장
     entry_id = str(uuid.uuid4())
     created_at = datetime.now(timezone.utc).isoformat()
-
-    table = dynamodb.Table(GUESTBOOK_TABLE_NAME)
     item = {
         "entry_id": entry_id,
         "created_at": created_at,
         "gsi_pk": "ALL",  # GSI (created_at-index) 파티션 키
         "session_id": guestbook_req.session_id,
         "job_title": guestbook_req.job_title,
-        "dday": str(guestbook_req.dday),
+        "remaining_years": str(guestbook_req.remaining_years),
         "message": guestbook_req.message,
         "reactions": {},
     }

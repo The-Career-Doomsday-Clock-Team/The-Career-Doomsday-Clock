@@ -56,7 +56,7 @@ class AnalysisResult(BaseModel):
     """분석 결과 전체."""
 
     session_id: str
-    dday: float
+    remaining_years: float
     skill_risks: List[SkillRisk]
     career_cards: List[CareerCard]
 
@@ -68,7 +68,7 @@ class GuestbookEntry(BaseModel):
     created_at: str
     session_id: str
     job_title: str
-    dday: float
+    remaining_years: float
     message: str
     skills: str | None = None  # 쉼표 구분 스킬 문자열 (옵셔널)
     reactions: Dict[str, int] = Field(default_factory=dict)
@@ -79,8 +79,8 @@ class GuestbookRequest(BaseModel):
 
     session_id: str
     job_title: str
-    dday: float
-    message: str = Field(min_length=1)
+    remaining_years: float
+    message: str = Field(min_length=1, max_length=250)
     skills: str | None = None  # 쉼표 구분 스킬 문자열 (옵셔널)
 
     @field_validator("message", mode="before")

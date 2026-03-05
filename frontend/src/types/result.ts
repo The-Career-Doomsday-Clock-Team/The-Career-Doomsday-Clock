@@ -25,8 +25,8 @@ export interface CareerCard {
 export interface ResultData {
   session_id: string;
   status: "analyzing" | "completed" | "error";
-  dday?: number;
-  dday_reason?: string;
+  remaining_years?: number;
+  remaining_years_reason?: string;
   skill_risks?: SkillRisk[];
   career_cards?: CareerCard[];
 }

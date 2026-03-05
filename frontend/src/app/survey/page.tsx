@@ -201,12 +201,12 @@ export default function SurveyPage() {
           )}
 
           {/* 입력 안내 */}
-          <p className="text-center mt-6 text-xs tracking-wider" style={{ color: "rgba(100,180,220,0.8)" }}>
+          <p className="text-center mt-6 text-sm tracking-wider" style={{ color: "rgba(100,180,220,0.8)" }}>
             💡 엔터를 눌러 스킬을 추가할 수 있습니다.
           </p>
 
           {/* 개인정보 안내 */}
-          <p className="text-center mt-2 text-xs tracking-wider" style={{ color: "rgba(150,200,230,1)" }}>
+          <p className="text-center mt-2 text-sm tracking-wider" style={{ color: "rgba(150,200,230,1)" }}>
             🔒 입력된 정보는 분석 목적으로만 사용되며, 세션 종료 시 자동 삭제됩니다
           </p>
 

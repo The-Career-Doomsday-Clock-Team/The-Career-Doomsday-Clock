@@ -31,14 +31,14 @@ export function CareerCardComponent({ card, isTopPick = false }: CareerCardCompo
       {/* 경로 라벨 */}
       <div className="flex items-center justify-between mb-4">
         <div
-          className="font-[family-name:var(--font-heading)] text-[0.6rem] tracking-[0.3em]"
+          className="font-[family-name:var(--font-heading)] text-[0.7rem] tracking-[0.3em]"
           style={{ color: theme.accent, textShadow: `0 0 6px ${theme.accent}` }}
         >
           {theme.label}
         </div>
         {isTopPick && (
           <span
-            className="font-[family-name:var(--font-heading)] text-[0.55rem] tracking-[0.2em] px-2 py-0.5 rounded-sm"
+            className="font-[family-name:var(--font-heading)] text-[0.65rem] tracking-[0.2em] px-2 py-0.5 rounded-sm"
             style={{
               color: "var(--neon-green)",
               border: "1px solid var(--neon-green)",
@@ -53,7 +53,7 @@ export function CareerCardComponent({ card, isTopPick = false }: CareerCardCompo
 
       {/* 조합 공식 (Req 6.3) */}
       <p
-        className="font-[family-name:var(--font-heading)] text-sm tracking-wider mb-5 leading-relaxed"
+        className="font-[family-name:var(--font-heading)] text-base tracking-wider mb-5 leading-relaxed"
         style={{ color: "#fff", textShadow: `0 0 6px rgba(255,255,255,0.15)` }}
       >
         {card.combo_formula}
@@ -62,13 +62,13 @@ export function CareerCardComponent({ card, isTopPick = false }: CareerCardCompo
       {/* 추천 사유 */}
       <div className="mb-5">
         <h4
-          className="font-[family-name:var(--font-heading)] text-[0.6rem] tracking-[0.2em] mb-2 uppercase"
+          className="font-[family-name:var(--font-heading)] text-[0.7rem] tracking-[0.2em] mb-2 uppercase"
           style={{ color: theme.accent, textShadow: `0 0 4px ${theme.accent}` }}
         >
           RECOMMENDATION
         </h4>
         <p
-          className="font-[family-name:var(--font-mono)] text-xs leading-relaxed"
+          className="font-[family-name:var(--font-mono)] text-sm leading-relaxed"
           style={{ color: "rgba(200,220,240,0.75)" }}
         >
           {card.reason}
@@ -79,7 +79,7 @@ export function CareerCardComponent({ card, isTopPick = false }: CareerCardCompo
       {card.roadmap && card.roadmap.length > 0 && (
         <div>
           <h4
-            className="font-[family-name:var(--font-heading)] text-[0.6rem] tracking-[0.2em] mb-3 uppercase"
+            className="font-[family-name:var(--font-heading)] text-[0.7rem] tracking-[0.2em] mb-3 uppercase"
             style={{ color: "var(--neon-yellow)", textShadow: "0 0 4px var(--neon-yellow)" }}
           >
             ROADMAP
@@ -88,13 +88,13 @@ export function CareerCardComponent({ card, isTopPick = false }: CareerCardCompo
             {card.roadmap.map((step, i) => (
               <div key={i} className="roadmap-step">
                 <span
-                  className="font-[family-name:var(--font-heading)] text-[0.65rem] shrink-0 min-w-[60px]"
+                  className="font-[family-name:var(--font-heading)] text-[0.75rem] shrink-0 min-w-[60px]"
                   style={{ color: theme.accent, textShadow: `0 0 4px ${theme.accent}` }}
                 >
                   {step.duration}
                 </span>
                 <span
-                  className="font-[family-name:var(--font-mono)] text-xs"
+                  className="font-[family-name:var(--font-mono)] text-sm"
                   style={{ color: "rgba(200,220,240,0.7)" }}
                 >
                   {step.step}
@@ -102,7 +102,7 @@ export function CareerCardComponent({ card, isTopPick = false }: CareerCardCompo
               </div>
             ))}
           </div>
-          <p className="mt-3 text-[0.6rem] tracking-wider" style={{ color: "rgba(100,160,200,0.4)" }}>
+          <p className="mt-3 text-[0.7rem] tracking-wider" style={{ color: "rgba(100,160,200,0.4)" }}>
             💡 관련 교육 과정은 Coursera, Udemy 등에서 검색해보세요
           </p>
         </div>

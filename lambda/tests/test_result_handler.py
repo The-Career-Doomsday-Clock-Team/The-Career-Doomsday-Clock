@@ -105,7 +105,7 @@ def test_completed_returns_full_result(aws_env, dynamodb_tables):
     survey_table.put_item(Item={
         "session_id": "test-sid",
         "status": "completed",
-        "dday": Decimal("5"),
+        "remaining_years": Decimal("5"),
     })
 
     # skill_graph 데이터 삽입
@@ -137,7 +137,7 @@ def test_completed_returns_full_result(aws_env, dynamodb_tables):
     body = json.loads(resp["body"])
     assert body["session_id"] == "test-sid"
     assert body["status"] == "completed"
-    assert body["dday"] == 5
+    assert body["remaining_years"] == 5
     assert len(body["skill_risks"]) == 1
     assert body["skill_risks"][0]["skill_name"] == "코딩"
     assert body["skill_risks"][0]["replacement_prob"] == 75

@@ -158,7 +158,7 @@ export async function fetchResult(): Promise<ResultData> {
 
 export interface GuestbookPostPayload {
   job_title: string;
-  dday: number;
+  remaining_years: number;
   message: string;
   skills?: string;  // 쉼표 구분 스킬 문자열 (옵셔널)
 }
@@ -172,7 +172,7 @@ export async function postGuestbook(
   const body: Record<string, unknown> = {
       session_id: sessionId,
       job_title: data.job_title.trim(),
-      dday: data.dday,
+      remaining_years: data.remaining_years,
       message: data.message.trim(),
     };
     if (data.skills) {
@@ -227,7 +227,8 @@ export async function addReaction(
 import type { JobRiskData } from "@/components/features/JobRiskRanking";
 
 export interface RankingResponse {
-  items: JobRiskData[];
+  most_endangered: JobRiskData[];
+  most_survived: JobRiskData[];
 }
 
 /** GET /ranking — 직업별 D-Day 랭킹 조회 */

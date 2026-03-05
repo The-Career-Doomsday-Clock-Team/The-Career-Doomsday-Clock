@@ -148,7 +148,7 @@ body::after {
 .neon-button {
   position: relative;
   font-family: var(--font-heading);
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.2em;
   padding: 13px 32px;
@@ -260,7 +260,7 @@ body::after {
   animation: neon-flicker 3.5s infinite;
 }
 .sign-sub {
-  font-size: 0.82rem;
+  font-size: 0.95rem;
   letter-spacing: 0.35em;
   color: var(--neon-blue);
   text-shadow: 0 0 10px var(--neon-blue);
@@ -313,7 +313,7 @@ body::after {
   pointer-events: none;
 }
 .door-label {
-  font-size: 0.72rem;
+  font-size: 0.82rem;
   letter-spacing: 0.3em;
   color: rgba(200,180,100,0.8);
   text-shadow: 0 0 6px rgba(255,200,80,0.5);
@@ -326,7 +326,7 @@ body::after {
   z-index: 5;
   font-family: var(--font-heading);
   pointer-events: none;
-  font-size: 0.6rem;
+  font-size: 0.7rem;
   letter-spacing: 0.2em;
 }
 
@@ -377,14 +377,14 @@ body::after {
   opacity: 0.4;
 }
 .panel-tag {
-  font-size: 0.6rem;
+  font-size: 0.7rem;
   letter-spacing: 0.3em;
   color: var(--neon-blue);
   text-shadow: 0 0 6px var(--neon-blue);
 }
 .panel-title {
   font-family: var(--font-heading);
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   color: #fff;
@@ -393,7 +393,7 @@ body::after {
 
 /* ── 폼 필드 (DISTRICT Ω 스타일) ── */
 .dystopia-label {
-  font-size: 0.6rem;
+  font-size: 0.7rem;
   letter-spacing: 0.25em;
   color: var(--neon-blue);
   text-shadow: 0 0 4px rgba(0,207,255,0.5);
@@ -405,7 +405,7 @@ body::after {
   border-radius: 2px;
   color: #c8f0ff;
   font-family: var(--font-mono);
-  font-size: 0.9rem;
+  font-size: 1rem;
   padding: 12px 14px;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -423,7 +423,7 @@ body::after {
   box-shadow: 0 0 8px rgba(255,34,68,0.3);
 }
 .dystopia-error {
-  font-size: 0.58rem;
+  font-size: 0.68rem;
   color: var(--neon-red);
   text-shadow: 0 0 4px var(--neon-red);
   letter-spacing: 0.15em;
@@ -436,7 +436,7 @@ body::after {
   border-radius: 2px;
   color: #c8f0ff;
   font-family: var(--font-mono);
-  font-size: 0.9rem;
+  font-size: 1rem;
   padding: 12px 14px;
   outline: none;
   width: 100%;
@@ -454,7 +454,7 @@ body::after {
   border-radius: 2px;
   color: #c8f0ff;
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.95rem;
   padding: 9px 12px;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -470,7 +470,7 @@ body::after {
   box-shadow: 0 0 8px rgba(255,34,68,0.3);
 }
 .survey-error-text {
-  font-size: 0.58rem;
+  font-size: 0.68rem;
   color: var(--neon-red);
   text-shadow: 0 0 4px var(--neon-red);
   letter-spacing: 0.15em;
@@ -567,7 +567,7 @@ body::after {
 }
 .result-section-title {
   font-family: var(--font-heading);
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 800;
   letter-spacing: 0.15em;
   margin-bottom: 0.25rem;
@@ -582,7 +582,7 @@ body::after {
 }
 .result-section-sub {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   color: rgba(200,220,240,0.75);
   letter-spacing: 0.1em;
 }

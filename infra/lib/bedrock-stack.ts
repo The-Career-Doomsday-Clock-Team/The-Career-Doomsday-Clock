@@ -309,6 +309,7 @@ export class BedrockStack extends cdk.Stack {
       "Combine multiple topics into a single broad query rather than making separate searches for each topic.",
       'For example, search "software developer automation emerging roles skill trends 2025 2030" instead of making 5 separate queries.',
       "After completing your searches, proceed directly to generating the final response. Do NOT search again.",
+      "If a user-provided skill is not covered in the Knowledge Base search results, use your general knowledge to analyze it. Do not search again for missing skills.",
       "",
       "## Input Interpretation Guidelines",
       "1. If the user's input contains typos in job titles or skill names, auto-correct to the closest valid term.",
@@ -329,8 +330,8 @@ export class BedrockStack extends cdk.Stack {
       "All string values within the JSON must be in the language specified in the user input.",
       "",
       '{',
-      '  "dday": "<integer, minimum 1>",',
-      '  "dday_reason": "<1-2 sentence summary>",',
+      '  "remaining_years": "<integer, minimum 1>",',
+      '  "remaining_years_reason": "<1-2 sentence summary>",',
       '  "skill_risks": [',
       '    {',
       '      "skill_name": "<skill name>",',
@@ -353,7 +354,7 @@ export class BedrockStack extends cdk.Stack {
       '}',
       "",
       "## Rules",
-      "- skill_risks: 3 to 5 items.",
+      "- skill_risks must include ALL skills the user listed without exception. For non-technical skills (e.g. hobbies, physical activities, soft skills), analyze them seriously in a professional context — evaluate how AI or automation could impact the professional application of that skill. For example, 'yoga' could be analyzed as a fitness instruction skill facing competition from AI-powered virtual coaching apps. Maintain the same dystopian tone and analytical rigor as technical skills.",
       "- career_cards: exactly 3 items.",
       "- Output must be valid JSON only. No markdown, no code fences, no explanatory text.",
       "- Knowledge Base searches: maximum 2 queries total.",
@@ -384,7 +385,7 @@ export class BedrockStack extends cdk.Stack {
       properties: {
         AgentId: agent.getAtt("AgentId"),
         AgentAliasName: "prod",
-        Description: "Production agent alias - v5 system prompt update",
+        Description: "Production agent alias - v7 rename dday to remaining_years",
       },
     });
 

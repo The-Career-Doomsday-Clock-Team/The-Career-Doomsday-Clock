@@ -77,8 +77,8 @@ def handler(event: dict, context) -> dict:
         return response(200, {
             "session_id": session_id,
             "status": "completed",
-            "dday": survey_item.get("dday", 0),
-            "dday_reason": survey_item.get("dday_reason", ""),
+            "remaining_years": survey_item.get("remaining_years", 0),
+            "remaining_years_reason": survey_item.get("remaining_years_reason", ""),
             "skill_risks": skill_risks,
             "career_cards": career_cards,
         })

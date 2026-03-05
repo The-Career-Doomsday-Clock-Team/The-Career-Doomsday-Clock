@@ -134,7 +134,7 @@ export function TagInput({
         {tags.map((tag, i) => (
           <span
             key={`${tag}-${i}`}
-            className="inline-flex items-center gap-1 px-2 py-0.5 text-xs tracking-wider rounded-sm"
+            className="inline-flex items-center gap-1 px-2 py-0.5 text-sm tracking-wider rounded-sm"
             style={{
               background: "rgba(0,207,255,0.12)",
               border: "1px solid rgba(0,207,255,0.4)",
@@ -152,7 +152,7 @@ export function TagInput({
                   handleRemove(i);
                 }}
                 className="ml-0.5 hover:text-white transition-colors"
-                style={{ lineHeight: 1, fontSize: "0.7rem" }}
+                style={{ lineHeight: 1, fontSize: "0.8rem" }}
                 aria-label={`${tag} 태그 삭제`}
               >
                 ✕
@@ -170,7 +170,7 @@ export function TagInput({
           placeholder={tags.length === 0 ? placeholder : ""}
           disabled={disabled}
           className="flex-1 min-w-[80px] bg-transparent border-none outline-none text-[#c8f0ff] placeholder:text-[rgba(100,160,200,0.35)]"
-          style={{ fontFamily: "var(--font-mono)", fontSize: "0.9rem", padding: 0 }}
+          style={{ fontFamily: "var(--font-mono)", fontSize: "1rem", padding: 0 }}
           autoComplete="off"
         />
       </div>

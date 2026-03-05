@@ -125,7 +125,7 @@ export default function LoadingScreen() {
 
         {/* 로딩 메시지 (Req 4.1) */}
         <p
-          className="neon-text-cyan font-[family-name:var(--font-heading)] text-lg tracking-wider sm:text-xl loading-message"
+          className="neon-text-cyan font-[family-name:var(--font-heading)] text-xl tracking-wider sm:text-2xl loading-message"
           role="status"
           aria-live="polite"
         >
@@ -139,7 +139,7 @@ export default function LoadingScreen() {
 
         {/* 하단 장식 */}
         <p
-          className="text-xs tracking-widest"
+          className="text-sm tracking-widest"
           style={{ color: "rgba(100,160,200,0.35)", letterSpacing: "0.3em" }}
         >
           NODE: 192.168.Ω.13 &nbsp;|&nbsp; PROCESSING
@@ -147,7 +147,7 @@ export default function LoadingScreen() {
 
         {/* 타임아웃 (Req 4.3) */}
         {timedOut && !failed && (
-          <p className="neon-text-yellow font-[family-name:var(--font-mono)] text-sm tracking-wide animate-fade-in">
+          <p className="neon-text-yellow font-[family-name:var(--font-mono)] text-base tracking-wide animate-fade-in">
             ⚠ EXTENDED ANALYSIS REQUIRED... PLEASE STAND BY
           </p>
         )}
@@ -155,7 +155,7 @@ export default function LoadingScreen() {
         {/* 분석 실패 시 재시도 */}
         {failed && (
           <div className="flex flex-col items-center gap-4 animate-fade-in">
-            <p className="neon-text-red font-[family-name:var(--font-mono)] text-sm tracking-wide">
+            <p className="neon-text-red font-[family-name:var(--font-mono)] text-base tracking-wide">
               ⚠ ANALYSIS FAILED — SYSTEM ERROR DETECTED
             </p>
             <div className="flex gap-3">
