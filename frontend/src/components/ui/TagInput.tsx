@@ -80,6 +80,8 @@ export function TagInput({
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
+      // 한국어 IME 조합 중이면 태그 추가하지 않음
+      if (e.nativeEvent.isComposing) return;
       if (e.key === "Enter" || e.key === ",") {
         e.preventDefault();
         e.stopPropagation();
