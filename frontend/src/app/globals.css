@@ -189,6 +189,26 @@ body::after {
   box-shadow: 0 0 28px rgba(255,34,68,0.6), 0 0 60px rgba(200,0,50,0.25);
 }
 
+.neon-button-cyan {
+  background: linear-gradient(135deg, #0a2a3a, #0077aa);
+  color: var(--neon-blue);
+  text-shadow: 0 0 8px var(--neon-blue);
+  box-shadow: 0 0 16px rgba(0,207,255,0.3), 0 0 1px rgba(0,207,255,0.8) inset;
+}
+.neon-button-cyan:hover {
+  box-shadow: 0 0 28px rgba(0,207,255,0.6), 0 0 60px rgba(0,150,200,0.25);
+}
+
+.neon-button-green {
+  background: linear-gradient(135deg, #0a3a1c, #00aa44);
+  color: var(--neon-green);
+  text-shadow: 0 0 8px var(--neon-green);
+  box-shadow: 0 0 16px rgba(0,255,153,0.3), 0 0 1px rgba(0,255,153,0.8) inset;
+}
+.neon-button-green:hover {
+  box-shadow: 0 0 28px rgba(0,255,153,0.6), 0 0 60px rgba(0,200,100,0.25);
+}
+
 /* ── 랜딩 페이지: DISTRICT Ω 외관 ── */
 .scene-bg {
   position: absolute;

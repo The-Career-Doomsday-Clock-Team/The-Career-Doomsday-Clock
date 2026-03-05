@@ -70,6 +70,7 @@ class GuestbookEntry(BaseModel):
     job_title: str
     dday: float
     message: str
+    skills: str | None = None  # 쉼표 구분 스킬 문자열 (옵셔널)
     reactions: Dict[str, int] = Field(default_factory=dict)
 
 
@@ -80,6 +81,7 @@ class GuestbookRequest(BaseModel):
     job_title: str
     dday: float
     message: str = Field(min_length=1)
+    skills: str | None = None  # 쉼표 구분 스킬 문자열 (옵셔널)
 
     @field_validator("message", mode="before")
     @classmethod

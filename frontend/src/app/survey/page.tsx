@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { submitSurvey, ApiError } from "@/lib/api";
+import { TagInput, serializeTags } from "@/components/ui/TagInput";
 
 /**
  * 설문 페이지 — DISTRICT Ω 등록 시스템 스타일
@@ -14,19 +15,21 @@ interface FormData {
   name: string;
   job_title: string;
   age_group: string;
-  skills: string;
+  skills: string[];
 }
 
+/** 텍스트 필드 키 (skills 제외) */
+type TextFieldKey = "name" | "job_title" | "age_group";
 type FieldKey = keyof FormData;
 
 const INITIAL_FORM: FormData = {
   name: "",
   job_title: "",
   age_group: "",
-  skills: "",
+  skills: [],
 };
 
-const REQUIRED_FIELDS: FieldKey[] = ["name", "job_title", "age_group", "skills"];
+const REQUIRED_TEXT_FIELDS: TextFieldKey[] = ["name", "job_title", "age_group"];
 
 export default function SurveyPage() {
   const router = useRouter();
@@ -43,7 +46,7 @@ export default function SurveyPage() {
     }
   }, [router]);
 
-  const handleChange = useCallback((key: FieldKey, value: string) => {
+  const handleChange = useCallback((key: TextFieldKey, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
     setErrors((prev) => {
       if (!prev[key]) return prev;
@@ -53,12 +56,25 @@ export default function SurveyPage() {
     });
   }, []);
 
+  const handleSkillsChange = useCallback((tags: string[]) => {
+    setForm((prev) => ({ ...prev, skills: tags }));
+    setErrors((prev) => {
+      if (!prev.skills) return prev;
+      const next = { ...prev };
+      delete next.skills;
+      return next;
+    });
+  }, []);
+
   const validate = useCallback((): boolean => {
     const newErrors: Partial<Record<FieldKey, string>> = {};
-    for (const key of REQUIRED_FIELDS) {
+    for (const key of REQUIRED_TEXT_FIELDS) {
       if (!form[key].trim()) {
         newErrors[key] = "> 필수 항목입니다";
       }
+    }
+    if (form.skills.length === 0) {
+      newErrors.skills = "> 필수 항목입니다";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -78,12 +94,13 @@ export default function SurveyPage() {
 
       setSubmitting(true);
       try {
+        const skillsStr = serializeTags(form.skills);
         await submitSurvey({
           name: form.name,
           job_title: form.job_title,
           age_group: form.age_group,
-          strengths: form.skills,
-          hobbies: form.skills,
+          strengths: skillsStr,
+          hobbies: skillsStr,
         });
         router.push("/loading-screen");
       } catch (err) {
@@ -168,14 +185,14 @@ export default function SurveyPage() {
             {/* 보유 스킬 - 전체 너비 */}
             <div className="flex flex-col gap-1.5 sm:col-span-2">
               <label htmlFor="skills" className="dystopia-label">SKILLS // 보유 스킬</label>
-              <input
-                id="skills" type="text" value={form.skills}
-                onChange={(e) => handleChange("skills", e.target.value)}
-                placeholder="예: Python, 데이터 분석, 프로젝트 관리, UX 디자인"
-                className={`dystopia-input ${errors.skills ? "dystopia-input-error" : ""}`}
+              <TagInput
+                id="skills"
+                tags={form.skills}
+                onChange={handleSkillsChange}
+                placeholder="예: Python, 데이터 분석, UX 디자인 (Enter로 추가)"
                 disabled={submitting}
+                error={errors.skills}
               />
-              {errors.skills && <p className="dystopia-error" role="alert">{errors.skills}</p>}
             </div>
           </div>
 
@@ -185,7 +202,7 @@ export default function SurveyPage() {
 
           {/* 입력 안내 */}
           <p className="text-center mt-6 text-xs tracking-wider" style={{ color: "rgba(100,180,220,0.8)" }}>
-            💡 직업과 보유 스킬은 여러 개일 경우 쉼표(,)로 구분하여 입력하세요
+            💡 스킬은 입력 후 Enter 또는 쉼표(,)로 태그를 추가하세요
           </p>
 
           {/* 개인정보 안내 */}

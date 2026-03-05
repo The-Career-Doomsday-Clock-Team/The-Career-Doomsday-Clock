@@ -38,7 +38,7 @@ export class ApiStack extends cdk.Stack {
             "bash",
             "-c",
             [
-              "pip install -r layers/common/requirements.txt -t /asset-output/python --platform manylinux2014_x86_64 --only-binary=:all:",
+              "pip install --no-cache-dir -r layers/common/requirements.txt -t /asset-output/python --platform manylinux2014_x86_64 --only-binary=:all:",
               "cp -r layers/common/python/models /asset-output/python/",
               "cp -r layers/common/python/services /asset-output/python/",
               "cp -r layers/common/python/utils /asset-output/python/",
@@ -203,6 +203,23 @@ export class ApiStack extends cdk.Stack {
       },
     });
 
+    const rankingHandler = new lambda.Function(this, "RankingHandler", {
+      runtime: commonRuntime,
+      code: lambda.Code.fromAsset("../lambda/functions/ranking"),
+      handler: "handler.handler",
+      layers: [commonLayer],
+      memorySize: commonMemory,
+      timeout: commonTimeout,
+      logGroup: new logs.LogGroup(this, "RankingHandlerLogs", {
+        retention: logs.RetentionDays.ONE_WEEK,
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+      }),
+      description: "직업별 D-Day 랭킹 집계",
+      environment: {
+        SURVEY_TABLE_NAME: props.surveyTable.tableName,
+      },
+    });
+
     // ── IAM 최소 권한 부여 ──
 
     // survey_handler: survey 테이블 읽기/쓰기 + analyze_handler 비동기 호출
@@ -227,6 +244,9 @@ export class ApiStack extends cdk.Stack {
 
     // reaction_handler: guestbook 테이블 읽기/쓰기 (ADD 연산)
     props.guestbookTable.grantReadWriteData(reactionHandler);
+
+    // ranking_handler: survey 테이블 읽기
+    props.surveyTable.grantReadData(rankingHandler);
 
     // ── API Gateway REST API ──
 
@@ -285,6 +305,13 @@ export class ApiStack extends cdk.Stack {
     reactionResource.addMethod(
       "POST",
       new apigateway.LambdaIntegration(reactionHandler)
+    );
+
+    // GET /ranking
+    const rankingResource = this.api.root.addResource("ranking");
+    rankingResource.addMethod(
+      "GET",
+      new apigateway.LambdaIntegration(rankingHandler)
     );
 
     // ── 출력 ──

@@ -9,6 +9,7 @@ export interface GuestbookEntry {
   job_title: string;
   dday: number;
   message: string;
+  skills?: string;  // 쉼표 구분 스킬 문자열 (옵셔널)
   reactions: Record<string, number>;
 }
 
@@ -22,6 +23,7 @@ export interface GuestbookPostRequest {
   job_title: string;
   dday: number;
   message: string;
+  skills?: string;  // 쉼표 구분 스킬 문자열 (옵셔널)
 }
 
 export interface GuestbookPostResponse {

@@ -68,6 +68,10 @@ def handler(event: dict, context) -> dict:
         "reactions": {},
     }
 
+    # skills가 있으면 저장
+    if guestbook_req.skills:
+        item["skills"] = guestbook_req.skills
+
     try:
         table.put_item(Item=item)
         logger.info("방명록 저장 완료: entry_id=%s", entry_id)

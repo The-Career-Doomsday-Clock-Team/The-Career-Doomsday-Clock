@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useCallback, useRef, type FormEvent } from "react";
 import type { GuestbookEntry } from "@/types/guestbook";
-import { fetchGuestbook, postGuestbook, addReaction, fetchResult, ApiError } from "@/lib/api";
+import { fetchGuestbook, postGuestbook, addReaction, fetchResult, fetchRanking, ApiError } from "@/lib/api";
+import { JobRiskRanking, type JobRiskData } from "@/components/features/JobRiskRanking";
 import { useRouter } from "next/navigation";
 
 /**
@@ -29,6 +30,10 @@ export default function GuestbookPage() {
   const [reactingIds, setReactingIds] = useState<Set<string>>(new Set());
   const [loadingResult, setLoadingResult] = useState(true);
   const [hasAnalysisResult, setHasAnalysisResult] = useState(false);
+  const [skills, setSkills] = useState("");
+  const [rankingData, setRankingData] = useState<JobRiskData[]>([]);
+  const [rankingLoading, setRankingLoading] = useState(true);
+  const [rankingError, setRankingError] = useState(false);
 
   const fetchEntries = useCallback(
     async (key: string | null = null) => {
@@ -51,11 +56,11 @@ export default function GuestbookPage() {
         const result = await fetchResult();
         if (result.status === "completed" && result.dday !== undefined) {
           setHasAnalysisResult(true);
-          // 분석 결과에서 job_title 가져오기 (sessionStorage에서 fallback)
           const surveyData = sessionStorage.getItem("survey_form");
           if (surveyData) {
             const parsed = JSON.parse(surveyData);
             setJobTitle(parsed.job_title || "");
+            setSkills(parsed.strengths || "");
           }
           setDday(String(result.dday));
         } else {
@@ -72,6 +77,19 @@ export default function GuestbookPage() {
 
     loadAnalysisResult();
     fetchEntries();
+
+    // 랭킹 데이터 로드
+    const loadRanking = async () => {
+      try {
+        const res = await fetchRanking();
+        setRankingData(res.items);
+      } catch {
+        setRankingError(true);
+      } finally {
+        setRankingLoading(false);
+      }
+    };
+    loadRanking();
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, []);
 
@@ -98,8 +116,8 @@ export default function GuestbookPage() {
 
       setSubmitting(true);
       try {
-        await postGuestbook({ job_title: jobTitle, dday: ddayNum, message });
-        setJobTitle(""); setDday(""); setMessage("");
+        await postGuestbook({ job_title: jobTitle, dday: ddayNum, message, skills: skills || undefined });
+        setJobTitle(""); setDday(""); setMessage(""); setSkills("");
         setLastKey(null); setHasMore(true);
         await fetchEntries();
       } catch (err) {
@@ -206,6 +224,9 @@ export default function GuestbookPage() {
           </div>
         </form>
 
+        {/* 랭킹 차트 */}
+        <JobRiskRanking data={rankingData} loading={rankingLoading} error={rankingError} />
+
         {/* 방명록 목록 */}
         <section aria-label="방명록 목록" className="flex flex-col gap-3">
           {entries.length === 0 && !loading && (
@@ -228,6 +249,22 @@ export default function GuestbookPage() {
               <p className="font-[family-name:var(--font-mono)] text-sm leading-relaxed mb-3" style={{ color: "var(--color-text)" }}>
                 {entry.message}
               </p>
+              {/* 스킬 태그 배지 (Requirements 2.1, 2.3) */}
+              {entry.skills && (
+                <div className="flex flex-wrap gap-1.5 mb-3">
+                  {entry.skills.split(",").map((skill) => skill.trim()).filter(Boolean).map((skill) => (
+                    <span key={skill} className="inline-block px-2 py-0.5 text-xs font-[family-name:var(--font-mono)] rounded"
+                      style={{
+                        background: "rgba(0,255,255,0.08)",
+                        border: "1px solid rgba(0,255,255,0.25)",
+                        color: "var(--neon-cyan, #00e5ff)",
+                        textShadow: "0 0 4px rgba(0,255,255,0.3)",
+                      }}>
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              )}
               <div className="flex items-center justify-between">
                 <div className="flex gap-2" role="group" aria-label="이모지 반응">
                   {REACTION_EMOJIS.map((emoji) => (

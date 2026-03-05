@@ -160,6 +160,7 @@ export interface GuestbookPostPayload {
   job_title: string;
   dday: number;
   message: string;
+  skills?: string;  // 쉼표 구분 스킬 문자열 (옵셔널)
 }
 
 /** POST /guestbook — 방명록 등록 (Req 8.1) */
@@ -168,15 +169,20 @@ export async function postGuestbook(
 ): Promise<GuestbookPostResponse> {
   const sessionId = getSessionId() ?? "";
 
-  const res = await fetchWithRetry(`${API_BASE_URL}/guestbook`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
+  const body: Record<string, unknown> = {
       session_id: sessionId,
       job_title: data.job_title.trim(),
       dday: data.dday,
       message: data.message.trim(),
-    }),
+    };
+    if (data.skills) {
+      body.skills = data.skills;
+    }
+
+    const res = await fetchWithRetry(`${API_BASE_URL}/guestbook`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
   });
 
   return parseResponse<GuestbookPostResponse>(res);
@@ -214,4 +220,21 @@ export async function addReaction(
   );
 
   return parseResponse<ReactionResponse>(res);
+}
+
+// ── 랭킹 API (Req 3.1) ──
+
+import type { JobRiskData } from "@/components/features/JobRiskRanking";
+
+export interface RankingResponse {
+  items: JobRiskData[];
+}
+
+/** GET /ranking — 직업별 D-Day 랭킹 조회 */
+export async function fetchRanking(): Promise<RankingResponse> {
+  const res = await fetchWithRetry(`${API_BASE_URL}/ranking`, {
+    method: "GET",
+  });
+
+  return parseResponse<RankingResponse>(res);
 }
