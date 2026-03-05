@@ -202,7 +202,7 @@ export default function SurveyPage() {
 
           {/* 입력 안내 */}
           <p className="text-center mt-6 text-xs tracking-wider" style={{ color: "rgba(100,180,220,0.8)" }}>
-            💡 스킬은 입력 후 Enter 또는 쉼표(,)로 태그를 추가하세요
+            💡 엔터를 눌러 스킬을 추가할 수 있습니다.
           </p>
 
           {/* 개인정보 안내 */}

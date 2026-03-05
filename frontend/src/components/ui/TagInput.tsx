@@ -82,6 +82,7 @@ export function TagInput({
     (e: KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter" || e.key === ",") {
         e.preventDefault();
+        e.stopPropagation();
         handleAdd(input);
       } else if (e.key === "Backspace" && input === "") {
         const next = removeLastTag(tags);
