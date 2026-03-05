@@ -56,7 +56,7 @@ export function SkillRiskCard({ risk, index, isCritical = false }: SkillRiskCard
           >
             {prob}%
           </span>
-          <span className="text-[0.65rem] ml-1.5 tracking-wider" style={{ color: "rgba(200,220,240,0.6)" }}>
+          <span className="text-[0.65rem] ml-1.5 tracking-wider" style={{ color: "rgba(200,220,240,0.8)" }}>
             대체 확률
           </span>
         </div>
@@ -67,7 +67,7 @@ export function SkillRiskCard({ risk, index, isCritical = false }: SkillRiskCard
           >
             {risk.time_horizon}년
           </span>
-          <span className="text-[0.65rem] ml-1 tracking-wider" style={{ color: "rgba(200,220,240,0.6)" }}>
+          <span className="text-[0.65rem] ml-1 tracking-wider" style={{ color: "rgba(200,220,240,0.8)" }}>
             이내
           </span>
         </div>
@@ -88,7 +88,7 @@ export function SkillRiskCard({ risk, index, isCritical = false }: SkillRiskCard
       {/* 근거 */}
       <p
         className="font-[family-name:var(--font-mono)] text-xs leading-relaxed"
-        style={{ color: "rgba(200,220,240,0.75)" }}
+        style={{ color: "rgba(200,220,240,0.9)" }}
       >
         {risk.justification}
       </p>

@@ -65,7 +65,7 @@ export function DoomsdayCounter({ targetDday, ddayReason, onComplete }: Doomsday
 
       <p
         className="font-[family-name:var(--font-mono)] text-sm mt-4 tracking-wider"
-        style={{ color: "rgba(200,220,240,0.5)" }}
+        style={{ color: "rgba(200,220,240,0.7)" }}
       >
         년 후, 당신의 직업은 소멸한다
       </p>
@@ -73,7 +73,7 @@ export function DoomsdayCounter({ targetDday, ddayReason, onComplete }: Doomsday
       {done && ddayReason && (
         <p
           className="font-[family-name:var(--font-mono)] text-xs mt-3 max-w-md text-center leading-relaxed animate-fade-in"
-          style={{ color: "rgba(255,180,100,0.7)" }}
+          style={{ color: "rgba(255,180,100,0.85)" }}
         >
           ⚡ {ddayReason}
         </p>
