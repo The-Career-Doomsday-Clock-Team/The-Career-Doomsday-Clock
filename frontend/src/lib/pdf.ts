@@ -5,49 +5,72 @@
  */
 
 /**
- * oklab/oklch 등 html2canvas가 지원하지 않는 색상 함수를
- * 브라우저의 computed style을 통해 RGB로 변환
+ * 스타일시트 텍스트에서 oklab/oklch/color() 함수를 투명으로 치환
  */
-function resolveColor(color: string): string {
-  if (!color || (!color.includes("oklab") && !color.includes("oklch") && !color.includes("color("))) {
-    return color;
-  }
-  // 임시 요소를 만들어 브라우저가 RGB로 변환하도록 함
-  const temp = document.createElement("div");
-  temp.style.color = color;
-  temp.style.display = "none";
-  document.body.appendChild(temp);
-  const resolved = window.getComputedStyle(temp).color;
-  document.body.removeChild(temp);
-  return resolved || color;
+function sanitizeCssText(css: string): string {
+  // oklab(...), oklch(...), color(display-p3 ...) 등을 transparent로 치환
+  return css.replace(
+    /(?:oklab|oklch|color)\([^)]*\)/gi,
+    "transparent",
+  );
 }
 
-/** 색상 관련 CSS 속성 목록 */
-const COLOR_PROPS = [
-  "color",
-  "backgroundColor",
-  "borderColor",
-  "borderTopColor",
-  "borderRightColor",
-  "borderBottomColor",
-  "borderLeftColor",
-  "outlineColor",
-  "textDecorationColor",
-  "caretColor",
-  "columnRuleColor",
-] as const;
+/**
+ * 클론된 문서의 모든 스타일시트에서 oklab/oklch 색상을 제거
+ */
+function sanitizeStyleSheets(clonedDoc: Document): void {
+  // 1) <style> 태그 내용 치환
+  const styleTags = clonedDoc.querySelectorAll("style");
+  styleTags.forEach((tag) => {
+    if (tag.textContent && (
+      tag.textContent.includes("oklab") ||
+      tag.textContent.includes("oklch") ||
+      tag.textContent.includes("color(")
+    )) {
+      tag.textContent = sanitizeCssText(tag.textContent);
+    }
+  });
+
+  // 2) <link rel="stylesheet"> 를 인라인 <style>로 교체
+  const linkTags = clonedDoc.querySelectorAll('link[rel="stylesheet"]');
+  linkTags.forEach((link) => {
+    try {
+      // 원본 문서에서 해당 스타일시트의 cssRules를 가져옴
+      const sheets = Array.from(document.styleSheets);
+      const href = (link as HTMLLinkElement).href;
+      const matchingSheet = sheets.find((s) => s.href === href);
+      if (matchingSheet) {
+        let cssText = "";
+        try {
+          const rules = matchingSheet.cssRules;
+          for (let i = 0; i < rules.length; i++) {
+            cssText += rules[i].cssText + "\n";
+          }
+        } catch {
+          // CORS 제한으로 접근 불가 시 무시
+          return;
+        }
+        if (cssText.includes("oklab") || cssText.includes("oklch") || cssText.includes("color(")) {
+          const newStyle = clonedDoc.createElement("style");
+          newStyle.textContent = sanitizeCssText(cssText);
+          link.parentNode?.replaceChild(newStyle, link);
+        }
+      }
+    } catch {
+      // 무시
+    }
+  });
+}
 
 /**
  * 지정된 HTML 요소를 캡처하여 PDF로 다운로드
  */
 export async function downloadResultAsPdf(element: HTMLElement): Promise<void> {
-  // 동적 import로 SSR 이슈 방지
   const [{ default: html2canvas }, { jsPDF }] = await Promise.all([
     import("html2canvas"),
     import("jspdf"),
   ]);
 
-  // 폰트 로딩 완료 대기
   if (document.fonts?.ready) {
     await document.fonts.ready;
   }
@@ -64,7 +87,10 @@ export async function downloadResultAsPdf(element: HTMLElement): Promise<void> {
     allowTaint: true,
     logging: false,
     onclone: (clonedDoc: Document) => {
-      // 1) CSS 변수 및 애니메이션 비활성화 스타일 삽입
+      // 핵심: 스타일시트에서 oklab/oklch 색상 제거
+      sanitizeStyleSheets(clonedDoc);
+
+      // CSS 변수 및 애니메이션 비활성화
       const style = clonedDoc.createElement("style");
       style.textContent = `
         :root {
@@ -80,33 +106,11 @@ export async function downloadResultAsPdf(element: HTMLElement): Promise<void> {
       `;
       clonedDoc.head.appendChild(style);
 
-      // 2) 모든 요소의 oklab/oklch 색상을 RGB로 변환 + 폰트 fallback 적용
+      // 폰트 fallback 적용
       const allElements = clonedDoc.querySelectorAll("*");
       allElements.forEach((el) => {
         const htmlEl = el as HTMLElement;
         const cs = window.getComputedStyle(el);
-
-        // 색상 속성에서 oklab/oklch 변환
-        for (const prop of COLOR_PROPS) {
-          const val = cs.getPropertyValue(
-            prop.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase()),
-          );
-          if (val && (val.includes("oklab") || val.includes("oklch") || val.includes("color("))) {
-            htmlEl.style[prop as unknown as number] = resolveColor(val) as unknown as string;
-          }
-        }
-
-        // box-shadow, text-shadow도 처리
-        const boxShadow = cs.boxShadow;
-        if (boxShadow && (boxShadow.includes("oklab") || boxShadow.includes("oklch"))) {
-          htmlEl.style.boxShadow = "none";
-        }
-        const textShadow = cs.textShadow;
-        if (textShadow && (textShadow.includes("oklab") || textShadow.includes("oklch"))) {
-          htmlEl.style.textShadow = "none";
-        }
-
-        // 폰트 fallback
         const ff = cs.fontFamily;
         if (ff.includes("mono") || ff.includes("JetBrains") || ff.includes("Consolas")) {
           htmlEl.style.fontFamily = monoFallback;
