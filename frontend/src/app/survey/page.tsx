@@ -203,8 +203,13 @@ export default function SurveyPage() {
             <p className="dystopia-error text-center mt-5" role="alert">⚠ {apiError}</p>
           )}
 
+          {/* 입력 안내 */}
+          <p className="text-center mt-6 text-xs tracking-wider" style={{ color: "rgba(100,180,220,0.8)" }}>
+            💡 직업과 보유 스킬은 여러 개일 경우 쉼표(,)로 구분하여 입력하세요
+          </p>
+
           {/* 개인정보 안내 */}
-          <p className="text-center mt-6 text-xs tracking-wider" style={{ color: "rgba(150,200,230,1)" }}>
+          <p className="text-center mt-2 text-xs tracking-wider" style={{ color: "rgba(150,200,230,1)" }}>
             🔒 입력된 정보는 분석 목적으로만 사용되며, 세션 종료 시 자동 삭제됩니다
           </p>
 
