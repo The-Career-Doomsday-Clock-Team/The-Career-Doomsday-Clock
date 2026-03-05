@@ -68,8 +68,9 @@ export default function ResultPage() {
     setPdfLoading(true);
     try {
       await downloadResultAsPdf(resultRef.current);
-    } catch {
-      // PDF 생성 실패 시 조용히 복원
+    } catch (err) {
+      console.error("PDF 생성 실패:", err);
+      alert("PDF 생성에 실패했습니다. 다시 시도해주세요.");
     } finally {
       setPdfLoading(false);
     }
