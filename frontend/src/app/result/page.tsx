@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
-import html2canvas from "html2canvas";
+import * as htmlToImage from "html-to-image";
 import type { ResultData } from "@/types/result";
 import { submitSurvey } from "@/lib/api";
 import { DoomsdayCounter } from "@/components/features/DoomsdayCounter";
@@ -64,14 +64,13 @@ export default function ResultPage() {
     if (!captureRef.current) return;
     setSaving(true);
     try {
-      const canvas = await html2canvas(captureRef.current, {
+      const dataUrl = await htmlToImage.toPng(captureRef.current, {
         backgroundColor: "#0a0a0a",
-        scale: 2,
-        useCORS: true,
+        pixelRatio: 2,
       });
       const link = document.createElement("a");
       link.download = `career-doomsday-result-${Date.now()}.png`;
-      link.href = canvas.toDataURL("image/png");
+      link.href = dataUrl;
       link.click();
     } catch (err) {
       console.error("이미지 저장 실패:", err);
