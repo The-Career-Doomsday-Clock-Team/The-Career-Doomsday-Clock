@@ -311,7 +311,7 @@ export default function GuestbookPage() {
                     {entry.job_title}
                   </span>
                   <span className="neon-text-red font-[family-name:var(--font-heading)] text-base">
-                    {entry.remaining_years}년
+                    {Math.round(Number(entry.remaining_years))}년
                   </span>
                 </div>
                 <div className="mb-3">
