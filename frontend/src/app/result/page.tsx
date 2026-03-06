@@ -179,6 +179,16 @@ export default function ResultPage() {
             </div>
           </section>
         )}
+
+        {/* 데이터 출처 푸터 */}
+        <footer className="mt-16 pt-6 text-center" style={{ borderTop: "1px solid rgba(0,207,255,0.1)" }}>
+          <p className="text-[0.6rem] tracking-wider leading-relaxed" style={{ color: "rgba(100,160,200,0.4)" }}>
+            본 분석은 World Economic Forum 「Future of Jobs Report 2025」를 기반으로 합니다.
+          </p>
+          <p className="text-[0.55rem] tracking-wider mt-1" style={{ color: "rgba(100,160,200,0.25)" }}>
+            Licensed under CC BY-NC-ND 4.0 · World Economic Forum
+          </p>
+        </footer>
       </div>
     </main>
   );
