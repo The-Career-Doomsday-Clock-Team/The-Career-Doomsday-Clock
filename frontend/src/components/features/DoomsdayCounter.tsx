@@ -67,7 +67,7 @@ export function DoomsdayCounter({ targetYears, yearsReason, onComplete }: Doomsd
         className="font-[family-name:var(--font-mono)] text-base mt-4 tracking-wider"
         style={{ color: "rgba(200,220,240,0.7)" }}
       >
-        년 후, 당신의 직업은 소멸한다
+        후, 당신의 직업은 소멸한다
       </p>
 
       {done && yearsReason && (

@@ -102,9 +102,6 @@ export function CareerCardComponent({ card, isTopPick = false }: CareerCardCompo
               </div>
             ))}
           </div>
-          <p className="mt-3 text-[0.7rem] tracking-wider" style={{ color: "rgba(100,160,200,0.4)" }}>
-            💡 관련 교육 과정은 Coursera, Udemy 등에서 검색해보세요
-          </p>
         </div>
       )}
     </div>
