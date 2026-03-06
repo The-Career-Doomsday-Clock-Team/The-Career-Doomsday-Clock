@@ -71,8 +71,6 @@ export function JobRiskRanking({
     );
   }
 
-  const maxDday = Math.max(...data.map((d) => d.avg_remaining_years), 1);
-
   return (
     <section className="dystopia-panel p-6" aria-label={title}>
       <div className="panel-scanlines" />
@@ -89,8 +87,6 @@ export function JobRiskRanking({
 
         <div className="flex flex-col gap-2.5" role="list" aria-label={`${title} 목록`}>
           {data.map((item, idx) => {
-            const barWidth = Math.max((item.avg_remaining_years / maxDday) * 100, 8);
-            // variant에 따른 색상 결정
             const barColor = variant === "endangered"
               ? "var(--neon-red)"
               : "var(--neon-blue)";
@@ -104,23 +100,12 @@ export function JobRiskRanking({
                   {idx + 1}
                 </span>
                 <span
-                  className="font-[family-name:var(--font-heading)] text-sm tracking-wider w-36 shrink-0 truncate"
+                  className="font-[family-name:var(--font-heading)] text-sm tracking-wider flex-1 truncate"
                   style={{ color: barColor, textShadow: `0 0 4px ${barColor}` }}
                   title={item.job_title}
                 >
                   {item.job_title}
                 </span>
-                <div className="flex-1 h-4 relative" style={{ background: "rgba(0,15,25,0.6)", borderRadius: "2px" }}>
-                  <div
-                    className="h-full transition-all duration-500"
-                    style={{
-                      width: `${barWidth}%`,
-                      background: `linear-gradient(90deg, ${barColor}33, ${barColor}88)`,
-                      borderRadius: "2px",
-                      boxShadow: `0 0 8px ${barColor}44`,
-                    }}
-                  />
-                </div>
                 <span
                   className="font-[family-name:var(--font-mono)] text-sm w-16 text-right shrink-0"
                   style={{ color: barColor, textShadow: `0 0 4px ${barColor}` }}
