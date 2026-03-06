@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { fetchResult, submitSurvey } from "@/lib/api";
 
 /**
- * 로딩 화면 — DISTRICT Ω 분석 시스템
+ * Loading Screen — DISTRICT Ω Analysis System
  * Requirements: 4.1, 4.2, 4.3
  */
 
@@ -30,7 +30,7 @@ export default function LoadingScreen() {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const messageRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  /** 타이머/폴링 정리 */
+  /** Clear all timers/polling */
   const clearAllTimers = useCallback(() => {
     if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
     if (timeoutRef.current) { clearTimeout(timeoutRef.current); timeoutRef.current = null; }
@@ -49,7 +49,7 @@ export default function LoadingScreen() {
         setFailed(true);
         if (pollRef.current) clearInterval(pollRef.current);
       }
-    } catch { /* 폴링 계속 */ }
+    } catch { /* continue polling */ }
   }, [router]);
 
   /** 폴링 + 타임아웃 시작 */
@@ -62,7 +62,7 @@ export default function LoadingScreen() {
     }, 3000);
   }, [pollResult]);
 
-  /** 동일 데이터로 재분석 요청 */
+  /** Retry analysis with same data */
   const handleRetry = useCallback(async () => {
     const raw = sessionStorage.getItem("survey_form");
     if (!raw) { router.push("/survey"); return; }
@@ -81,7 +81,7 @@ export default function LoadingScreen() {
         strengths: form.skills || form.strengths || "",
         hobbies: form.skills || form.hobbies || "",
       });
-      // 재분석 요청 성공 → 폴링 재시작
+      // Retry request success → restart polling
       startPolling();
     } catch {
       setFailed(true);
@@ -164,7 +164,7 @@ export default function LoadingScreen() {
                 onClick={handleRetry}
                 disabled={retrying}
                 className="neon-button neon-button-red disabled:opacity-40 disabled:cursor-not-allowed"
-                aria-label="동일 데이터로 다시 분석"
+                aria-label="Retry with same data"
               >
                 {retrying ? "RETRYING…" : "↻ RETRY"}
               </button>
@@ -173,9 +173,9 @@ export default function LoadingScreen() {
                 onClick={() => router.push("/survey")}
                 className="text-xs tracking-widest border border-gray-600/30 text-gray-400 px-5 py-3 hover:border-cyan-500/50 hover:text-cyan-400 transition-all"
                 style={{ fontFamily: "var(--font-mono)" }}
-                aria-label="처음부터 다시하기"
+                aria-label="Start over from the beginning"
               >
-                ◀ 처음부터 다시하기
+                ◀ START OVER
               </button>
             </div>
           </div>

@@ -7,7 +7,7 @@ import { JobRiskRanking, type JobRiskData } from "@/components/features/JobRiskR
 import { useRouter } from "next/navigation";
 
 /**
- * 방명록 페이지 — DISTRICT Ω 생존자 기록부
+ * Guestbook Page — DISTRICT Ω Survivor Log
  * Requirements: 8.1, 8.2, 8.3, 8.4
  */
 
@@ -35,9 +35,9 @@ export default function GuestbookPage() {
   const [rankingSurvived, setRankingSurvived] = useState<JobRiskData[]>([]);
   const [rankingLoading, setRankingLoading] = useState(true);
   const [rankingError, setRankingError] = useState(false);
-  // 방명록 등록 완료 여부 (폼 숨김 처리)
+  // Whether guestbook has been submitted (hide form)
   const [hasSubmitted, setHasSubmitted] = useState(false);
-  // 카드 펼침 상태 관리 (entry_id → boolean)
+  // Card expand state (entry_id → boolean)
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
   const fetchEntries = useCallback(
@@ -49,12 +49,12 @@ export default function GuestbookPage() {
         setEntries((prev) => (key ? [...prev, ...data.items] : data.items));
         setLastKey(data.last_key);
         setHasMore(data.last_key !== null);
-      } catch { /* 조용히 처리 */ } finally { setLoading(false); }
+      } catch { /* silently handle */ } finally { setLoading(false); }
     },
     [loading]
   );
 
-  // 분석 결과 조회 및 자동 채우기
+  // Load analysis result and auto-fill
   useEffect(() => {
     const loadAnalysisResult = async () => {
       try {
@@ -85,7 +85,7 @@ export default function GuestbookPage() {
     loadAnalysisResult();
     fetchEntries();
 
-    // 랭킹 데이터 로드
+    // Load ranking data
     const loadRanking = async () => {
       try {
         const res = await fetchRanking();
@@ -101,13 +101,13 @@ export default function GuestbookPage() {
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, []);
 
-  // 페이지 로드 시 이미 등록한 세션인지 확인
+  // Check if session already submitted on page load
   useEffect(() => {
     if (entries.length > 0) {
       const sessionId = sessionStorage.getItem("session_id");
       if (sessionId) {
-        // 현재 세션의 방명록이 이미 존재하는지 확인할 수 없으므로
-        // sessionStorage 플래그로 보조 체크
+        // Cannot verify if guestbook entry exists for current session,
+        // so use sessionStorage flag as secondary check
         const alreadyPosted = sessionStorage.getItem("guestbook_posted");
         if (alreadyPosted === "true") {
           setHasSubmitted(true);
@@ -133,7 +133,7 @@ export default function GuestbookPage() {
       e.preventDefault();
       setFormError(null);
       if (!message.trim()) { setFormError("> MESSAGE_CONTENT required"); return; }
-      if (message.length > MESSAGE_MAX_LENGTH) { setFormError(`> 메시지는 ${MESSAGE_MAX_LENGTH}자 이내로 작성해주세요`); return; }
+      if (message.length > MESSAGE_MAX_LENGTH) { setFormError(`> Message must be ${MESSAGE_MAX_LENGTH} characters or less`); return; }
       if (!jobTitle.trim()) { setFormError("> OCCUPATION_CODE required"); return; }
       const ryNum = Number(remainingYears);
       if (!remainingYears.trim() || isNaN(ryNum)) { setFormError("> REMAINING_YEARS value must be numeric"); return; }
@@ -141,21 +141,21 @@ export default function GuestbookPage() {
       setSubmitting(true);
       try {
         await postGuestbook({ job_title: jobTitle, remaining_years: ryNum, message, skills: skills || undefined });
-        // 등록 성공 — 폼 숨김 + sessionStorage 플래그 저장
+        // Submission success — hide form + save sessionStorage flag
         setHasSubmitted(true);
         sessionStorage.setItem("guestbook_posted", "true");
         setLastKey(null); setHasMore(true);
         await fetchEntries();
       } catch (err) {
         if (err instanceof ApiError) {
-          // 409: 이미 등록된 세션
+          // 409: Already submitted session
           if (err.status === 409) {
             setHasSubmitted(true);
             sessionStorage.setItem("guestbook_posted", "true");
           }
           setFormError(err.message);
         } else {
-          setFormError("통신 장애가 발생했습니다.");
+          setFormError("COMMUNICATION_FAILURE — Please try again.");
         }
       } finally { setSubmitting(false); }
     },
@@ -171,7 +171,7 @@ export default function GuestbookPage() {
         setEntries((prev) => prev.map((entry) =>
           entry.entry_id === entryId ? { ...entry, reactions: data.reactions } : entry
         ));
-      } catch { /* 조용히 처리 */ } finally {
+      } catch { /* silently handle */ } finally {
         setReactingIds((prev) => { const next = new Set(prev); next.delete(entryId); return next; });
       }
     },
@@ -187,7 +187,7 @@ export default function GuestbookPage() {
     });
   }, []);
 
-  // 분석 결과 로딩 중
+  // Loading analysis result
   if (loadingResult) {
     return (
       <main className="relative min-h-screen px-4 py-12 flex items-center justify-center">
@@ -219,7 +219,7 @@ export default function GuestbookPage() {
             SURVIVOR RECORDS
           </h1>
           <p className="mt-2 font-[family-name:var(--font-mono)] text-sm" style={{ color: "rgba(100,160,200,0.5)" }}>
-            이 폐허를 지나간 자들의 흔적을 기록하라
+            Record the traces of those who passed through these ruins
           </p>
           <div className="flex justify-center gap-3 mt-4">
             <button type="button" onClick={() => router.push("/")}
@@ -243,7 +243,7 @@ export default function GuestbookPage() {
             <div className="relative z-10 text-center">
               <div className="panel-tag mb-3">RECORD_COMPLETE</div>
               <p className="font-[family-name:var(--font-mono)] text-sm" style={{ color: "var(--neon-cyan, #00e5ff)", textShadow: "0 0 6px rgba(0,255,255,0.4)" }}>
-                ✓ 당신의 흔적이 이미 기록되었습니다
+                ✓ Your record has already been logged
               </p>
             </div>
           </div>
@@ -256,12 +256,12 @@ export default function GuestbookPage() {
                 <div className="flex-1 flex flex-col gap-1.5">
                   <label htmlFor="gb-job" className="dystopia-label">OCCUPATION_CODE</label>
                   <input id="gb-job" type="text" value={jobTitle} readOnly
-                    placeholder="멸망 전 직업" className="dystopia-input opacity-70 cursor-not-allowed" autoComplete="off" />
+                    placeholder="Pre-doom occupation" className="dystopia-input opacity-70 cursor-not-allowed" autoComplete="off" />
                 </div>
                 <div className="w-24 flex flex-col gap-1.5">
-                  <label htmlFor="gb-ry" className="dystopia-label" style={{ color: "var(--neon-yellow)", textShadow: "0 0 4px var(--neon-yellow)" }}>남은 수명</label>
+                  <label htmlFor="gb-ry" className="dystopia-label" style={{ color: "var(--neon-yellow)", textShadow: "0 0 4px var(--neon-yellow)" }}>Years Left</label>
                   <input id="gb-ry" type="text" value={remainingYears} readOnly
-                    placeholder="년" className="dystopia-input text-center opacity-70 cursor-not-allowed" autoComplete="off" />
+                    placeholder="yr" className="dystopia-input text-center opacity-70 cursor-not-allowed" autoComplete="off" />
                 </div>
               </div>
               <div className="flex flex-col gap-1.5 mb-4">
@@ -274,12 +274,12 @@ export default function GuestbookPage() {
                 <input id="gb-message" type="text" value={message}
                   onChange={(e) => setMessage(e.target.value.slice(0, MESSAGE_MAX_LENGTH))}
                   maxLength={MESSAGE_MAX_LENGTH}
-                  placeholder="폐허에 남길 한마디를 기록하라" className="dystopia-input" disabled={submitting} autoComplete="off"
+                  placeholder="Leave your last words in the ruins" className="dystopia-input" disabled={submitting} autoComplete="off"
                   aria-invalid={!!formError} aria-describedby={formError ? "gb-form-error" : undefined} />
               </div>
               {formError && <p id="gb-form-error" className="dystopia-error text-center mb-3" role="alert">⚠ {formError}</p>}
               <div className="flex justify-end">
-                <button type="submit" disabled={submitting} className="neon-button disabled:opacity-40 disabled:cursor-not-allowed" aria-label="방명록 등록">
+                <button type="submit" disabled={submitting} className="neon-button disabled:opacity-40 disabled:cursor-not-allowed" aria-label="Submit guestbook entry">
                   {submitting ? "RECORDING…" : "RECORD ▶"}
                 </button>
               </div>
@@ -288,20 +288,34 @@ export default function GuestbookPage() {
         )}
         </div>
 
+        {/* 랭킹 섹션 설명 */}
+        <div className="text-center">
+          <p className="font-[family-name:var(--font-mono)] text-base tracking-wider" style={{ color: "var(--neon-yellow)", textShadow: "0 0 6px var(--neon-yellow)" }}>
+            THREAT_ANALYSIS — Survival data by occupation collected by the system. Where does yours rank?
+          </p>
+        </div>
+
         {/* 랭킹 차트 — 2컬럼 나란히 */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <JobRiskRanking data={rankingEndangered} loading={rankingLoading} error={rankingError} title="MOST ENDANGERED" subtitle="수명이 가장 적게 남은 직업 Top 5" variant="endangered" />
-          <JobRiskRanking data={rankingSurvived} loading={rankingLoading} error={rankingError} title="MOST SURVIVED" subtitle="수명이 가장 많이 남은 직업 Top 5" variant="survived" />
+          <JobRiskRanking data={rankingEndangered} loading={rankingLoading} error={rankingError} title="MOST ENDANGERED" subtitle="Top 5 jobs with fewest years left" variant="endangered" />
+          <JobRiskRanking data={rankingSurvived} loading={rankingLoading} error={rankingError} title="MOST SURVIVED" subtitle="Top 5 jobs with most years left" variant="survived" />
         </div>
 
         {/* 구분선 */}
         <div className="w-full h-px opacity-40" style={{ background: "linear-gradient(to right, transparent, var(--neon-blue), transparent)", boxShadow: "0 0 10px var(--neon-blue)" }} aria-hidden="true" />
 
+        {/* 방명록 섹션 설명 */}
+        <div className="text-center">
+          <p className="font-[family-name:var(--font-mono)] text-base tracking-wider" style={{ color: "var(--neon-blue)", textShadow: "0 0 6px var(--neon-blue)" }}>
+            SIGNAL_ARCHIVE — Last transmissions received from survivors in the ruins
+          </p>
+        </div>
+
         {/* 방명록 목록 — 3컬럼 카드 그리드 */}
-        <section aria-label="방명록 목록" className="columns-1 md:columns-2 lg:columns-3 gap-4">
+        <section aria-label="Guestbook entries" className="columns-1 md:columns-2 lg:columns-3 gap-4">
           {entries.length === 0 && !loading && (
             <p className="col-span-full text-center font-[family-name:var(--font-mono)] text-base" style={{ color: "rgba(100,160,200,0.4)" }}>
-              아직 아무도 흔적을 남기지 않았다...
+              No one has left a trace yet...
             </p>
           )}
 
@@ -309,15 +323,15 @@ export default function GuestbookPage() {
             const isLong = entry.message.length > 100;
             const isExpanded = expandedIds.has(entry.entry_id);
             return (
-              <article key={entry.entry_id} className="guestbook-entry neon-border-cyan flex flex-col" aria-label={`${entry.job_title}의 방명록`}
-                style={{ animationDelay: `${idx * 60}ms`, animation: "fade-in 0.4s ease-out forwards", opacity: 0, breakInside: "avoid", marginBottom: "1rem", maxHeight: "400px", overflow: "hidden" }}>
+              <article key={entry.entry_id} className="guestbook-entry neon-border-cyan flex flex-col" aria-label={`${entry.job_title}'s guestbook entry`}
+                style={{ animationDelay: `${idx * 60}ms`, animation: "fade-in 0.4s ease-out forwards", opacity: 0, breakInside: "avoid", marginBottom: "1rem" }}>
                 {/* 상단: 직업 + 남은 수명 */}
                 <div className="flex items-baseline justify-between mb-2 shrink-0">
-                  <span className="font-[family-name:var(--font-heading)] text-sm tracking-wider neon-text-cyan truncate mr-2">
+                  <span className="font-[family-name:var(--font-heading)] text-sm tracking-wider neon-text-soft-cyan truncate mr-2">
                     {entry.job_title}
                   </span>
-                  <span className="neon-text-red font-[family-name:var(--font-heading)] text-sm shrink-0">
-                    {Math.round(Number(entry.remaining_years))}년
+                  <span className="neon-text-soft-red font-[family-name:var(--font-heading)] text-sm shrink-0">
+                    {Math.round(Number(entry.remaining_years))}yr
                   </span>
                 </div>
                 {/* 중간: 메시지 + 스킬 (남은 공간만 사용) */}
@@ -343,7 +357,7 @@ export default function GuestbookPage() {
                         style={{ color: "rgba(100,160,200,0.6)" }}
                         aria-expanded={isExpanded}
                       >
-                        {isExpanded ? "▲ 접기" : "▼ 더 보기"}
+                        {isExpanded ? "▲ Collapse" : "▼ Read more"}
                       </button>
                     )}
                   </div>
@@ -379,7 +393,7 @@ export default function GuestbookPage() {
                           <button type="button" onClick={() => toggleExpand(`skill-${entry.entry_id}`)}
                             className="font-[family-name:var(--font-mono)] text-xs mt-1 hover:underline"
                             style={{ color: "rgba(100,160,200,0.6)" }}>
-                            ▲ 접기
+                            ▲ Collapse
                           </button>
                         )}
                       </div>
@@ -388,10 +402,10 @@ export default function GuestbookPage() {
                 </div>
                 {/* 하단: 이모지 + 시간 (절대 잘리지 않음) */}
                 <div className="shrink-0 pt-2 flex flex-col gap-1.5">
-                  <div className="flex flex-wrap gap-1.5" role="group" aria-label="이모지 반응">
+                  <div className="flex flex-wrap gap-1.5" role="group" aria-label="Emoji reactions">
                     {REACTION_EMOJIS.map((emoji) => (
                       <button key={emoji} type="button" onClick={() => handleReaction(entry.entry_id, emoji, entry.created_at)}
-                        disabled={reactingIds.has(entry.entry_id)} className="guestbook-reaction-btn" aria-label={`${emoji} 반응 추가`}>
+                        disabled={reactingIds.has(entry.entry_id)} className="guestbook-reaction-btn" aria-label={`Add ${emoji} reaction`}>
                         <span>{emoji}</span>
                         {(entry.reactions[emoji] ?? 0) > 0 && (
                           <span className="text-xs" style={{ color: "rgba(100,160,200,0.7)" }}>{entry.reactions[emoji]}</span>
@@ -426,8 +440,8 @@ function formatRelativeTime(isoString: string): string {
   const now = Date.now();
   const then = new Date(isoString).getTime();
   const diffSec = Math.floor((now - then) / 1000);
-  if (diffSec < 60) return "방금 전";
-  if (diffSec < 3600) return `${Math.floor(diffSec / 60)}분 전`;
-  if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}시간 전`;
-  return `${Math.floor(diffSec / 86400)}일 전`;
+  if (diffSec < 60) return "just now";
+  if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m ago`;
+  if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}h ago`;
+  return `${Math.floor(diffSec / 86400)}d ago`;
 }

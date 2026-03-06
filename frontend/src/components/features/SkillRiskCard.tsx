@@ -3,7 +3,7 @@
 import type { SkillRisk } from "@/types/result";
 
 /**
- * 스킬 위험도 카드 — DISTRICT Ω 위협 분석
+ * Skill Risk Card — DISTRICT Ω Threat Analysis
  * Requirements: 5.2
  */
 interface SkillRiskCardProps {
@@ -13,7 +13,7 @@ interface SkillRiskCardProps {
 }
 
 export function SkillRiskCard({ risk, index, isCritical = false }: SkillRiskCardProps) {
-  // 위험도에 따라 색상 결정
+  // Determine color based on risk level
   const prob = risk.replacement_prob ?? 0;
   const dangerColor = prob >= 70 ? "var(--neon-red)" : prob >= 40 ? "var(--neon-yellow)" : "var(--neon-green)";
 
@@ -22,7 +22,7 @@ export function SkillRiskCard({ risk, index, isCritical = false }: SkillRiskCard
       className="skill-risk-card animate-fade-in"
       style={{ animationDelay: `${index * 120}ms` }}
       role="article"
-      aria-label={`${risk.skill_name} 위험도`}
+      aria-label={`${risk.skill_name} risk level`}
     >
       {/* 스킬명 */}
       <div className="flex items-center justify-between mb-4 pb-3" style={{ borderBottom: "1px solid rgba(0,207,255,0.15)" }}>
@@ -57,7 +57,7 @@ export function SkillRiskCard({ risk, index, isCritical = false }: SkillRiskCard
             {prob}%
           </span>
           <span className="text-[0.75rem] ml-1.5 tracking-wider" style={{ color: "rgba(200,220,240,0.8)" }}>
-            대체 확률
+            replacement
           </span>
         </div>
         <div className="text-right">
@@ -65,10 +65,10 @@ export function SkillRiskCard({ risk, index, isCritical = false }: SkillRiskCard
             className="font-[family-name:var(--font-heading)] text-3xl font-bold"
             style={{ color: "var(--neon-yellow)", textShadow: "0 0 8px var(--neon-yellow)" }}
           >
-            {risk.time_horizon}년
+            {risk.time_horizon}yr
           </span>
           <span className="text-[0.75rem] ml-1 tracking-wider" style={{ color: "rgba(200,220,240,0.8)" }}>
-            이내
+            within
           </span>
         </div>
       </div>

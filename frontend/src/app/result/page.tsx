@@ -10,7 +10,7 @@ import { SkillRiskCard } from "@/components/features/SkillRiskCard";
 import { CareerCardComponent } from "@/components/features/CareerCard";
 
 /**
- * 결과 페이지 — DISTRICT Ω 선고 시스템
+ * Result Page — DISTRICT Ω Verdict System
  * Requirements: 5.1-5.5, 6.1-6.6
  */
 
@@ -59,7 +59,7 @@ export default function ResultPage() {
 
   const handleEscape = useCallback(() => { router.push("/guestbook"); }, [router]);
 
-  /** 결과 페이지를 이미지로 저장 */
+  /** Save result page as image */
   const handleSaveAsImage = useCallback(async () => {
     if (!captureRef.current) return;
     setSaving(true);
@@ -73,13 +73,13 @@ export default function ResultPage() {
       link.href = dataUrl;
       link.click();
     } catch (err) {
-      console.error("이미지 저장 실패:", err);
+      console.error("Failed to save image:", err);
     } finally {
       setSaving(false);
     }
   }, []);
 
-  /** 동일 데이터로 AI 재분석 */
+  /** Retry AI analysis with same data */
   const handleRetryAnalysis = useCallback(async () => {
     const raw = sessionStorage.getItem("survey_form");
     if (!raw) { router.push("/survey"); return; }
@@ -129,7 +129,7 @@ export default function ResultPage() {
           className={`flex flex-col items-center gap-10 ${phase !== "doom" ? "opacity-80" : ""} transition-opacity duration-700`}
           onClick={handleSkip}
           role="region"
-          aria-label="직업 수명 선고"
+          aria-label="Career lifespan verdict"
         >
           <DoomsdayCounter targetYears={result.remaining_years ?? 0} yearsReason={result.remaining_years_reason} onComplete={handleCounterComplete} />
 
@@ -137,7 +137,7 @@ export default function ResultPage() {
             <>
               <div className="text-center">
                 <h2 className="result-section-title text-neon-red">THREAT ANALYSIS</h2>
-                <p className="result-section-sub">AI 대체 위험도 분석 결과 (위험도 순)</p>
+                <p className="result-section-sub">AI replacement risk analysis (sorted by risk)</p>
               </div>
               <div className="grid w-full gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {[...result.skill_risks]
@@ -164,11 +164,11 @@ export default function ResultPage() {
 
         {/* 2단계: 유토피아 탈출 */}
         {phase === "utopia" && result.career_cards && (
-          <section className="flex flex-col items-center gap-10 animate-fade-in" role="region" aria-label="새로운 직업 제안">
+          <section className="flex flex-col items-center gap-10 animate-fade-in" role="region" aria-label="New career suggestions">
             <div className="text-center">
               <div className="panel-tag mb-3 tracking-[0.4em]">// ESCAPE PROTOCOL INITIATED</div>
               <h2 className="result-section-title text-neon-green">SURVIVOR PROTOCOL</h2>
-              <p className="result-section-sub">AI 시대를 살아남기 위한 커리어 전환 경로</p>
+              <p className="result-section-sub">Career transition paths to survive the AI era</p>
             </div>
 
             <div className="grid w-full gap-6 md:grid-cols-3">
@@ -184,7 +184,7 @@ export default function ResultPage() {
                 disabled={saving}
                 className="neon-button disabled:opacity-40 disabled:cursor-not-allowed"
                 style={{ borderColor: "rgba(168,85,247,0.5)", color: "#c084fc" }}
-                aria-label="결과를 이미지로 저장"
+                aria-label="Save result as image"
               >
                 {saving ? "SAVING…" : "📸 SAVE AS IMAGE"}
               </button>
@@ -193,7 +193,7 @@ export default function ResultPage() {
                 onClick={handleRetryAnalysis}
                 disabled={retrying}
                 className="neon-button neon-button-red disabled:opacity-40 disabled:cursor-not-allowed"
-                aria-label="동일 데이터로 다시 분석"
+                aria-label="Retry with same data"
               >
                 {retrying ? "RETRYING…" : "↻ RETRY ANALYSIS"}
               </button>
@@ -202,11 +202,11 @@ export default function ResultPage() {
                 onClick={() => router.push("/survey")}
                 className="text-xs tracking-widest border border-yellow-500/40 text-yellow-400 px-5 py-3 hover:border-yellow-400/70 hover:text-yellow-300 transition-all"
                 style={{ fontFamily: "var(--font-mono)", letterSpacing: "0.15em" }}
-                aria-label="처음부터 새롭게 시작"
+                aria-label="Start over from scratch"
               >
                 ◀ START OVER
               </button>
-              <button type="button" onClick={handleEscape} className="neon-button" aria-label="방명록으로 이동">
+              <button type="button" onClick={handleEscape} className="neon-button" aria-label="Go to guestbook">
                 ESCAPE THE RUINS ▶
               </button>
             </div>
@@ -216,7 +216,7 @@ export default function ResultPage() {
         {/* 데이터 출처 푸터 */}
         <footer className="mt-16 pt-6 text-center" style={{ borderTop: "1px solid rgba(0,207,255,0.25)" }}>
           <p className="text-[0.7rem] tracking-wider leading-relaxed" style={{ color: "rgba(180,210,230,0.7)" }}>
-            본 분석은 World Economic Forum 「Future of Jobs Report 2025」를 기반으로 합니다.
+            This analysis is based on the World Economic Forum "Future of Jobs Report 2025".
           </p>
           <p className="text-[0.6rem] tracking-wider mt-1" style={{ color: "rgba(150,190,220,0.5)" }}>
             Licensed under CC BY-NC-ND 4.0 · World Economic Forum

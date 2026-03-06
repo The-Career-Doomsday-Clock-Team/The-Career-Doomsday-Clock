@@ -5,7 +5,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Career Doomsday Clock",
   description:
-    "AI 디스토피아 세계관 기반 커리어 분석 — 당신의 직업 수명을 선고합니다.",
+    "AI dystopia-themed career analysis — Your career's remaining lifespan will be sentenced.",
 };
 
 export default function RootLayout({
@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
+    <html lang="en">
       <body
         className={`${orbitron.variable} ${shareTechMono.variable} ${ibmPlexSansKR.variable} antialiased`}
       >

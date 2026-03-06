@@ -116,6 +116,15 @@ body::after {
   color: var(--neon-red);
   text-shadow: 0 0 5px var(--neon-red), 0 0 10px var(--neon-red), 0 0 20px var(--neon-red);
 }
+/* 가벼운 네온 (카드 등 작은 텍스트용) */
+.neon-text-soft-cyan {
+  color: var(--neon-blue);
+  text-shadow: 0 0 5px var(--neon-blue);
+}
+.neon-text-soft-red {
+  color: var(--neon-red);
+  text-shadow: 0 0 5px var(--neon-red);
+}
 .neon-text-yellow {
   color: var(--neon-yellow);
   text-shadow: 0 0 5px var(--neon-yellow), 0 0 10px var(--neon-yellow), 0 0 20px var(--neon-yellow);

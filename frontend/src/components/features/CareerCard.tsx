@@ -4,7 +4,7 @@ import type { CareerCard } from "@/types/result";
 import clsx from "clsx";
 
 /**
- * 커리어 카드 — DISTRICT Ω 탈출 경로
+ * Career Card — DISTRICT Ω Escape Route
  * Requirements: 6.2, 6.3, 6.4, 6.5
  */
 
@@ -26,7 +26,7 @@ export function CareerCardComponent({ card, isTopPick = false }: CareerCardCompo
     <div
       className={clsx("career-card", theme.border)}
       role="article"
-      aria-label={`커리어 카드 ${card.card_index + 1}`}
+      aria-label={`Career card ${card.card_index + 1}`}
     >
       {/* 경로 라벨 */}
       <div className="flex items-center justify-between mb-4">

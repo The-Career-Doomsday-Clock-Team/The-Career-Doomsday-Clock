@@ -4,14 +4,14 @@ import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 
 /**
- * 랜딩 페이지 — DISTRICT Ω 디스토피아 가게 외관
+ * Landing Page — DISTRICT Ω Dystopia Storefront
  * Requirements: 1.1, 1.2, 1.3, 1.4
  */
 export default function LandingPage() {
   const router = useRouter();
 
   const handleEnter = useCallback(() => {
-    // UUID v4 세션 ID 생성 → sessionStorage 저장 (Req 1.4)
+    // Generate UUID v4 session ID → save to sessionStorage (Req 1.4)
     const sessionId = crypto.randomUUID();
     sessionStorage.setItem("session_id", sessionId);
     router.push("/survey");
@@ -50,7 +50,7 @@ export default function LandingPage() {
       {/* 간판 타이틀 */}
       <div className="relative z-10 text-center mb-5">
         <h1 className="sign-title">CAREER DOOMSDAY</h1>
-        <p className="sign-sub">▸ 당신의 직업 수명을 선고합니다 ◂</p>
+        <p className="sign-sub">▸ Your career lifespan will be sentenced ◂</p>
       </div>
 
       {/* 문 (Req 1.2, 1.3) */}
@@ -60,9 +60,9 @@ export default function LandingPage() {
           onClick={handleEnter}
           onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleEnter(); }}
           role="button"
-          aria-label="설문 페이지로 입장"
+          aria-label="Enter the survey page"
           tabIndex={0}
-          title="클릭하여 입장"
+          title="Click to enter"
         >
           <div className="door-glow" />
           <div

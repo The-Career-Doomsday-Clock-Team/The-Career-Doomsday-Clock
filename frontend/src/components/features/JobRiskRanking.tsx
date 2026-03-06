@@ -1,9 +1,9 @@
 "use client";
 
 /**
- * 직업별 D-Day 랭킹 차트 컴포넌트
- * CSS 기반 수평 바 차트, 디스토피아 테마
- * endangered(위험) / survived(생존) 두 가지 변형 지원
+ * Job D-Day Ranking Chart Component
+ * CSS-based horizontal bar chart, dystopia theme
+ * Supports endangered / survived variants
  * Requirements: 3.1, 3.2, 3.4, 3.5
  */
 
@@ -27,13 +27,13 @@ export function JobRiskRanking({
   loading,
   error,
   title = "GLOBAL JOB RISK RANKING",
-  subtitle = "직업별 평균 D-Day",
+  subtitle = "Average D-Day by job",
   variant = "endangered",
 }: JobRiskRankingProps) {
-  // 에러 시 렌더링하지 않음
+  // Error: don't render
   if (error) return null;
 
-  // 로딩 상태
+  // Loading state
   if (loading) {
     return (
       <section className="dystopia-panel p-6" aria-label={title}>
@@ -53,7 +53,7 @@ export function JobRiskRanking({
     );
   }
 
-  // 데이터 없음
+  // No data
   if (data.length === 0) {
     return (
       <section className="dystopia-panel p-6" aria-label={title}>
@@ -64,7 +64,7 @@ export function JobRiskRanking({
             className="text-center font-[family-name:var(--font-mono)] text-sm"
             style={{ color: "rgba(100,160,200,0.4)" }}
           >
-            아직 충분한 데이터가 수집되지 않았습니다
+            Not enough data collected yet
           </p>
         </div>
       </section>
@@ -85,7 +85,7 @@ export function JobRiskRanking({
           {subtitle}
         </p>
 
-        <div className="flex flex-col gap-2.5" role="list" aria-label={`${title} 목록`}>
+        <div className="flex flex-col gap-2.5" role="list" aria-label={`${title} list`}>
           {data.map((item, idx) => {
             const barColor = variant === "endangered"
               ? "var(--neon-red)"
@@ -110,7 +110,7 @@ export function JobRiskRanking({
                   className="font-[family-name:var(--font-mono)] text-sm w-16 text-right shrink-0"
                   style={{ color: barColor, textShadow: `0 0 4px ${barColor}` }}
                 >
-                  {item.avg_remaining_years}년
+                  {item.avg_remaining_years}yr
                 </span>
               </div>
             );

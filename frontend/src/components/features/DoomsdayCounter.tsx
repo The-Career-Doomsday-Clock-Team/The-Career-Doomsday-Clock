@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 /**
- * D-Day 카운트업 — DISTRICT Ω 선고 카운터
+ * D-Day Count-up — DISTRICT Ω Verdict Counter
  * Requirements: 5.1
  */
 interface DoomsdayCounterProps {
@@ -45,7 +45,7 @@ export function DoomsdayCounter({ targetYears, yearsReason, onComplete }: Doomsd
   }, [targetYears, onComplete]);
 
   return (
-    <div className="doomsday-counter-wrapper animate-fade-in" role="status" aria-label={`남은 수명 ${targetYears}년`}>
+    <div className="doomsday-counter-wrapper animate-fade-in" role="status" aria-label={`Remaining years: ${targetYears}`}>
       <p className="panel-tag mb-2 tracking-[0.4em]">VERDICT_COUNTDOWN</p>
 
       <div className="doomsday-counter-ring">
@@ -58,7 +58,7 @@ export function DoomsdayCounter({ targetYears, yearsReason, onComplete }: Doomsd
               animation: done ? "neon-flicker 3.5s infinite" : "none",
             }}
           >
-            {currentValue}년
+            {currentValue}yr
           </span>
         </div>
       </div>
@@ -67,7 +67,7 @@ export function DoomsdayCounter({ targetYears, yearsReason, onComplete }: Doomsd
         className="font-[family-name:var(--font-mono)] text-base mt-4 tracking-wider"
         style={{ color: "rgba(200,220,240,0.7)" }}
       >
-        후, 당신의 직업은 소멸한다
+        until your career goes extinct
       </p>
 
       {done && yearsReason && (

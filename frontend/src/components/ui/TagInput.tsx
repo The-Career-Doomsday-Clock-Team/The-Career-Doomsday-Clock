@@ -57,7 +57,7 @@ export function deserializeTags(str: string): string[] {
 export function TagInput({
   tags,
   onChange,
-  placeholder = "스킬을 입력하고 Enter",
+  placeholder = "Type a skill and press Enter",
   disabled = false,
   error,
   maxTags,
@@ -145,7 +145,7 @@ export function TagInput({
         style={{ padding: "8px 10px" }}
         onClick={handleContainerClick}
         role="group"
-        aria-label="태그 입력"
+        aria-label="Tag input"
       >
         {tags.map((tag, i) => (
           <span
@@ -169,7 +169,7 @@ export function TagInput({
                 }}
                 className="ml-0.5 hover:text-white transition-colors"
                 style={{ lineHeight: 1, fontSize: "0.8rem" }}
-                aria-label={`${tag} 태그 삭제`}
+                aria-label={`Remove ${tag} tag`}
               >
                 ✕
               </button>
