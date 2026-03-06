@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { orbitron, shareTechMono } from "@/styles/fonts";
+import { orbitron, shareTechMono, ibmPlexSansKR } from "@/styles/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body
-        className={`${orbitron.variable} ${shareTechMono.variable} antialiased`}
+        className={`${orbitron.variable} ${shareTechMono.variable} ${ibmPlexSansKR.variable} antialiased`}
       >
         {children}
       </body>

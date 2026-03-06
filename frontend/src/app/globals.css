@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@theme {
+  --font-mono: 'Share Tech Mono', 'IBM Plex Sans KR', monospace;
+  --default-font-family: var(--font-mono);
+}
+
 /* ── Design Tokens (DISTRICT Ω 테마) ── */
 :root {
   --neon-red:    #ff2244;
@@ -18,13 +23,12 @@
   --color-text: #c8f0ff;
   --color-text-muted: rgba(100,160,200,0.6);
   --font-heading: var(--font-orbitron), 'Orbitron', sans-serif;
-  --font-mono: var(--font-jetbrains-mono), 'Share Tech Mono', monospace;
 }
 
 body {
   background-color: var(--dark-bg);
   color: var(--color-text);
-  font-family: var(--font-mono);
+  font-family: var(--font-mono) !important;
   min-height: 100vh;
   overflow-x: hidden;
 }

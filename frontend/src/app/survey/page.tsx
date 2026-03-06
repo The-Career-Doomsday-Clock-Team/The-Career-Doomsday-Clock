@@ -117,7 +117,7 @@ export default function SurveyPage() {
     <main className="relative flex min-h-screen items-center justify-center px-4 py-12 sm:px-6">
       <div className="survey-bg" aria-hidden="true" />
 
-      <div className="dystopia-panel relative z-10 w-full max-w-3xl p-10 sm:p-16 animate-fade-in" style={{ animation: "fade-in-scale 0.4s ease" }}>
+      <div className="dystopia-panel relative z-10 w-full max-w-4xl p-10 sm:p-16 animate-fade-in" style={{ animation: "fade-in-scale 0.4s ease" }}>
         <div className="panel-scanlines" />
 
         {/* 헤더 */}
