@@ -309,27 +309,30 @@ export default function GuestbookPage() {
             const isLong = entry.message.length > 100;
             const isExpanded = expandedIds.has(entry.entry_id);
             return (
-              <article key={entry.entry_id} className="guestbook-entry neon-border-cyan" aria-label={`${entry.job_title}의 방명록`}
-                style={{ animationDelay: `${idx * 60}ms`, animation: "fade-in 0.4s ease-out forwards", opacity: 0 }}>
+              <article key={entry.entry_id} className="guestbook-entry neon-border-cyan flex flex-col" aria-label={`${entry.job_title}의 방명록`}
+                style={{ animationDelay: `${idx * 60}ms`, animation: "fade-in 0.4s ease-out forwards", opacity: 0, height: "280px" }}>
                 <div className="flex items-baseline justify-between mb-2">
-                  <span className="font-[family-name:var(--font-heading)] text-base tracking-wider neon-text-cyan">
+                  <span className="font-[family-name:var(--font-heading)] text-sm tracking-wider neon-text-cyan truncate mr-2">
                     {entry.job_title}
                   </span>
-                  <span className="neon-text-red font-[family-name:var(--font-heading)] text-base">
+                  <span className="neon-text-red font-[family-name:var(--font-heading)] text-sm shrink-0">
                     {Math.round(Number(entry.remaining_years))}년
                   </span>
                 </div>
-                <div className="mb-3">
+                <div className="mb-2 flex-1 min-h-0">
                   <p
-                    className="font-[family-name:var(--font-mono)] text-base leading-relaxed"
+                    className="font-[family-name:var(--font-mono)] text-sm leading-relaxed"
                     style={{
                       color: "var(--color-text)",
                       ...(isLong && !isExpanded ? {
                         display: "-webkit-box",
-                        WebkitLineClamp: 3,
+                        WebkitLineClamp: 2,
                         WebkitBoxOrient: "vertical" as const,
                         overflow: "hidden",
-                      } : {}),
+                      } : {
+                        overflow: "auto",
+                        maxHeight: "100%",
+                      }),
                     }}
                   >
                     {entry.message}
@@ -347,23 +350,45 @@ export default function GuestbookPage() {
                   )}
                 </div>
                 {/* 스킬 태그 배지 */}
-                {entry.skills && (
-                  <div className="flex flex-wrap gap-1.5 mb-3">
-                    {entry.skills.split(",").map((skill) => skill.trim()).filter(Boolean).map((skill) => (
-                      <span key={skill} className="inline-block px-2 py-0.5 text-xs font-[family-name:var(--font-mono)] rounded"
-                        style={{
-                          background: "rgba(0,255,255,0.08)",
-                          border: "1px solid rgba(0,255,255,0.25)",
-                          color: "var(--neon-cyan, #00e5ff)",
-                          textShadow: "0 0 4px rgba(0,255,255,0.3)",
-                        }}>
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                )}
-                <div className="flex flex-col gap-2">
-                  <div className="flex flex-wrap gap-2" role="group" aria-label="이모지 반응">
+                {entry.skills && (() => {
+                  const skillList = entry.skills.split(",").map((s) => s.trim()).filter(Boolean);
+                  const isSkillExpanded = expandedIds.has(`skill-${entry.entry_id}`);
+                  const visibleSkills = isSkillExpanded ? skillList : skillList.slice(0, 3);
+                  const hasMoreSkills = skillList.length > 3;
+                  return (
+                    <div className="mb-2">
+                      <div className="flex flex-wrap gap-1.5">
+                        {visibleSkills.map((skill) => (
+                          <span key={skill} className="inline-block px-2 py-0.5 text-xs font-[family-name:var(--font-mono)] rounded"
+                            style={{
+                              background: "rgba(0,255,255,0.08)",
+                              border: "1px solid rgba(0,255,255,0.25)",
+                              color: "var(--neon-cyan, #00e5ff)",
+                              textShadow: "0 0 4px rgba(0,255,255,0.3)",
+                            }}>
+                            {skill}
+                          </span>
+                        ))}
+                        {hasMoreSkills && !isSkillExpanded && (
+                          <button type="button" onClick={() => toggleExpand(`skill-${entry.entry_id}`)}
+                            className="inline-block px-2 py-0.5 text-xs font-[family-name:var(--font-mono)] rounded cursor-pointer"
+                            style={{ background: "rgba(0,255,255,0.04)", border: "1px solid rgba(0,255,255,0.15)", color: "rgba(100,160,200,0.6)" }}>
+                            +{skillList.length - 3}
+                          </button>
+                        )}
+                      </div>
+                      {hasMoreSkills && isSkillExpanded && (
+                        <button type="button" onClick={() => toggleExpand(`skill-${entry.entry_id}`)}
+                          className="font-[family-name:var(--font-mono)] text-xs mt-1 hover:underline"
+                          style={{ color: "rgba(100,160,200,0.6)" }}>
+                          ▲ 접기
+                        </button>
+                      )}
+                    </div>
+                  );
+                })()}
+                <div className="flex items-center justify-between mt-auto">
+                  <div className="flex flex-wrap gap-1.5" role="group" aria-label="이모지 반응">
                     {REACTION_EMOJIS.map((emoji) => (
                       <button key={emoji} type="button" onClick={() => handleReaction(entry.entry_id, emoji, entry.created_at)}
                         disabled={reactingIds.has(entry.entry_id)} className="guestbook-reaction-btn" aria-label={`${emoji} 반응 추가`}>
@@ -374,7 +399,7 @@ export default function GuestbookPage() {
                       </button>
                     ))}
                   </div>
-                  <time dateTime={entry.created_at} className="font-[family-name:var(--font-mono)] text-xs" style={{ color: "rgba(100,160,200,0.5)" }}>
+                  <time dateTime={entry.created_at} className="font-[family-name:var(--font-mono)] text-xs shrink-0" style={{ color: "rgba(100,160,200,0.5)" }}>
                     {formatRelativeTime(entry.created_at)}
                   </time>
                 </div>

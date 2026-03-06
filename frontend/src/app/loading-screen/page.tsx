@@ -148,7 +148,7 @@ export default function LoadingScreen() {
         {/* 타임아웃 (Req 4.3) */}
         {timedOut && !failed && (
           <p className="neon-text-yellow font-[family-name:var(--font-mono)] text-base tracking-wide animate-fade-in">
-            ⚠ EXTENDED ANALYSIS REQUIRED... PLEASE STANDBY
+            ⚠ EXTENDED ANALYSIS REQUIRED... PLEASE STAND BY
           </p>
         )}
 
