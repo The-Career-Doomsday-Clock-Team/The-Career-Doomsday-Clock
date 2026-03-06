@@ -331,7 +331,7 @@ export default function GuestbookPage() {
                     {entry.job_title}
                   </span>
                   <span className="neon-text-soft-red font-[family-name:var(--font-heading)] text-sm shrink-0">
-                    {Math.round(Number(entry.remaining_years))}year
+                    {Math.round(Number(entry.remaining_years))}years
                   </span>
                 </div>
                 {/* 중간: 메시지 + 스킬 (남은 공간만 사용) */}

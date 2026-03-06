@@ -58,7 +58,7 @@ export function DoomsdayCounter({ targetYears, yearsReason, onComplete }: Doomsd
               animation: done ? "neon-flicker 3.5s infinite" : "none",
             }}
           >
-            {currentValue}year
+            {currentValue}years
           </span>
         </div>
       </div>

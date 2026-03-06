@@ -65,7 +65,7 @@ export function SkillRiskCard({ risk, index, isCritical = false }: SkillRiskCard
             className="font-[family-name:var(--font-heading)] text-3xl font-bold"
             style={{ color: "var(--neon-yellow)", textShadow: "0 0 8px var(--neon-yellow)" }}
           >
-            {risk.time_horizon}year
+            {risk.time_horizon}years
           </span>
           <span className="text-[0.7rem] tracking-wider mt-1" style={{ color: "rgba(200,220,240,0.6)" }}>
             within

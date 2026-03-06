@@ -110,7 +110,7 @@ export function JobRiskRanking({
                   className="font-[family-name:var(--font-mono)] text-sm w-16 text-right shrink-0"
                   style={{ color: barColor, textShadow: `0 0 4px ${barColor}` }}
                 >
-                  {item.avg_remaining_years}year
+                  {item.avg_remaining_years}years
                 </span>
               </div>
             );
