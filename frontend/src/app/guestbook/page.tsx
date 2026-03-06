@@ -298,7 +298,7 @@ export default function GuestbookPage() {
         <div className="w-full h-px opacity-40" style={{ background: "linear-gradient(to right, transparent, var(--neon-blue), transparent)", boxShadow: "0 0 10px var(--neon-blue)" }} aria-hidden="true" />
 
         {/* 방명록 목록 — 3컬럼 카드 그리드 */}
-        <section aria-label="방명록 목록" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <section aria-label="방명록 목록" className="columns-1 md:columns-2 lg:columns-3 gap-4">
           {entries.length === 0 && !loading && (
             <p className="col-span-full text-center font-[family-name:var(--font-mono)] text-base" style={{ color: "rgba(100,160,200,0.4)" }}>
               아직 아무도 흔적을 남기지 않았다...
@@ -310,7 +310,7 @@ export default function GuestbookPage() {
             const isExpanded = expandedIds.has(entry.entry_id);
             return (
               <article key={entry.entry_id} className="guestbook-entry neon-border-cyan flex flex-col" aria-label={`${entry.job_title}의 방명록`}
-                style={{ animationDelay: `${idx * 60}ms`, animation: "fade-in 0.4s ease-out forwards", opacity: 0 }}>
+                style={{ animationDelay: `${idx * 60}ms`, animation: "fade-in 0.4s ease-out forwards", opacity: 0, breakInside: "avoid", marginBottom: "1rem" }}>
                 {/* 상단: 직업 + 남은 수명 */}
                 <div className="flex items-baseline justify-between mb-2 shrink-0">
                   <span className="font-[family-name:var(--font-heading)] text-sm tracking-wider neon-text-cyan truncate mr-2">
@@ -387,7 +387,7 @@ export default function GuestbookPage() {
                   })()}
                 </div>
                 {/* 하단: 이모지 + 시간 (절대 잘리지 않음) */}
-                <div className="flex items-center justify-between shrink-0 pt-2">
+                <div className="shrink-0 pt-2 flex flex-col gap-1.5">
                   <div className="flex flex-wrap gap-1.5" role="group" aria-label="이모지 반응">
                     {REACTION_EMOJIS.map((emoji) => (
                       <button key={emoji} type="button" onClick={() => handleReaction(entry.entry_id, emoji, entry.created_at)}
@@ -399,7 +399,7 @@ export default function GuestbookPage() {
                       </button>
                     ))}
                   </div>
-                  <time dateTime={entry.created_at} className="font-[family-name:var(--font-mono)] text-xs shrink-0" style={{ color: "rgba(100,160,200,0.5)" }}>
+                  <time dateTime={entry.created_at} className="font-[family-name:var(--font-mono)] text-xs" style={{ color: "rgba(100,160,200,0.5)" }}>
                     {formatRelativeTime(entry.created_at)}
                   </time>
                 </div>
