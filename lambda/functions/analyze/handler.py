@@ -42,12 +42,12 @@ def _build_prompt(name: str, job_title: str, age_group: str, strengths: str, hob
     """
     skills = strengths
     return (
-        f"다음 사용자를 분석해주세요.\n\n"
-        f"이름: {name}\n"
-        f"현재 직업: {job_title}\n"
-        f"연령대: {age_group}\n"
-        f"보유 스킬: {skills}\n"
-        f"응답 언어: 한국어"
+        f"Please analyze the following user.\n\n"
+        f"Name: {name}\n"
+        f"Current Job: {job_title}\n"
+        f"Age Group: {age_group}\n"
+        f"Skills: {skills}\n"
+        f"Response Language: English"
     )
 
 

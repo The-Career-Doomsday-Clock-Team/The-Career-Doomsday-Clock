@@ -347,7 +347,7 @@ export class BedrockStack extends cdk.Stack {
       '      "combo_formula": "[current job] + [relevant skills] = [new job title]",',
       '      "reason": "<recommendation rationale>",',
       '      "roadmap": [',
-      '        { "step": "<step description>", "duration": "<e.g. 3개월>" }',
+      '        { "step": "<step description>", "duration": "<e.g. 3 months>" }',
       '      ]',
       '    }',
       '  ]',

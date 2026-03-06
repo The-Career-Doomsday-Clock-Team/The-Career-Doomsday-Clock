@@ -49,25 +49,25 @@ export function SkillRiskCard({ risk, index, isCritical = false }: SkillRiskCard
 
       {/* 수치 */}
       <div className="flex items-end justify-between mb-4">
-        <div>
+        <div className="flex flex-col">
           <span
             className="font-[family-name:var(--font-heading)] text-5xl font-black"
             style={{ color: dangerColor, textShadow: `0 0 10px ${dangerColor}` }}
           >
             {prob}%
           </span>
-          <span className="text-[0.75rem] ml-1.5 tracking-wider" style={{ color: "rgba(200,220,240,0.8)" }}>
+          <span className="text-[0.7rem] tracking-wider mt-1" style={{ color: "rgba(200,220,240,0.6)" }}>
             replacement
           </span>
         </div>
-        <div className="text-right">
+        <div className="flex flex-col items-end">
           <span
             className="font-[family-name:var(--font-heading)] text-3xl font-bold"
             style={{ color: "var(--neon-yellow)", textShadow: "0 0 8px var(--neon-yellow)" }}
           >
-            {risk.time_horizon}yr
+            {risk.time_horizon}year
           </span>
-          <span className="text-[0.75rem] ml-1 tracking-wider" style={{ color: "rgba(200,220,240,0.8)" }}>
+          <span className="text-[0.7rem] tracking-wider mt-1" style={{ color: "rgba(200,220,240,0.6)" }}>
             within
           </span>
         </div>

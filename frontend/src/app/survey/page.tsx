@@ -202,7 +202,7 @@ export default function SurveyPage() {
 
           {/* 입력 안내 */}
           <p className="text-left mt-6 text-sm tracking-wider" style={{ color: "rgba(100,180,220,0.7)" }}>
-            💡 Press Enter to add a skill tag.
+            💡 Press Enter or comma to add a skill tag.
           </p>
           <p className="text-left mt-1 text-sm tracking-wider" style={{ color: "rgba(100,180,220,0.7)" }}>
             📋 Paste comma-separated skills to auto-generate tags.
