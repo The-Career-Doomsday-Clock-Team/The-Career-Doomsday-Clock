@@ -362,8 +362,8 @@ export default function GuestbookPage() {
                     ))}
                   </div>
                 )}
-                <div className="flex items-center justify-between">
-                  <div className="flex gap-2" role="group" aria-label="이모지 반응">
+                <div className="flex flex-col gap-2">
+                  <div className="flex flex-wrap gap-2" role="group" aria-label="이모지 반응">
                     {REACTION_EMOJIS.map((emoji) => (
                       <button key={emoji} type="button" onClick={() => handleReaction(entry.entry_id, emoji, entry.created_at)}
                         disabled={reactingIds.has(entry.entry_id)} className="guestbook-reaction-btn" aria-label={`${emoji} 반응 추가`}>

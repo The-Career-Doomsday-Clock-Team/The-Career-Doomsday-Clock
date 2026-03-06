@@ -104,7 +104,7 @@ export function JobRiskRanking({
                   {idx + 1}
                 </span>
                 <span
-                  className="font-[family-name:var(--font-heading)] text-sm tracking-wider w-24 shrink-0 truncate"
+                  className="font-[family-name:var(--font-heading)] text-sm tracking-wider w-36 shrink-0 truncate"
                   style={{ color: barColor, textShadow: `0 0 4px ${barColor}` }}
                   title={item.job_title}
                 >

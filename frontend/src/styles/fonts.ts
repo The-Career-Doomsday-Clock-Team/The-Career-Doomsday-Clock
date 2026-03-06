@@ -1,4 +1,4 @@
-import { Orbitron, JetBrains_Mono } from "next/font/google";
+import { Orbitron, Share_Tech_Mono } from "next/font/google";
 
 export const orbitron = Orbitron({
   subsets: ["latin"],
@@ -6,7 +6,8 @@ export const orbitron = Orbitron({
   display: "swap",
 });
 
-export const jetbrainsMono = JetBrains_Mono({
+export const shareTechMono = Share_Tech_Mono({
+  weight: "400",
   subsets: ["latin"],
   variable: "--font-jetbrains-mono",
   display: "swap",
