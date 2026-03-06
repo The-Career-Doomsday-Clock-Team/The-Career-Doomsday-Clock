@@ -261,7 +261,7 @@ export default function GuestbookPage() {
                 <div className="w-24 flex flex-col gap-1.5">
                   <label htmlFor="gb-ry" className="dystopia-label" style={{ color: "var(--neon-yellow)", textShadow: "0 0 4px var(--neon-yellow)" }}>Years Left</label>
                   <input id="gb-ry" type="text" value={remainingYears} readOnly
-                    placeholder="yr" className="dystopia-input text-center opacity-70 cursor-not-allowed" autoComplete="off" />
+                    placeholder="year" className="dystopia-input text-center opacity-70 cursor-not-allowed" autoComplete="off" />
                 </div>
               </div>
               <div className="flex flex-col gap-1.5 mb-4">

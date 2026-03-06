@@ -86,19 +86,26 @@ export function CareerCardComponent({ card, isTopPick = false }: CareerCardCompo
           </h4>
           <div className="flex flex-col gap-0">
             {card.roadmap.map((step, i) => (
-              <div key={i} className="roadmap-step">
-                <span
-                  className="font-[family-name:var(--font-heading)] text-[0.75rem] shrink-0 min-w-[60px]"
-                  style={{ color: theme.accent, textShadow: `0 0 4px ${theme.accent}` }}
-                >
-                  {step.duration}
-                </span>
-                <span
-                  className="font-[family-name:var(--font-mono)] text-sm"
-                  style={{ color: "rgba(200,220,240,0.7)" }}
-                >
-                  {step.step}
-                </span>
+              <div key={i}>
+                <div className="roadmap-step">
+                  <span
+                    className="font-[family-name:var(--font-heading)] text-[0.75rem] shrink-0 min-w-[60px]"
+                    style={{ color: theme.accent, textShadow: `0 0 4px ${theme.accent}` }}
+                  >
+                    {step.duration}
+                  </span>
+                  <span
+                    className="font-[family-name:var(--font-mono)] text-sm"
+                    style={{ color: "rgba(200,220,240,0.7)" }}
+                  >
+                    {step.step}
+                  </span>
+                </div>
+                {i < card.roadmap.length - 1 && (
+                  <div className="flex justify-center py-1" aria-hidden="true">
+                    <span style={{ color: "rgba(100,160,200,0.5)", fontSize: "1.2rem" }}>⇩</span>
+                  </div>
+                )}
               </div>
             ))}
           </div>
