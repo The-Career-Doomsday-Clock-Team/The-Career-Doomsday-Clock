@@ -210,7 +210,7 @@ export default function SurveyPage() {
 
           {/* 개인정보 안내 */}
           <p className="text-center mt-2 text-sm tracking-wider" style={{ color: "rgba(150,200,230,1)" }}>
-            🔒 입력된 정보는 분석 목적으로만 사용되며, 세션 종료 시 자동 삭제됩니다
+            🔒 입력하신 정보 중 이름과 연령대는 저장되지 않으며, 직업과 스킬 정보는 익명 데이터로 저장됩니다.
           </p>
 
           <div className="flex justify-end gap-3 mt-6">
