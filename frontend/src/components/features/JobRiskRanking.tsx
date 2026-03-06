@@ -127,12 +127,6 @@ export function JobRiskRanking({
                 >
                   {item.avg_remaining_years}년
                 </span>
-                <span
-                  className="font-[family-name:var(--font-mono)] text-sm w-8 text-right shrink-0"
-                  style={{ color: "rgba(100,160,200,0.4)" }}
-                >
-                  ({item.count})
-                </span>
               </div>
             );
           })}
