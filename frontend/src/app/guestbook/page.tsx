@@ -310,7 +310,7 @@ export default function GuestbookPage() {
             const isExpanded = expandedIds.has(entry.entry_id);
             return (
               <article key={entry.entry_id} className="guestbook-entry neon-border-cyan flex flex-col" aria-label={`${entry.job_title}의 방명록`}
-                style={{ animationDelay: `${idx * 60}ms`, animation: "fade-in 0.4s ease-out forwards", opacity: 0, breakInside: "avoid", marginBottom: "1rem" }}>
+                style={{ animationDelay: `${idx * 60}ms`, animation: "fade-in 0.4s ease-out forwards", opacity: 0, breakInside: "avoid", marginBottom: "1rem", maxHeight: "400px", overflow: "hidden" }}>
                 {/* 상단: 직업 + 남은 수명 */}
                 <div className="flex items-baseline justify-between mb-2 shrink-0">
                   <span className="font-[family-name:var(--font-heading)] text-sm tracking-wider neon-text-cyan truncate mr-2">
