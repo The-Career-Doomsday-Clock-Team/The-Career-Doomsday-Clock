@@ -648,6 +648,7 @@ body::after {
   transition: all 0.3s ease;
   margin: 0 auto;
   max-width: 100%;
+  min-width: 0;
   backdrop-filter: blur(4px);
 }
 .guestbook-entry:hover {

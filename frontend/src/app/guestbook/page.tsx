@@ -300,7 +300,7 @@ export default function GuestbookPage() {
         {/* 방명록 목록 — 3컬럼 카드 그리드 */}
         <section aria-label="방명록 목록" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {entries.length === 0 && !loading && (
-            <p className="text-center font-[family-name:var(--font-mono)] text-base" style={{ color: "rgba(100,160,200,0.4)" }}>
+            <p className="col-span-full text-center font-[family-name:var(--font-mono)] text-base" style={{ color: "rgba(100,160,200,0.4)" }}>
               아직 아무도 흔적을 남기지 않았다...
             </p>
           )}
@@ -310,8 +310,9 @@ export default function GuestbookPage() {
             const isExpanded = expandedIds.has(entry.entry_id);
             return (
               <article key={entry.entry_id} className="guestbook-entry neon-border-cyan flex flex-col" aria-label={`${entry.job_title}의 방명록`}
-                style={{ animationDelay: `${idx * 60}ms`, animation: "fade-in 0.4s ease-out forwards", opacity: 0, height: "280px" }}>
-                <div className="flex items-baseline justify-between mb-2">
+                style={{ animationDelay: `${idx * 60}ms`, animation: "fade-in 0.4s ease-out forwards", opacity: 0 }}>
+                {/* 상단: 직업 + 남은 수명 */}
+                <div className="flex items-baseline justify-between mb-2 shrink-0">
                   <span className="font-[family-name:var(--font-heading)] text-sm tracking-wider neon-text-cyan truncate mr-2">
                     {entry.job_title}
                   </span>
@@ -319,75 +320,74 @@ export default function GuestbookPage() {
                     {Math.round(Number(entry.remaining_years))}년
                   </span>
                 </div>
-                <div className="mb-2 flex-1 min-h-0">
-                  <p
-                    className="font-[family-name:var(--font-mono)] text-sm leading-relaxed"
-                    style={{
-                      color: "var(--color-text)",
-                      ...(isLong && !isExpanded ? {
+                {/* 중간: 메시지 + 스킬 (남은 공간만 사용) */}
+                <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
+                  <div className="mb-2">
+                    <p
+                      className="font-[family-name:var(--font-mono)] text-sm leading-relaxed"
+                      style={{
+                        color: "var(--color-text)",
                         display: "-webkit-box",
-                        WebkitLineClamp: 2,
+                        WebkitLineClamp: isExpanded ? 999 : 2,
                         WebkitBoxOrient: "vertical" as const,
                         overflow: "hidden",
-                      } : {
-                        overflow: "auto",
-                        maxHeight: "100%",
-                      }),
-                    }}
-                  >
-                    {entry.message}
-                  </p>
-                  {isLong && (
-                    <button
-                      type="button"
-                      onClick={() => toggleExpand(entry.entry_id)}
-                      className="font-[family-name:var(--font-mono)] text-xs mt-1 hover:underline"
-                      style={{ color: "rgba(100,160,200,0.6)" }}
-                      aria-expanded={isExpanded}
+                      }}
                     >
-                      {isExpanded ? "▲ 접기" : "▼ 더 보기"}
-                    </button>
-                  )}
-                </div>
-                {/* 스킬 태그 배지 */}
-                {entry.skills && (() => {
-                  const skillList = entry.skills.split(",").map((s) => s.trim()).filter(Boolean);
-                  const isSkillExpanded = expandedIds.has(`skill-${entry.entry_id}`);
-                  const visibleSkills = isSkillExpanded ? skillList : skillList.slice(0, 3);
-                  const hasMoreSkills = skillList.length > 3;
-                  return (
-                    <div className="mb-2">
-                      <div className="flex flex-wrap gap-1.5">
-                        {visibleSkills.map((skill) => (
-                          <span key={skill} className="inline-block px-2 py-0.5 text-xs font-[family-name:var(--font-mono)] rounded"
-                            style={{
-                              background: "rgba(0,255,255,0.08)",
-                              border: "1px solid rgba(0,255,255,0.25)",
-                              color: "var(--neon-cyan, #00e5ff)",
-                              textShadow: "0 0 4px rgba(0,255,255,0.3)",
-                            }}>
-                            {skill}
-                          </span>
-                        ))}
-                        {hasMoreSkills && !isSkillExpanded && (
+                      {entry.message}
+                    </p>
+                    {isLong && (
+                      <button
+                        type="button"
+                        onClick={() => toggleExpand(entry.entry_id)}
+                        className="font-[family-name:var(--font-mono)] text-xs mt-1 hover:underline"
+                        style={{ color: "rgba(100,160,200,0.6)" }}
+                        aria-expanded={isExpanded}
+                      >
+                        {isExpanded ? "▲ 접기" : "▼ 더 보기"}
+                      </button>
+                    )}
+                  </div>
+                  {/* 스킬 태그 */}
+                  {entry.skills && (() => {
+                    const skillList = entry.skills.split(",").map((s) => s.trim()).filter(Boolean);
+                    const isSkillExpanded = expandedIds.has(`skill-${entry.entry_id}`);
+                    const visibleSkills = isSkillExpanded ? skillList : skillList.slice(0, 3);
+                    const hasMoreSkills = skillList.length > 3;
+                    return (
+                      <div className="mt-auto mb-1">
+                        <div className="flex flex-wrap gap-1.5">
+                          {visibleSkills.map((skill) => (
+                            <span key={skill} className="inline-block px-2 py-0.5 text-xs font-[family-name:var(--font-mono)] rounded"
+                              style={{
+                                background: "rgba(0,255,255,0.08)",
+                                border: "1px solid rgba(0,255,255,0.25)",
+                                color: "var(--neon-cyan, #00e5ff)",
+                                textShadow: "0 0 4px rgba(0,255,255,0.3)",
+                              }}>
+                              {skill}
+                            </span>
+                          ))}
+                          {hasMoreSkills && !isSkillExpanded && (
+                            <button type="button" onClick={() => toggleExpand(`skill-${entry.entry_id}`)}
+                              className="inline-block px-2 py-0.5 text-xs font-[family-name:var(--font-mono)] rounded cursor-pointer"
+                              style={{ background: "rgba(0,255,255,0.04)", border: "1px solid rgba(0,255,255,0.15)", color: "rgba(100,160,200,0.6)" }}>
+                              +{skillList.length - 3}
+                            </button>
+                          )}
+                        </div>
+                        {hasMoreSkills && isSkillExpanded && (
                           <button type="button" onClick={() => toggleExpand(`skill-${entry.entry_id}`)}
-                            className="inline-block px-2 py-0.5 text-xs font-[family-name:var(--font-mono)] rounded cursor-pointer"
-                            style={{ background: "rgba(0,255,255,0.04)", border: "1px solid rgba(0,255,255,0.15)", color: "rgba(100,160,200,0.6)" }}>
-                            +{skillList.length - 3}
+                            className="font-[family-name:var(--font-mono)] text-xs mt-1 hover:underline"
+                            style={{ color: "rgba(100,160,200,0.6)" }}>
+                            ▲ 접기
                           </button>
                         )}
                       </div>
-                      {hasMoreSkills && isSkillExpanded && (
-                        <button type="button" onClick={() => toggleExpand(`skill-${entry.entry_id}`)}
-                          className="font-[family-name:var(--font-mono)] text-xs mt-1 hover:underline"
-                          style={{ color: "rgba(100,160,200,0.6)" }}>
-                          ▲ 접기
-                        </button>
-                      )}
-                    </div>
-                  );
-                })()}
-                <div className="flex items-center justify-between mt-auto">
+                    );
+                  })()}
+                </div>
+                {/* 하단: 이모지 + 시간 (절대 잘리지 않음) */}
+                <div className="flex items-center justify-between shrink-0 pt-2">
                   <div className="flex flex-wrap gap-1.5" role="group" aria-label="이모지 반응">
                     {REACTION_EMOJIS.map((emoji) => (
                       <button key={emoji} type="button" onClick={() => handleReaction(entry.entry_id, emoji, entry.created_at)}
