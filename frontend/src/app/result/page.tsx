@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
+import html2canvas from "html2canvas";
 import type { ResultData } from "@/types/result";
 import { submitSurvey } from "@/lib/api";
 import { DoomsdayCounter } from "@/components/features/DoomsdayCounter";
@@ -22,7 +23,9 @@ export default function ResultPage() {
   const [counterDone, setCounterDone] = useState(false);
   const [showDivider, setShowDivider] = useState(false);
   const [retrying, setRetrying] = useState(false);
+  const [saving, setSaving] = useState(false);
   const autoTransitionRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const captureRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const stored = sessionStorage.getItem("result_data");
@@ -55,6 +58,27 @@ export default function ResultPage() {
   }, [phase]);
 
   const handleEscape = useCallback(() => { router.push("/guestbook"); }, [router]);
+
+  /** 결과 페이지를 이미지로 저장 */
+  const handleSaveAsImage = useCallback(async () => {
+    if (!captureRef.current) return;
+    setSaving(true);
+    try {
+      const canvas = await html2canvas(captureRef.current, {
+        backgroundColor: "#0a0a0a",
+        scale: 2,
+        useCORS: true,
+      });
+      const link = document.createElement("a");
+      link.download = `career-doomsday-result-${Date.now()}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    } catch (err) {
+      console.error("이미지 저장 실패:", err);
+    } finally {
+      setSaving(false);
+    }
+  }, []);
 
   /** 동일 데이터로 AI 재분석 */
   const handleRetryAnalysis = useCallback(async () => {
@@ -93,7 +117,7 @@ export default function ResultPage() {
     <main className="relative min-h-screen flex flex-col items-center px-4 py-16">
       <div className="result-bg" aria-hidden="true" />
 
-      <div className="relative z-10 w-full max-w-4xl">
+      <div ref={captureRef} className="relative z-10 w-full max-w-4xl">
         {/* 시스템 태그 */}
         <div className="text-center mb-12">
           <div className="panel-tag tracking-[0.4em]" style={{ animation: "neon-flicker2 2.8s infinite" }}>
@@ -155,6 +179,16 @@ export default function ResultPage() {
             </div>
 
             <div className="flex flex-wrap justify-center gap-4 mt-6">
+              <button
+                type="button"
+                onClick={handleSaveAsImage}
+                disabled={saving}
+                className="neon-button disabled:opacity-40 disabled:cursor-not-allowed"
+                style={{ borderColor: "rgba(168,85,247,0.5)", color: "#c084fc" }}
+                aria-label="결과를 이미지로 저장"
+              >
+                {saving ? "SAVING…" : "📸 SAVE AS IMAGE"}
+              </button>
               <button
                 type="button"
                 onClick={handleRetryAnalysis}
