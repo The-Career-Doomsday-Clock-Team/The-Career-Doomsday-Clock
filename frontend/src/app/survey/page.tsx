@@ -204,6 +204,9 @@ export default function SurveyPage() {
           <p className="text-center mt-6 text-sm tracking-wider" style={{ color: "rgba(100,180,220,0.8)" }}>
             💡 엔터를 눌러 스킬을 추가할 수 있습니다.
           </p>
+          <p className="text-center mt-1 text-sm tracking-wider" style={{ color: "rgba(100,180,220,0.6)" }}>
+            📋 쉼표로 구분된 스킬을 붙여넣으면 자동으로 태그가 생성됩니다.
+          </p>
 
           {/* 개인정보 안내 */}
           <p className="text-center mt-2 text-sm tracking-wider" style={{ color: "rgba(150,200,230,1)" }}>

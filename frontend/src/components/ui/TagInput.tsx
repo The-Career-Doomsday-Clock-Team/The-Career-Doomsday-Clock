@@ -96,10 +96,8 @@ export function TagInput({
 
   const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
-    // 쉼표가 포함되면 쉼표 앞까지를 태그로 추가
     if (val.includes(",")) {
       const parts = val.split(",");
-      // 마지막 부분은 아직 입력 중
       for (let i = 0; i < parts.length - 1; i++) {
         const part = parts[i].trim();
         if (part) handleAdd(part);
@@ -109,6 +107,22 @@ export function TagInput({
       setInput(val);
     }
   }, [handleAdd]);
+
+  // 붙여넣기 시 쉼표로 구분된 텍스트를 개별 태그로 분리
+  const handlePaste = useCallback((e: React.ClipboardEvent<HTMLInputElement>) => {
+    const pasted = e.clipboardData.getData("text");
+    if (pasted.includes(",")) {
+      e.preventDefault();
+      const parts = pasted.split(",").map((s) => s.trim()).filter(Boolean);
+      let current = tags;
+      for (const part of parts) {
+        const next = addTag(current, part);
+        if (next !== current) current = next;
+      }
+      if (current !== tags) onChange(current);
+      setInput("");
+    }
+  }, [tags, onChange]);
 
   const handleRemove = useCallback(
     (index: number) => {
@@ -169,6 +183,7 @@ export function TagInput({
           value={input}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
           placeholder={tags.length === 0 ? placeholder : ""}
           disabled={disabled}
           className="flex-1 min-w-[80px] bg-transparent border-none outline-none text-[#c8f0ff] placeholder:text-[rgba(100,160,200,0.35)]"
