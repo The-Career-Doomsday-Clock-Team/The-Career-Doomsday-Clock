@@ -10,3 +10,5 @@ tsconfig.tsbuildinfo
 # Lambda 리팩토링 백업 (임시)
 lambda/lambda_backup/
 package-lock.json
+# 테스트용 프론트 코드 제외
+*-test.html

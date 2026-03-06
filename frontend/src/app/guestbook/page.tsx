@@ -203,7 +203,7 @@ export default function GuestbookPage() {
     <main className="relative min-h-screen px-4 py-12">
       <div className="guestbook-bg" aria-hidden="true" />
 
-      <div className="relative z-10 mx-auto max-w-2xl flex flex-col gap-10">
+      <div className="relative z-10 mx-auto max-w-6xl flex flex-col gap-10">
         {/* 헤더 */}
         <header className="text-center">
           <div className="panel-tag mb-2" style={{ animation: "neon-flicker2 2.8s infinite" }}>
@@ -235,7 +235,8 @@ export default function GuestbookPage() {
           </div>
         </header>
 
-        {/* 등록 폼 — 이미 등록했으면 숨김 */}
+        {/* 등록 폼 — 이미 등록했으면 숨김 (가운데 좁게) */}
+        <div className="mx-auto w-full max-w-2xl">
         {hasSubmitted ? (
           <div className="dystopia-panel p-6">
             <div className="panel-scanlines" />
@@ -285,15 +286,19 @@ export default function GuestbookPage() {
             </div>
           </form>
         )}
+        </div>
 
-        {/* 랭킹 차트 — 수명 적게 남은 Top 5 */}
-        <JobRiskRanking data={rankingEndangered} loading={rankingLoading} error={rankingError} title="MOST ENDANGERED" subtitle="수명이 가장 적게 남은 직업 Top 5" variant="endangered" />
+        {/* 랭킹 차트 — 2컬럼 나란히 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <JobRiskRanking data={rankingEndangered} loading={rankingLoading} error={rankingError} title="MOST ENDANGERED" subtitle="수명이 가장 적게 남은 직업 Top 5" variant="endangered" />
+          <JobRiskRanking data={rankingSurvived} loading={rankingLoading} error={rankingError} title="MOST SURVIVED" subtitle="수명이 가장 많이 남은 직업 Top 5" variant="survived" />
+        </div>
 
-        {/* 랭킹 차트 — 수명 많이 남은 Top 5 */}
-        <JobRiskRanking data={rankingSurvived} loading={rankingLoading} error={rankingError} title="MOST SURVIVED" subtitle="수명이 가장 많이 남은 직업 Top 5" variant="survived" />
+        {/* 구분선 */}
+        <div className="w-full h-px opacity-40" style={{ background: "linear-gradient(to right, transparent, var(--neon-blue), transparent)", boxShadow: "0 0 10px var(--neon-blue)" }} aria-hidden="true" />
 
-        {/* 방명록 목록 */}
-        <section aria-label="방명록 목록" className="flex flex-col gap-3">
+        {/* 방명록 목록 — 3컬럼 카드 그리드 */}
+        <section aria-label="방명록 목록" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {entries.length === 0 && !loading && (
             <p className="text-center font-[family-name:var(--font-mono)] text-base" style={{ color: "rgba(100,160,200,0.4)" }}>
               아직 아무도 흔적을 남기지 않았다...
