@@ -201,15 +201,13 @@ export default function SurveyPage() {
           )}
 
           {/* 입력 안내 */}
-          <p className="text-center mt-6 text-sm tracking-wider" style={{ color: "rgba(100,180,220,0.8)" }}>
+          <p className="text-left mt-6 text-sm tracking-wider" style={{ color: "rgba(100,180,220,0.7)" }}>
             💡 Press Enter to add a skill tag.
           </p>
-          <p className="text-center mt-1 text-sm tracking-wider" style={{ color: "rgba(100,180,220,0.6)" }}>
+          <p className="text-left mt-1 text-sm tracking-wider" style={{ color: "rgba(100,180,220,0.7)" }}>
             📋 Paste comma-separated skills to auto-generate tags.
           </p>
-
-          {/* Privacy notice */}
-          <p className="text-center mt-2 text-sm tracking-wider" style={{ color: "rgba(150,200,230,1)" }}>
+          <p className="text-left mt-2 text-sm tracking-wider" style={{ color: "rgba(100,180,220,0.7)" }}>
             🔒 Your name and age group are not stored. Only job title and skills are saved as anonymous data.
           </p>
 
